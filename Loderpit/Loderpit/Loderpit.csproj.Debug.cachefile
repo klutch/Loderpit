@@ -1,0 +1,12 @@
+resources\courbd.ttf
+resources\ui\teammate_selection_indicator.png
+resources\ui\action_icons\bow.png
+resources\ui\action_icons\bridge.png
+resources\ui\action_icons\rope.png
+resources\ui\action_icons\sword.png
+resources\ui\action_icons\wand.png
+csfml-audio-2.dll
+csfml-graphics-2.dll
+csfml-window-2.dll
+libsndfile-1.dll
+openal32.dll
