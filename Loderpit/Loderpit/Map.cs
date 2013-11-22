@@ -102,7 +102,7 @@ namespace Loderpit
 
             validObstacleModuleTypes.Add(ObstacleModuleType.Stalactite);
 
-            _terrainLoader.load(_world, "modules/start_0.json", true);
+            _terrainLoader.load(_world, "resources/modules/start_0.json", true);
 
             for (int i = 0; i < iterations; i++)
             {
@@ -110,15 +110,15 @@ namespace Loderpit
                 ObstacleModuleType obstacleModuleType = validObstacleModuleTypes[_rng.Next(validObstacleModuleTypes.Count)];
                 int terrainVariation = _rng.Next(getNumVariations(terrainModuleType));
                 int obstacleVariation = _rng.Next(getNumVariations(obstacleModuleType));
-                string terrainModuleFile = string.Format("modules/{0}_{1}.json", terrainModuleType.ToString().ToLower(), terrainVariation);
-                string obstacleModuleFile = string.Format("obstacles/{0}_{1}.json", obstacleModuleType.ToString().ToLower(), obstacleVariation);
+                string terrainModuleFile = string.Format("resources/modules/{0}_{1}.json", terrainModuleType.ToString().ToLower(), terrainVariation);
+                string obstacleModuleFile = string.Format("resources/obstacles/{0}_{1}.json", obstacleModuleType.ToString().ToLower(), obstacleVariation);
 
                 Console.WriteLine(terrainModuleFile);
                 _terrainLoader.load(_world, terrainModuleFile, true);
                 _obstacleLoader.load(_world, obstacleModuleFile, true);
             }
 
-            _terrainLoader.load(_world, "modules/end_0.json", true);
+            _terrainLoader.load(_world, "resources/modules/end_0.json", true);
         }
     }
 }

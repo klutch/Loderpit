@@ -1,0 +1,347 @@
+
+{
+	"allowSleep" : true,
+	"autoClearForces" : true,
+	"body" : 
+	[
+		
+		{
+			"angle" : 0,
+			"angularVelocity" : 0,
+			"awake" : true,
+			"customProperties" : 
+			[
+				
+				{
+					"bool" : true,
+					"name" : "isCeiling"
+				}
+			],
+			"fixture" : 
+			[
+				
+				{
+					"density" : 1,
+					"friction" : 0.2,
+					"name" : "fixture0",
+					"polygon" : 
+					{
+						"vertices" : 
+						{
+							"x" : 
+							[
+								22.0,
+								-20.0,
+								-2.938564777374268,
+								-0.5872540473937988,
+								5.455754280090332,
+								12.66314697265625
+							],
+							"y" : 
+							[
+								6.5,
+								6.5,
+								-2.813929557800293,
+								-3.827008724212647,
+								-5.372778415679932,
+								-4.837151050567627
+							]
+						}
+					}
+				},
+				
+				{
+					"density" : 1,
+					"friction" : 0.2,
+					"name" : "fixture0",
+					"polygon" : 
+					{
+						"vertices" : 
+						{
+							"x" : [ 22.0, 22.0, 12.66314697265625, 17.633300781250 ],
+							"y" : [ -6.5, 6.5, -4.837151050567627, -6.663990497589111 ]
+						}
+					}
+				},
+				
+				{
+					"density" : 1,
+					"friction" : 0.2,
+					"name" : "fixture0",
+					"polygon" : 
+					{
+						"vertices" : 
+						{
+							"x" : [ 12.66314697265625, 5.455754280090332, 6.857894897460938 ],
+							"y" : [ -4.837151050567627, -5.372778415679932, -6.257091522216797 ]
+						}
+					}
+				},
+				
+				{
+					"density" : 1,
+					"friction" : 0.2,
+					"name" : "fixture0",
+					"polygon" : 
+					{
+						"vertices" : 
+						{
+							"x" : [ -2.938564777374268, -20.0, -6.565174102783203 ],
+							"y" : [ -2.813929557800293, 6.5, -2.749149322509766 ]
+						}
+					}
+				},
+				
+				{
+					"density" : 1,
+					"friction" : 0.2,
+					"name" : "fixture0",
+					"polygon" : 
+					{
+						"vertices" : 
+						{
+							"x" : 
+							[
+								-6.565174102783203,
+								-20.0,
+								-20.0,
+								-9.615702629089356,
+								-7.489774703979492
+							],
+							"y" : 
+							[
+								-2.749149322509766,
+								6.5,
+								-9.319286346435547,
+								-9.287067413330078,
+								-6.186539173126221
+							]
+						}
+					}
+				}
+			],
+			"linearVelocity" : 0,
+			"name" : "body0",
+			"position" : 
+			{
+				"x" : -2,
+				"y" : 11.50
+			},
+			"type" : 0
+		},
+		
+		{
+			"angle" : 0,
+			"angularVelocity" : 0,
+			"awake" : true,
+			"fixture" : 
+			[
+				
+				{
+					"circle" : 
+					{
+						"center" : 0,
+						"radius" : 0.5
+					},
+					"density" : 1,
+					"friction" : 0.2,
+					"name" : "fixture1"
+				}
+			],
+			"linearVelocity" : 0,
+			"massData-I" : 0.09817477315664291,
+			"massData-mass" : 0.7853981852531433,
+			"name" : "moduleAnchorB",
+			"position" : 
+			{
+				"x" : 20.0,
+				"y" : -5
+			},
+			"type" : 2
+		},
+		
+		{
+			"angle" : 0,
+			"angularVelocity" : 0,
+			"awake" : true,
+			"customProperties" : 
+			[
+				
+				{
+					"bool" : true,
+					"name" : "isGround"
+				}
+			],
+			"fixture" : 
+			[
+				
+				{
+					"density" : 1,
+					"friction" : 0.2,
+					"name" : "fixture0",
+					"polygon" : 
+					{
+						"vertices" : 
+						{
+							"x" : 
+							[
+								20.0,
+								14.46609973907471,
+								11.54290008544922,
+								9.334010124206543,
+								8.039389610290527,
+								-8.070289611816406,
+								-22.0
+							],
+							"y" : 
+							[
+								-15.0,
+								-4.440249919891357,
+								-3.821369886398315,
+								-3.419759988784790,
+								-3.388829946517944,
+								-3.376960039138794,
+								-15.0
+							]
+						}
+					}
+				},
+				
+				{
+					"density" : 1,
+					"friction" : 0.2,
+					"name" : "fixture0",
+					"polygon" : 
+					{
+						"vertices" : 
+						{
+							"x" : [ -11.08240032196045, -12.40569972991943, -22.0, -22.0 ],
+							"y" : [ -3.327579975128174, -1.948269963264465, 2.180713415145874, -15.0 ]
+						}
+					}
+				},
+				
+				{
+					"density" : 1,
+					"friction" : 0.2,
+					"name" : "fixture0",
+					"polygon" : 
+					{
+						"vertices" : 
+						{
+							"x" : [ -11.61570262908936, -22.0, -12.40569972991943 ],
+							"y" : [ 2.212933063507080, 2.180713415145874, -1.948269963264465 ]
+						}
+					}
+				},
+				
+				{
+					"density" : 1,
+					"friction" : 0.2,
+					"name" : "fixture0",
+					"polygon" : 
+					{
+						"vertices" : 
+						{
+							"x" : [ -8.070289611816406, -11.08240032196045, -22.0 ],
+							"y" : [ -3.376960039138794, -3.327579975128174, -15.0 ]
+						}
+					}
+				},
+				
+				{
+					"density" : 1,
+					"friction" : 0.2,
+					"name" : "fixture0",
+					"polygon" : 
+					{
+						"vertices" : 
+						{
+							"x" : 
+							[
+								8.039389610290527,
+								6.436039924621582,
+								-6.427629947662354,
+								-8.070289611816406
+							],
+							"y" : 
+							[
+								-3.388829946517944,
+								-2.733969926834106,
+								-2.675790071487427,
+								-3.376960039138794
+							]
+						}
+					}
+				},
+				
+				{
+					"density" : 1,
+					"friction" : 0.2,
+					"name" : "fixture0",
+					"polygon" : 
+					{
+						"vertices" : 
+						{
+							"x" : [ 20.0, 20.0, 16.79680061340332, 14.46609973907471 ],
+							"y" : [ -15.0, -5, -4.585090160369873, -4.440249919891357 ]
+						}
+					}
+				}
+			],
+			"linearVelocity" : 0,
+			"name" : "body0",
+			"position" : 0,
+			"type" : 0
+		}
+	],
+	"collisionbitplanes" : 
+	{
+		"names" : 
+		[
+			"bitplane1",
+			"bitplane2",
+			"bitplane3",
+			"bitplane4",
+			"bitplane5",
+			"bitplane6",
+			"bitplane7",
+			"bitplane8",
+			"bitplane9",
+			"bitplane10",
+			"bitplane11",
+			"bitplane12",
+			"bitplane13",
+			"bitplane14",
+			"bitplane15",
+			"bitplane16",
+			"bitplane17",
+			"bitplane18",
+			"bitplane19",
+			"bitplane20",
+			"bitplane21",
+			"bitplane22",
+			"bitplane23",
+			"bitplane24",
+			"bitplane25",
+			"bitplane26",
+			"bitplane27",
+			"bitplane28",
+			"bitplane29",
+			"bitplane30",
+			"bitplane31",
+			"bitplane32"
+		]
+	},
+	"continuousPhysics" : true,
+	"gravity" : 
+	{
+		"x" : 0,
+		"y" : -10
+	},
+	"positionIterations" : 3,
+	"stepsPerSecond" : 60.0,
+	"subStepping" : false,
+	"velocityIterations" : 8,
+	"warmStarting" : true
+}

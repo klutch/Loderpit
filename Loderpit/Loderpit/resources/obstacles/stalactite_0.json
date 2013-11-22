@@ -1,0 +1,237 @@
+
+{
+	"allowSleep" : true,
+	"autoClearForces" : true,
+	"body" : 
+	[
+		
+		{
+			"angle" : 0,
+			"angularVelocity" : 0,
+			"awake" : true,
+			"customProperties" : 
+			[
+				
+				{
+					"bool" : true,
+					"name" : "activatesObstacle"
+				},
+				
+				{
+					"bool" : true,
+					"name" : "ignoresBridgeRaycast"
+				},
+				
+				{
+					"bool" : true,
+					"name" : "ignoresRopeRaycast"
+				}
+			],
+			"fixture" : 
+			[
+				
+				{
+					"density" : 1,
+					"friction" : 20.0,
+					"name" : "fixture0",
+					"polygon" : 
+					{
+						"vertices" : 
+						{
+							"x" : 
+							[
+								6.020126819610596,
+								6.020126819610596,
+								-6.020126819610596,
+								-6.020126819610596
+							],
+							"y" : 
+							[
+								-24.07809638977051,
+								24.07809638977051,
+								24.07809638977051,
+								-24.07809638977051
+							]
+						}
+					},
+					"sensor" : true
+				}
+			],
+			"linearVelocity" : 0,
+			"name" : "sensor",
+			"position" : 0,
+			"type" : 0
+		},
+		
+		{
+			"angle" : 0,
+			"angularVelocity" : 0,
+			"awake" : true,
+			"customProperties" : 
+			[
+				
+				{
+					"bool" : true,
+					"name" : "fallOnActivate"
+				},
+				
+				{
+					"bool" : true,
+					"name" : "haltsMovement"
+				},
+				
+				{
+					"bool" : true,
+					"name" : "ignoreCeilingCollision"
+				},
+				
+				{
+					"bool" : true,
+					"name" : "ignoresBridgeRaycast"
+				},
+				
+				{
+					"bool" : true,
+					"name" : "ignoresRopeRaycast"
+				},
+				
+				{
+					"bool" : true,
+					"name" : "isDestructibleObstacle"
+				}
+			],
+			"fixedRotation" : true,
+			"fixture" : 
+			[
+				
+				{
+					"circle" : 
+					{
+						"center" : 0,
+						"radius" : 0.8630598187446594
+					},
+					"density" : 1,
+					"friction" : 20.0,
+					"name" : "core"
+				},
+				
+				{
+					"density" : 1,
+					"friction" : 0.2,
+					"name" : "fixture1",
+					"polygon" : 
+					{
+						"vertices" : 
+						{
+							"x" : 
+							[
+								0.3935826420783997,
+								0.06645631790161133,
+								-1.549181699752808,
+								-1.431778430938721,
+								-0.08029562234878540
+							],
+							"y" : 
+							[
+								-1.106369614601135,
+								1.796304345130920,
+								1.203761100769043,
+								-0.9102553129196167,
+								-2.471367835998535
+							]
+						}
+					},
+					"sensor" : true
+				},
+				
+				{
+					"density" : 1,
+					"friction" : 0.2,
+					"name" : "fixture1",
+					"polygon" : 
+					{
+						"vertices" : 
+						{
+							"x" : 
+							[
+								1.674023628234863,
+								0.06645631790161133,
+								0.3935826420783997,
+								1.199844956398010
+							],
+							"y" : 
+							[
+								1.262075185775757,
+								1.796304345130920,
+								-1.106369614601135,
+								-1.607683539390564
+							]
+						}
+					},
+					"sensor" : true
+				}
+			],
+			"linearVelocity" : 0,
+			"name" : "stalactite_0",
+			"position" : 0,
+			"type" : 0
+		}
+	],
+	"collisionbitplanes" : 
+	{
+		"names" : 
+		[
+			"bitplane1",
+			"bitplane2",
+			"bitplane3",
+			"bitplane4",
+			"bitplane5",
+			"bitplane6",
+			"bitplane7",
+			"bitplane8",
+			"bitplane9",
+			"bitplane10",
+			"bitplane11",
+			"bitplane12",
+			"bitplane13",
+			"bitplane14",
+			"bitplane15",
+			"bitplane16",
+			"bitplane17",
+			"bitplane18",
+			"bitplane19",
+			"bitplane20",
+			"bitplane21",
+			"bitplane22",
+			"bitplane23",
+			"bitplane24",
+			"bitplane25",
+			"bitplane26",
+			"bitplane27",
+			"bitplane28",
+			"bitplane29",
+			"bitplane30",
+			"bitplane31",
+			"bitplane32"
+		]
+	},
+	"continuousPhysics" : true,
+	"customProperties" : 
+	[
+		
+		{
+			"bool" : true,
+			"name" : "attachToCeiling"
+		}
+	],
+	"gravity" : 
+	{
+		"x" : 0,
+		"y" : -10
+	},
+	"positionIterations" : 3,
+	"stepsPerSecond" : 60.0,
+	"subStepping" : false,
+	"velocityIterations" : 8,
+	"warmStarting" : true
+}
