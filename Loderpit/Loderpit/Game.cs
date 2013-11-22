@@ -19,6 +19,17 @@ namespace Loderpit
 {
     using Key = Keyboard.Key;
 
+    /*   A GameState should be any state of the game where the game's update and draw methods are called. For example,
+     * if the game transitions from the main menu to a loaded level without a loading screen, then there's no need for
+     * a LoadingLevel state. However, if there is a loading screen that needs to be updated/drawn, there should be a
+     * LoadingLevel state.
+     */
+    public enum GameState
+    {
+        CreateTeam,
+        Level
+    }
+
     public class Game : IDisposable
     {
         public const float DT = 1f / 60f;
@@ -33,6 +44,7 @@ namespace Loderpit
         private int _fps;
         private Text _fpsText;
         private FixedMouseJoint _mouseJoint;
+        private GameState _state;
 
         public static RenderWindow window { get { return _window; } }
 
@@ -44,6 +56,7 @@ namespace Loderpit
             _window.GainedFocus += new EventHandler(_window_GainedFocus);
             _window.LostFocus += new EventHandler(_window_LostFocus);
             _window.SetVerticalSyncEnabled(true);
+            _state = GameState.CreateTeam;
 
             // Create systems
             SystemManager.physicsSystem = new PhysicsSystem();
@@ -68,25 +81,26 @@ namespace Loderpit
             ScreenManager.addScreen(new LevelScreen());
         }
 
+        // Window event handlers
         private void _window_LostFocus(object sender, EventArgs e)
         {
             inFocus = false;
         }
-
         private void _window_GainedFocus(object sender, EventArgs e)
         {
             inFocus = true;
         }
-
         private void _window_Closed(object sender, EventArgs e)
         {
             _window.Close();
         }
 
+        // Dispose
         public void Dispose()
         {
         }
 
+        // Load assets
         public void loadContent()
         {
             // Permanent/global
@@ -103,6 +117,7 @@ namespace Loderpit
             _fpsText.Position = new Vector2f(16, 16);
         }
 
+        // Game loop
         public void run()
         {
             float frameTime = 0f;
@@ -129,12 +144,16 @@ namespace Loderpit
             }
         }
 
-        public void update()
+        // Update when in create team state
+        private void updateCreateTeamState()
+        {
+        }
+
+        // Update when in level state
+        private void updateLevelState()
         {
             Vector2f sfmlWorldMouse = _window.MapPixelToCoords(_window.InternalGetMousePosition(), SystemManager.cameraSystem.worldView);
             List<int> entities = SystemManager.teamSystem.getTeamEntities();
-
-            _window.DispatchEvents();
 
             oldKeyState = newKeyState;
             newKeyState = KeyboardState.get();
@@ -188,10 +207,9 @@ namespace Loderpit
             _fpsText.DisplayedString = _fps.ToString();
         }
 
-        public void draw()
+        // Draw when in level state
+        private void drawLevelState()
         {
-            _window.Clear();
-
             // Switch to world view
             _window.SetView(SystemManager.cameraSystem.worldView);
 
@@ -206,6 +224,35 @@ namespace Loderpit
 
             // FPS
             _window.Draw(_fpsText);
+        }
+
+        // Main update method
+        public void update()
+        {
+            _window.DispatchEvents();
+
+            if (_state == GameState.CreateTeam)
+            {
+                updateCreateTeamState();
+            }
+            else if (_state == GameState.Level)
+            {
+                updateLevelState();
+            }
+        }
+
+        // Main draw method
+        public void draw()
+        {
+            _window.Clear();
+
+            if (_state == GameState.CreateTeam)
+            {
+            }
+            else if (_state == GameState.Level)
+            {
+                drawLevelState();
+            }
 
             _window.Display();
         }
