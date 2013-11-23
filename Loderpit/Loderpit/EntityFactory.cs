@@ -56,7 +56,7 @@ namespace Loderpit
             switch (characterClass)
             {
                 case CharacterClass.Fighter:
-                    skills.Add(new MeleeAttackSkill(1, 1f));
+                    skills.Add(new MeleeAttackSkill(1, 1.2f));
                     break;
 
                 case CharacterClass.Archer:
