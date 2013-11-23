@@ -59,7 +59,6 @@ namespace Loderpit.Systems
             }
 
             ropeGrabExclusionComponent.excludedRopeComponents.Add(ropeGrabComponent.ropeComponent);
-            SystemManager.physicsSystem.world.RemoveJoint(ropeGrabComponent.joint);
             EntityManager.removeComponent(entityId, ComponentType.RopeGrab);
 
             if (groupComponent != null)
