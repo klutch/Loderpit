@@ -12,18 +12,18 @@ namespace Loderpit.Loaders
 {
     public class TerrainModuleLoader : RubeLoader
     {
-        private Map _map;
+        private Level _level;
         private Vector2 _anchorBuffer;
 
-        public TerrainModuleLoader(Map map)
+        public TerrainModuleLoader(Level level)
             : base()
         {
-            _map = map;
+            _level = level;
         }
 
         protected override void beforeLoadBodies(World world, CustomProperties customWorldProperties)
         {
-            _offset = _map.moduleEndPointsCount == 0 ? _map.initialPosition : _map.getLastModuleEndPoint();
+            _offset = _level.moduleEndPointsCount == 0 ? _level.initialPosition : _level.getLastModuleEndPoint();
 
             foreach (XElement bodyData in _worldData.Elements("body"))
             {
@@ -44,7 +44,7 @@ namespace Loderpit.Loaders
 
         protected override void afterLoadBodies()
         {
-            _map.addModuleEndPoint(_anchorBuffer + _offset);
+            _level.addModuleEndPoint(_anchorBuffer + _offset);
 
             base.afterLoadBodies();
         }

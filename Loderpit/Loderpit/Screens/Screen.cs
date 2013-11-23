@@ -8,7 +8,8 @@ namespace Loderpit.Screens
     public enum ScreenType
     {
         CreateTeam,
-        Level
+        Level,
+        InterLevel
     };
 
     abstract public class Screen

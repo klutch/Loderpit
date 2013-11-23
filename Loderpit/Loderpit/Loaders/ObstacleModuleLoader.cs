@@ -12,12 +12,12 @@ namespace Loderpit.Loaders
 {
     public class ObstacleModuleLoader : RubeLoader
     {
-        private Map _map;
+        private Level _map;
         private Random _rng;
         private Body _bodyThatSendsActivateObstacle;
         private List<Body> _bodiesThatReceiveActivateObstacleFall;
 
-        public ObstacleModuleLoader(Map map)
+        public ObstacleModuleLoader(Level map)
             : base()
         {
             _map = map;

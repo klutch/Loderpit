@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
+using FarseerPhysics.Dynamics;
 using Loderpit.Components;
 using Loderpit.Managers;
 
@@ -8,7 +9,7 @@ namespace Loderpit.Systems
 {
     public class LevelSystem : ISystem
     {
-        private Map _map;
+        private Level _map;
 
         public SystemType systemType { get { return SystemType.Level; } }
 
@@ -18,9 +19,23 @@ namespace Loderpit.Systems
 
         public void generateLevel(int iterations = 16)
         {
-            _map = new Map(SystemManager.physicsSystem.world);
+            _map = new Level(SystemManager.physicsSystem.world);
             _map.generate(iterations);
             placeTemporaryEnemies();
+        }
+
+        // Called from Game.endLevelState() -- Unloads the level and destroys all entities
+        public void unload()
+        {
+            // Destroy all physical bodies
+            foreach (Body body in SystemManager.physicsSystem.world.BodyList)
+            {
+                SystemManager.physicsSystem.world.RemoveBody(body);
+            }
+            SystemManager.physicsSystem.world.Step(1f / 60f);
+
+            // Destroy all entities
+            EntityManager.destroyAllEntities();
         }
 
         private void placeTemporaryEnemies()
@@ -69,7 +84,17 @@ namespace Loderpit.Systems
 
             if (playerEntities.Count == playersTouchingEndLevel.Count)
             {
-                Console.WriteLine("end the level!");
+                List<CharacterClass> characterClasses = new List<CharacterClass>();
+
+                // TODO: This should be removed in favor of loading saved data in Game.startInterLevelState()
+                foreach (int entityId in playerEntities)
+                {
+                    characterClasses.Add(EntityManager.getCharacterComponent(entityId).characterClass);
+                }
+
+                // TODO: Saving should happen on this line
+                Game.endLevelState();
+                Game.startInterLevelState(characterClasses);
             }
         }
 

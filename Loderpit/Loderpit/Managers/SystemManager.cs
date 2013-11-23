@@ -18,5 +18,6 @@ namespace Loderpit.Managers
         public static CombatSystem combatSystem;
         public static LevelSystem levelSystem;
         public static EnemyAISystem enemyAISystem;
+        public static InterLevelSystem interLevelSystem;
     }
 }

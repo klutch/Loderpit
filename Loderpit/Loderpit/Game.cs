@@ -27,7 +27,8 @@ namespace Loderpit
     public enum GameState
     {
         CreateTeam,
-        Level
+        Level,
+        InterLevel
     }
 
     public class Game : IDisposable
@@ -70,6 +71,7 @@ namespace Loderpit
             SystemManager.skillSystem = new SkillSystem();
             SystemManager.combatSystem = new CombatSystem();
             SystemManager.enemyAISystem = new EnemyAISystem();
+            SystemManager.interLevelSystem = new InterLevelSystem();
 
             loadContent();
 
@@ -126,7 +128,7 @@ namespace Loderpit
             ScreenManager.removeScreen(ScreenType.CreateTeam);
         }
 
-        // Start level state
+        // Start level state -- TODO: Load data instead of having it supplied
         public static void startLevelState(List<CharacterClass> characterClasses)
         {
             int playerGroupId;
@@ -136,6 +138,32 @@ namespace Loderpit
             SystemManager.teamSystem.playerGroup = EntityManager.getGroupComponent(playerGroupId);
             ScreenManager.addScreen(new LevelScreen());
             _state = GameState.Level;
+        }
+
+        // End level state
+        public static void endLevelState()
+        {
+            SystemManager.levelSystem.unload();
+            SystemManager.teamSystem.playerGroup = null;
+            ScreenManager.removeScreen(ScreenType.Level);
+        }
+
+        // Start inter-level state -- TODO: Load data instead of having it supplied
+        public static void startInterLevelState(List<CharacterClass> characterClasses)
+        {
+            int playerGroupId;
+
+            SystemManager.interLevelSystem.load();
+            playerGroupId = EntityFactory.createPlayerGroup(characterClasses);
+            SystemManager.teamSystem.playerGroup = EntityManager.getGroupComponent(playerGroupId);
+            ScreenManager.addScreen(new InterLevelScreen());
+            _state = GameState.InterLevel;
+        }
+
+        // End inter-level state
+        public static void endInterLevelState()
+        {
+            throw new NotImplementedException();
         }
 
         // Game loop
@@ -261,6 +289,35 @@ namespace Loderpit
             _window.Draw(_fpsText);
         }
 
+        // Update inter-level state
+        private void updateInterLevelState()
+        {
+            SystemManager.physicsSystem.update();
+            SystemManager.characterSystem.update();
+            SystemManager.interLevelSystem.update();
+            SystemManager.cameraSystem.update();
+            ScreenManager.update();
+        }
+
+        // Draw inter-level state
+        public void drawInterLevelState()
+        {
+            // Switch to world view
+            _window.SetView(SystemManager.cameraSystem.worldView);
+
+            // Draw render system
+            SystemManager.renderSystem.draw();
+
+            // Restore screen view
+            _window.SetView(_window.DefaultView);
+
+            // Screens
+            ScreenManager.draw();
+
+            // FPS
+            _window.Draw(_fpsText);
+        }
+
         // Main update method
         public void update()
         {
@@ -273,6 +330,10 @@ namespace Loderpit
             else if (_state == GameState.Level)
             {
                 updateLevelState();
+            }
+            else if (_state == GameState.InterLevel)
+            {
+                updateInterLevelState();
             }
         }
 
@@ -288,6 +349,10 @@ namespace Loderpit
             else if (_state == GameState.Level)
             {
                 drawLevelState();
+            }
+            else if (_state == GameState.InterLevel)
+            {
+                drawInterLevelState();
             }
 
             _window.Display();

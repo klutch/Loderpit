@@ -26,7 +26,7 @@ namespace Loderpit
         Stalactite
     }
 
-    public class Map
+    public class Level
     {
         private World _world;
         private Random _rng;
@@ -38,7 +38,7 @@ namespace Loderpit
         public Vector2 initialPosition { get { return new Vector2(0f, 0f); } }
         public List<Vector2> moduleEndPoints { get { return _moduleEndPoints; } }
 
-        public Map(World world)
+        public Level(World world)
         {
             _world = world;
             _rng = new Random();

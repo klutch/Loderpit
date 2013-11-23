@@ -122,13 +122,14 @@
     <Compile Include="GameSettings.cs" />
     <Compile Include="Helpers.cs" />
     <Compile Include="KeyboardState.cs" />
+    <Compile Include="Loaders\InterLevelLoader.cs" />
     <Compile Include="Loaders\ObstacleModuleLoader.cs" />
     <Compile Include="Loaders\TerrainModuleLoader.cs" />
     <Compile Include="Managers\EntityManager.cs" />
     <Compile Include="Managers\ResourceManager.cs" />
     <Compile Include="Managers\ScreenManager.cs" />
     <Compile Include="Managers\SystemManager.cs" />
-    <Compile Include="Map.cs" />
+    <Compile Include="Level.cs" />
     <Compile Include="MouseState.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -137,6 +138,7 @@
     <Compile Include="Screens\CharacterStatusComponent.cs" />
     <Compile Include="Screens\ClassSelectorComponent.cs" />
     <Compile Include="Screens\CreateTeamScreen.cs" />
+    <Compile Include="Screens\InterLevelScreen.cs" />
     <Compile Include="Screens\LevelScreen.cs" />
     <Compile Include="Screens\Screen.cs" />
     <Compile Include="Screens\ScreenComponent.cs" />
@@ -152,6 +154,7 @@
     <Compile Include="Systems\CombatSystem.cs" />
     <Compile Include="Systems\EnemyAISystem.cs" />
     <Compile Include="Systems\GroupSystem.cs" />
+    <Compile Include="Systems\InterLevelSystem.cs" />
     <Compile Include="Systems\ISystem.cs" />
     <Compile Include="Systems\LevelSystem.cs" />
     <Compile Include="Systems\ObstacleSystem.cs" />
@@ -162,6 +165,9 @@
     <Compile Include="Systems\TeamSystem.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="resources\modules\interlevel_0.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="resources\ui\class_icons\archer.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

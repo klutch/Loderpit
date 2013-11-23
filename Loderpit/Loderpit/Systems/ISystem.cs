@@ -15,7 +15,8 @@ namespace Loderpit.Systems
         Skill,
         Combat,
         Level,
-        EnemyAI
+        EnemyAI,
+        InterLevel
     }
 
     public interface ISystem
