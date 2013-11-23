@@ -16,6 +16,11 @@ namespace Loderpit.Managers
             _screens.Add(screen.type, screen);
         }
 
+        public static void removeScreen(ScreenType screenType)
+        {
+            _screens.Remove(screenType);
+        }
+
         public static void update()
         {
             foreach (Screen screen in _screens.Values)

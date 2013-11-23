@@ -7,6 +7,7 @@ namespace Loderpit.Screens
 {
     public enum ScreenType
     {
+        CreateTeam,
         Level
     };
 

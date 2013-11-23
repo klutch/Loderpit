@@ -56,7 +56,6 @@ namespace Loderpit
             _window.GainedFocus += new EventHandler(_window_GainedFocus);
             _window.LostFocus += new EventHandler(_window_LostFocus);
             _window.SetVerticalSyncEnabled(true);
-            _state = GameState.CreateTeam;
 
             // Create systems
             SystemManager.physicsSystem = new PhysicsSystem();
@@ -74,11 +73,11 @@ namespace Loderpit
 
             loadContent();
 
-            // Create player group
-            SystemManager.teamSystem.playerGroup = EntityManager.getGroupComponent(EntityFactory.createPlayerGroup(new Vector2(0f, 0f)));
+            // Open create team screen
+            startCreateTeamState();
 
-            // Create screens
-            ScreenManager.addScreen(new LevelScreen());
+            // Create player group
+            //SystemManager.teamSystem.playerGroup = EntityManager.getGroupComponent(EntityFactory.createPlayerGroup(new Vector2(0f, 0f)));
         }
 
         // Window event handlers
@@ -117,6 +116,19 @@ namespace Loderpit
             _fpsText.Position = new Vector2f(16, 16);
         }
 
+        // Start create team state
+        public void startCreateTeamState()
+        {
+            _state = GameState.CreateTeam;
+            ScreenManager.addScreen(new CreateTeamScreen());
+        }
+
+        // End create team state
+        public void endCreateTeamState()
+        {
+            ScreenManager.removeScreen(ScreenType.CreateTeam);
+        }
+
         // Game loop
         public void run()
         {
@@ -144,9 +156,26 @@ namespace Loderpit
             }
         }
 
+        // Read input
+        private void readInput()
+        {
+            oldKeyState = newKeyState;
+            newKeyState = KeyboardState.get();
+            oldMouseState = newMouseState;
+            newMouseState = MouseState.get();
+        }
+
         // Update when in create team state
         private void updateCreateTeamState()
         {
+            readInput();
+            ScreenManager.update();
+        }
+
+        // Draw when in create team state
+        private void drawCreateTeamState()
+        {
+            ScreenManager.draw();
         }
 
         // Update when in level state
@@ -155,10 +184,7 @@ namespace Loderpit
             Vector2f sfmlWorldMouse = _window.MapPixelToCoords(_window.InternalGetMousePosition(), SystemManager.cameraSystem.worldView);
             List<int> entities = SystemManager.teamSystem.getTeamEntities();
 
-            oldKeyState = newKeyState;
-            newKeyState = KeyboardState.get();
-            oldMouseState = newMouseState;
-            newMouseState = MouseState.get();
+            readInput();
             worldMouse = new Vector2(sfmlWorldMouse.X, sfmlWorldMouse.Y);
 
             if (inFocus)
@@ -248,6 +274,7 @@ namespace Loderpit
 
             if (_state == GameState.CreateTeam)
             {
+                drawCreateTeamState();
             }
             else if (_state == GameState.Level)
             {
