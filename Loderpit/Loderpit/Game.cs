@@ -163,7 +163,9 @@ namespace Loderpit
         // End inter-level state
         public static void endInterLevelState()
         {
-            throw new NotImplementedException();
+            SystemManager.interLevelSystem.unload();
+            SystemManager.teamSystem.playerGroup = null;
+            ScreenManager.removeScreen(ScreenType.InterLevel);
         }
 
         // Game loop
@@ -200,6 +202,12 @@ namespace Loderpit
             newKeyState = KeyboardState.get();
             oldMouseState = newMouseState;
             newMouseState = MouseState.get();
+        }
+
+        // Update FPS label (calculated in run())
+        private void updateFPS()
+        {
+            _fpsText.DisplayedString = _fps.ToString();
         }
 
         // Update when in create team state
@@ -265,9 +273,7 @@ namespace Loderpit
             SystemManager.skillSystem.update();
             SystemManager.combatSystem.update();
             ScreenManager.update();
-
-            // FPS
-            _fpsText.DisplayedString = _fps.ToString();
+            updateFPS();
         }
 
         // Draw when in level state
@@ -292,11 +298,13 @@ namespace Loderpit
         // Update inter-level state
         private void updateInterLevelState()
         {
+            readInput();
             SystemManager.physicsSystem.update();
             SystemManager.characterSystem.update();
             SystemManager.interLevelSystem.update();
             SystemManager.cameraSystem.update();
             ScreenManager.update();
+            updateFPS();
         }
 
         // Draw inter-level state

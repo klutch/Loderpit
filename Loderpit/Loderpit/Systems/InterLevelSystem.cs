@@ -17,11 +17,27 @@ namespace Loderpit.Systems
             _loader = new InterLevelLoader();
         }
 
+        //
         public void load()
         {
             _loader.load(SystemManager.physicsSystem.world, "resources/modules/interlevel_0.json", true);
         }
 
+        // Called by Game.endInterLevelState() -- Unload inter-level by removing all physical bodies and destroying all entities
+        public void unload()
+        {
+            // Remove physical bodies
+            foreach (Body body in SystemManager.physicsSystem.world.BodyList)
+            {
+                SystemManager.physicsSystem.world.RemoveBody(body);
+            }
+            SystemManager.physicsSystem.world.Step(1f / 60f);
+
+            // Destroy all entities
+            EntityManager.destroyAllEntities();
+        }
+
+        // Update
         public void update()
         {
         }
