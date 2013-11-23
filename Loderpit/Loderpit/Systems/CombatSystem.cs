@@ -23,6 +23,7 @@ namespace Loderpit.Systems
      */
     public class CombatSystem : ISystem
     {
+        private const float SKILL_RANGE_TOLERANCE = 0.2f;
         private Random _rng;
 
         public SystemType systemType { get { return SystemType.Combat; } }
@@ -226,7 +227,7 @@ namespace Loderpit.Systems
                                     PositionComponent defenderPositionComponent = EntityManager.getPositionComponent(defenderId);
                                     FactionComponent defenderFactionComponent = EntityManager.getFactionComponent(defenderId);
                                     Vector2 relative = defenderPositionComponent.position - attackerPositionComponent.position;
-                                    bool isDefenderWithinRange = relative.Length() <= attackerMeleeAttackSkill.range;
+                                    bool isDefenderWithinRange = relative.Length() <= (attackerMeleeAttackSkill.range + SKILL_RANGE_TOLERANCE);
                                     bool isDefenderAttackable = isFactionAttackable(attackerFactionComponent.faction, defenderFactionComponent.faction);
                                     bool isDefenderIncapacitated = EntityManager.getIncapacitatedComponent(defenderId) != null;
 
@@ -266,7 +267,7 @@ namespace Loderpit.Systems
                                     PositionComponent defenderPositionComponent = EntityManager.getPositionComponent(defenderId);
                                     FactionComponent defenderFactionComponent = EntityManager.getFactionComponent(defenderId);
                                     Vector2 relative = defenderPositionComponent.position - attackerPositionComponent.position;
-                                    bool isDefenderWithinRange = relative.Length() <= attackerRangedAttackSkill.range;
+                                    bool isDefenderWithinRange = relative.Length() <= (attackerRangedAttackSkill.range + SKILL_RANGE_TOLERANCE);
                                     bool isDefenderAttackable = isFactionAttackable(attackerFactionComponent.faction, defenderFactionComponent.faction);
                                     bool isDefenderIncapacitated = EntityManager.getIncapacitatedComponent(defenderId) != null;
 
