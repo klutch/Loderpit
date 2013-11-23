@@ -131,7 +131,7 @@ namespace Loderpit
         {
             int playerGroupId;
 
-            SystemManager.levelSystem.generateLevel();
+            SystemManager.levelSystem.generateLevel(2);
             playerGroupId = EntityFactory.createPlayerGroup(characterClasses);
             SystemManager.teamSystem.playerGroup = EntityManager.getGroupComponent(playerGroupId);
             ScreenManager.addScreen(new LevelScreen());

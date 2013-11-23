@@ -87,7 +87,7 @@ namespace Loderpit
             return _moduleEndPoints[_moduleEndPoints.Count - 1].X - _moduleEndPoints[_moduleEndPoints.Count - 2].X;
         }
 
-        public void generate(int iterations = 16)
+        public void generate(int iterations)
         {
             List<TerrainModuleType> validTerrainModuleTypes = new List<TerrainModuleType>();
             List<ObstacleModuleType> validObstacleModuleTypes = new List<ObstacleModuleType>();

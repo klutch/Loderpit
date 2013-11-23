@@ -15,10 +15,10 @@ namespace Loderpit.Systems
         {
         }
 
-        public void generateLevel()
+        public void generateLevel(int iterations = 16)
         {
             _map = new Map(SystemManager.physicsSystem.world);
-            _map.generate();
+            _map.generate(iterations);
             placeTemporaryEnemies();
         }
 
