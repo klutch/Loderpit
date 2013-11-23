@@ -10,6 +10,7 @@ namespace Loderpit.Managers
     {
         private static Dictionary<int, Dictionary<ComponentType, IComponent>> _entities = new Dictionary<int, Dictionary<ComponentType, IComponent>>();
 
+        // Get the first unused entity id
         private static int getUnusedId()
         {
             int current = 0;
@@ -22,6 +23,7 @@ namespace Loderpit.Managers
             return current;
         }
 
+        // Create an entity
         public static int createEntity()
         {
             int id = getUnusedId();
@@ -31,11 +33,13 @@ namespace Loderpit.Managers
             return id;
         }
 
+        // Check to see if an entity exists
         public static bool doesEntityExist(int id)
         {
             return _entities.ContainsKey(id);
         }
 
+        // Add a component to and entity
         public static void addComponent(int entityId, IComponent component)
         {
             Debug.Assert(!_entities[entityId].ContainsKey(component.componentType));
@@ -43,6 +47,7 @@ namespace Loderpit.Managers
             _entities[entityId].Add(component.componentType, component);
         }
 
+        // Remove a component from an entity
         public static void removeComponent(int entityId, ComponentType componentType)
         {
             if (_entities[entityId].ContainsKey(componentType))
@@ -51,6 +56,7 @@ namespace Loderpit.Managers
             }
         }
 
+        // Get a list of entities that possess a certain component
         public static List<int> getEntitiesPossessing(ComponentType componentType)
         {
             List<int> entities = new List<int>();
@@ -66,6 +72,7 @@ namespace Loderpit.Managers
             return entities;
         }
 
+        // Get a component
         private static T getComponent<T>(int entityId, ComponentType componentType)
         {
             IComponent component = null;
@@ -82,11 +89,19 @@ namespace Loderpit.Managers
             return (T)component;
         }
 
+        // Destroy an entity
         public static void destroyEntity(int entityId)
         {
             _entities.Remove(entityId);
         }
 
+        // Destroy all entities
+        public static void destroyAllEntities()
+        {
+            _entities.Clear();
+        }
+
+        // Helper methods
         public static BridgeComponent getBridgeComponent(int entityId) { return getComponent<BridgeComponent>(entityId, ComponentType.Bridge); }
         public static CharacterComponent getCharacterComponent(int entityId) { return getComponent<CharacterComponent>(entityId, ComponentType.Character); }
         public static CreateBridgeComponent getCreateBridgeComponent(int entityId) { return getComponent<CreateBridgeComponent>(entityId, ComponentType.CreateBridge); }
