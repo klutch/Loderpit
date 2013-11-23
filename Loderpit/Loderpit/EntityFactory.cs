@@ -76,14 +76,14 @@ namespace Loderpit
             return skills;
         }
 
-        public static int createPlayerGroup(Vector2 position)
+        public static int createPlayerGroup(List<CharacterClass> characterClasses)
         {
             List<int> groupEntities = new List<int>();
-            int groupEntityId = createGroup(groupEntities, new List<Formation>(new[] {new DefaultFormation(groupEntities, position.X, 0)}));
+            int groupEntityId = createGroup(groupEntities, new List<Formation>(new[] {new DefaultFormation(groupEntities, 0, 0)}));
 
-            for (int i = 0; i < 6; i++)
+            foreach (CharacterClass characterClass in characterClasses)
             {
-                groupEntities.Add(createTeammate((CharacterClass)i, position));
+                groupEntities.Add(createTeammate(characterClass, Vector2.Zero));
             }
 
             return groupEntityId;

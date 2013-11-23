@@ -114,6 +114,18 @@ namespace Loderpit.Screens
             {
                 selectPreviousClass();
             }
+            if (Game.newKeyState.isPressed(Key.Return) && Game.oldKeyState.isReleased(Key.Return))
+            {
+                List<CharacterClass> chosenClasses = new List<CharacterClass>();
+
+                foreach (ClassSelectorComponent component in _classSelectorComponents)
+                {
+                    chosenClasses.Add(component.selectedClass);
+                }
+
+                Game.endCreateTeamState();
+                Game.startLevelState(chosenClasses);
+            }
 
             // Update selected component
             for (int i = 0; i < _classSelectorComponents.Count; i++)

@@ -40,11 +40,11 @@ namespace Loderpit
         public static MouseState newMouseState;
         public static MouseState oldMouseState;
         public static Vector2 worldMouse;
+        private static GameState _state;
         private Stopwatch _stopwatch;
         private int _fps;
         private Text _fpsText;
         private FixedMouseJoint _mouseJoint;
-        private GameState _state;
 
         public static RenderWindow window { get { return _window; } }
 
@@ -75,9 +75,6 @@ namespace Loderpit
 
             // Open create team screen
             startCreateTeamState();
-
-            // Create player group
-            //SystemManager.teamSystem.playerGroup = EntityManager.getGroupComponent(EntityFactory.createPlayerGroup(new Vector2(0f, 0f)));
         }
 
         // Window event handlers
@@ -117,16 +114,28 @@ namespace Loderpit
         }
 
         // Start create team state
-        public void startCreateTeamState()
+        public static void startCreateTeamState()
         {
-            _state = GameState.CreateTeam;
             ScreenManager.addScreen(new CreateTeamScreen());
+            _state = GameState.CreateTeam;
         }
 
         // End create team state
-        public void endCreateTeamState()
+        public static void endCreateTeamState()
         {
             ScreenManager.removeScreen(ScreenType.CreateTeam);
+        }
+
+        // Start level state
+        public static void startLevelState(List<CharacterClass> characterClasses)
+        {
+            int playerGroupId;
+
+            SystemManager.levelSystem.generateLevel();
+            playerGroupId = EntityFactory.createPlayerGroup(characterClasses);
+            SystemManager.teamSystem.playerGroup = EntityManager.getGroupComponent(playerGroupId);
+            ScreenManager.addScreen(new LevelScreen());
+            _state = GameState.Level;
         }
 
         // Game loop
