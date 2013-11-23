@@ -101,6 +101,7 @@
     <Compile Include="Components\IgnoreBridgeRaycastComponent.cs" />
     <Compile Include="Components\IgnoreRopeRaycastComponent.cs" />
     <Compile Include="Components\IncapacitatedComponent.cs" />
+    <Compile Include="Components\IsTouchingEndLevelComponent.cs" />
     <Compile Include="Components\PositionComponent.cs" />
     <Compile Include="Components\PositionTargetComponent.cs" />
     <Compile Include="Components\ReceiveActivateObstacleFallComponent.cs" />

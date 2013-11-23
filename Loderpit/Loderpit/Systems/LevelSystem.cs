@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
+using Loderpit.Components;
 using Loderpit.Managers;
 
 namespace Loderpit.Systems
@@ -60,9 +61,22 @@ namespace Loderpit.Systems
             }
         }
 
+        // Handle level ending
+        private void handleLevelEnding()
+        {
+            List<int> playerEntities = SystemManager.teamSystem.playerGroup.entities;
+            List<int> playersTouchingEndLevel = EntityManager.getEntitiesPossessing(ComponentType.IsTouchingEndLevel);
+
+            if (playerEntities.Count == playersTouchingEndLevel.Count)
+            {
+                Console.WriteLine("end the level!");
+            }
+        }
+
         public void update()
         {
-
+            // Handle level ending
+            handleLevelEnding();
         }
     }
 }

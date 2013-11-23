@@ -487,6 +487,7 @@ namespace Loderpit
             bool isDestructibleObstacle = false;
             bool isGround = false;
             bool isCeiling = false;
+            bool isLevelEnd = false;
             int entityId = EntityManager.createEntity();
 
             body.UserData = entityId;
@@ -498,6 +499,7 @@ namespace Loderpit
             customProperties.tryGetBool("ignoresRopeRaycast", out ignoresRopeRaycast);
             customProperties.tryGetBool("ignoresBridgeRaycast", out ignoresBridgeRaycast);
             customProperties.tryGetBool("isCeiling", out isCeiling);
+            customProperties.tryGetBool("isLevelEnd", out isLevelEnd);
 
             EntityManager.addComponent(entityId, new PositionComponent(entityId, body));
 
@@ -534,7 +536,74 @@ namespace Loderpit
                 EntityManager.addComponent(entityId, new IgnoreBridgeRaycastComponent(entityId));
             }
 
+            // Level end
+            if (isLevelEnd)
+            {
+                body.CollisionCategories = (ushort)CollisionCategory.CharacterInteractionReceptor;
+                body.CollidesWith = (ushort)CollisionCategory.CharacterInteractionSensor;
+                body.OnCollision += new OnCollisionEventHandler(levelEndOnCollision);
+                body.OnSeparation += new OnSeparationEventHandler(levelEndOnSeparation);
+            }
+
             return entityId;
+        }
+
+        // Handle collisions with the level end sensor
+        private static bool levelEndOnCollision(Fixture fixtureA, Fixture fixtureB, Contact contact)
+        {
+            GroupComponent playerGroup = SystemManager.teamSystem.playerGroup;
+            int entityIdB;
+
+            // Skip if body doesn't have any user data
+            if (fixtureB.Body.UserData == null)
+            {
+                return true;
+            }
+
+            // Ensure the fixtures are actually touching
+            if (!contact.IsTouching)
+            {
+                return true;
+            }
+
+            // Get entityId
+            entityIdB = (int)fixtureB.Body.UserData;
+
+            // Make sure the entity is in the player's group
+            if (!playerGroup.entities.Contains(entityIdB))
+            {
+                return true;
+            }
+
+            // Player character is touching the level end sensor
+            EntityManager.addComponent(entityIdB, new IsTouchingEndLevelComponent(entityIdB));
+
+            return true;
+        }
+
+        // Handle separations from the level end sensor
+        private static void levelEndOnSeparation(Fixture fixtureA, Fixture fixtureB)
+        {
+            GroupComponent playerGroup = SystemManager.teamSystem.playerGroup;
+            int entityIdB;
+
+            // Skip if body doesn't have any user data
+            if (fixtureB.Body.UserData == null)
+            {
+                return;
+            }
+
+            // Get entityId
+            entityIdB = (int)fixtureB.Body.UserData;
+
+            // Make sure the entity is in the player's group
+            if (!playerGroup.entities.Contains(entityIdB))
+            {
+                return;
+            }
+
+            // Player character has stopped touching the level end sensor
+            EntityManager.removeComponent(entityIdB, ComponentType.IsTouchingEndLevel);
         }
     }
 }

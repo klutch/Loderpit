@@ -25,7 +25,8 @@ namespace Loderpit.Components
         Skills,
         CombatTarget,
         Faction,
-        Incapacitated
+        Incapacitated,
+        IsTouchingEndLevel
     }
 
     public interface IComponent
