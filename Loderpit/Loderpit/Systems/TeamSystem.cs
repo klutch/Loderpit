@@ -244,9 +244,42 @@ namespace Loderpit.Systems
         }
 
         // Handle initialize power shot skill
-        private void handleInitializePowerShot(int entityId)
+        private void handleInitializePowerShot(int selectedEntityId)
         {
+            if (Game.newMouseState.isLeftButtonPressed && !Game.oldMouseState.isLeftButtonPressed)
+            {
+                List<Fixture> fixtures = SystemManager.physicsSystem.world.TestPointAll(Game.worldMouse);
+                PowerShotSkill powerShotSkill = _initializingSkill as PowerShotSkill;
 
+                foreach (Fixture fixture in fixtures)
+                {
+                    int entityId;
+                    FactionComponent factionComponent;
+
+                    // Skip bodies without any userdata
+                    if (fixture.Body.UserData == null)
+                    {
+                        continue;
+                    }
+
+                    entityId = (int)fixture.Body.UserData;
+
+                    // Check faction
+                    if ((factionComponent = EntityManager.getFactionComponent(entityId)) != null)
+                    {
+                        if (factionComponent.faction == Faction.Player)
+                        {
+                            continue;
+                        }
+                    }
+
+                    // Attack
+                    SystemManager.combatSystem.attack(selectedEntityId, entityId, powerShotSkill.calculateExtraDamage());
+                    break;
+                }
+
+                _initializingSkill = null;
+            }
         }
 
         public void update()

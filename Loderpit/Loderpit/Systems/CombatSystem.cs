@@ -89,7 +89,7 @@ namespace Loderpit.Systems
          * Hit Roll:
          *  Weapon damage + strength modifier
          */
-        public void attack(int attackerId, int defenderId, bool executeSpellEffectCallbacks = true)
+        public void attack(int attackerId, int defenderId, int extraDamage = 0, bool executeSpellEffectCallbacks = true)
         {
             StatsComponent attackerStats = EntityManager.getStatsComponent(attackerId);
             List<SpellEffect> attackerSpellEffects = SystemManager.spellEffectSystem.getSpellEffectsAffecting(attackerId);
@@ -102,9 +102,10 @@ namespace Loderpit.Systems
             {
                 // Hit
                 int hitRoll = Roller.roll("1d10");
+                int damage = hitRoll + extraDamage;
 
-                defenderStats.currentHp -= hitRoll;
-                addMessage(defenderId, "-" + hitRoll.ToString());
+                defenderStats.currentHp -= damage;
+                addMessage(defenderId, "-" + damage.ToString());
 
                 // Execute spell effect callbacks
                 if (executeSpellEffectCallbacks)
