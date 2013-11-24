@@ -5,6 +5,7 @@ using SFML.Window;
 using Microsoft.Xna.Framework;
 using Loderpit.Managers;
 using Loderpit.Components;
+using Loderpit.Skills;
 
 namespace Loderpit.Systems
 {
@@ -14,8 +15,10 @@ namespace Loderpit.Systems
         private const float HP_BAR_WIDTH = 30f;
         private const float HP_BAR_HEIGHT = 4f;
         private DebugView _debugView;
-        private CircleShape _createRopeShape;
-        private RectangleShape _createBridgeShape;
+        private CircleShape _throwRopeShape;
+        private RectangleShape _buildBridgeShape;
+        private Font _font;
+        private Text _actionLabel;
         private RectangleShape[] _hpBarBackgrounds;
         private RectangleShape[] _hpBarForegrounds;
         private int _usedHpBarCount;
@@ -25,14 +28,19 @@ namespace Loderpit.Systems
         public RenderSystem()
         {
             _debugView = new DebugView();
-            
-            _createRopeShape = new CircleShape(1f);
-            _createRopeShape.Origin = new Vector2f(1f, 1f);
-            _createRopeShape.FillColor = new Color(0, 255, 0, 128);
 
-            _createBridgeShape = new RectangleShape(new Vector2f(0.2f, 0f));
-            _createBridgeShape.FillColor = new Color(255, 255, 0, 128);
-            _createBridgeShape.Origin = new Vector2f(0.1f, 0f);
+            _font = ResourceManager.getResource<Font>("font");
+
+            _actionLabel = new Text("", _font, 14);
+            _actionLabel.Color = Color.White;
+            
+            _throwRopeShape = new CircleShape(1f);
+            _throwRopeShape.Origin = new Vector2f(1f, 1f);
+            _throwRopeShape.FillColor = new Color(0, 255, 0, 128);
+
+            _buildBridgeShape = new RectangleShape(new Vector2f(0.2f, 0f));
+            _buildBridgeShape.FillColor = new Color(255, 255, 0, 128);
+            _buildBridgeShape.Origin = new Vector2f(0.1f, 0f);
 
             _hpBarBackgrounds = new RectangleShape[MAX_HP_BARS];
             _hpBarForegrounds = new RectangleShape[MAX_HP_BARS];
@@ -78,15 +86,22 @@ namespace Loderpit.Systems
         // Draw actions currently being performed
         private void drawCurrentActions()
         {
-            /*
             TeamSystem teamSystem = SystemManager.teamSystem;
 
-            if (teamSystem.performingAction == CharacterAction.CreateRope)
+            // Nothing to draw
+            if (teamSystem.initializingSkill == null)
             {
-                _createRopeShape.Position = new Vector2f(teamSystem.createRopeAnchor.X, teamSystem.createRopeAnchor.Y);
-                Game.window.Draw(_createRopeShape);
+                return;
             }
-            else if (teamSystem.performingAction == CharacterAction.CreateBridge)
+
+            if (teamSystem.initializingSkill.type == SkillType.ThrowRope)
+            {
+                _throwRopeShape.Position = new Vector2f(teamSystem.createRopeAnchor.X, teamSystem.createRopeAnchor.Y);
+                _actionLabel.Position = Game.screenMouse + new Vector2f(16f, 0);
+                _actionLabel.DisplayedString = "Throw Rope";
+                Game.window.Draw(_throwRopeShape);
+            }
+            else if (teamSystem.initializingSkill.type == SkillType.BuildBridge)
             {
                 Vector2 pointA = teamSystem.createBridgeAnchorA;
                 Vector2 pointB = teamSystem.createBridgeAnchorB;
@@ -94,11 +109,18 @@ namespace Loderpit.Systems
                 float length = relative.Length();
                 float angle = Helpers.radToDeg((float)Math.Atan2(relative.Y, relative.X));
 
-                _createBridgeShape.Position = new Vector2f(pointA.X, pointA.Y);
-                _createBridgeShape.Rotation = angle;
-                _createBridgeShape.Size = new Vector2f(0.2f, length);
-                Game.window.Draw(_createBridgeShape);
-            }*/
+                _buildBridgeShape.Position = new Vector2f(pointA.X, pointA.Y);
+                _buildBridgeShape.Rotation = angle;
+                _buildBridgeShape.Size = new Vector2f(0.2f, length);
+                _actionLabel.Position = Game.screenMouse + new Vector2f(16f, 0);
+                _actionLabel.DisplayedString = "Build Bridge";
+                Game.window.Draw(_buildBridgeShape);
+            }
+            else if (teamSystem.initializingSkill.type == SkillType.MeleeAttack || teamSystem.initializingSkill.type == SkillType.RangedAttack)
+            {
+                _actionLabel.Position = Game.screenMouse + new Vector2f(16f, 0);
+                _actionLabel.DisplayedString = "Attack";
+            }
         }
 
         public void update()
@@ -121,10 +143,17 @@ namespace Loderpit.Systems
         // A seperate draw method for after the window has been switched back to the default screen view (not world coordinates)
         public void drawUsingScreenCoords()
         {
+            // Draw hp bars
             for (int i = 0; i < _usedHpBarCount; i++)
             {
                 Game.window.Draw(_hpBarBackgrounds[i]);
                 Game.window.Draw(_hpBarForegrounds[i]);
+            }
+
+            // Draw action label
+            if (SystemManager.teamSystem.initializingSkill != null)
+            {
+                Game.window.Draw(_actionLabel);
             }
         }
     }

@@ -40,6 +40,8 @@ namespace Loderpit
         public static KeyboardState oldKeyState;
         public static MouseState newMouseState;
         public static MouseState oldMouseState;
+        public static Vector2f sfmlWorldMouse;
+        public static Vector2f screenMouse;
         public static Vector2 worldMouse;
         private static GameState _state;
         private Stopwatch _stopwatch;
@@ -58,6 +60,9 @@ namespace Loderpit
             _window.LostFocus += new EventHandler(_window_LostFocus);
             _window.SetVerticalSyncEnabled(true);
 
+            // Load content
+            loadContent();
+
             // Create systems
             SystemManager.physicsSystem = new PhysicsSystem();
             SystemManager.statSystem = new StatSystem();
@@ -72,8 +77,6 @@ namespace Loderpit
             SystemManager.combatSystem = new CombatSystem();
             SystemManager.enemyAISystem = new EnemyAISystem();
             SystemManager.interLevelSystem = new InterLevelSystem();
-
-            loadContent();
 
             // Open create team screen
             startCreateTeamState();
@@ -226,10 +229,12 @@ namespace Loderpit
         // Update when in level state
         private void updateLevelState()
         {
-            Vector2f sfmlWorldMouse = _window.MapPixelToCoords(_window.InternalGetMousePosition(), SystemManager.cameraSystem.worldView);
+            Vector2i screenMousePosition = _window.InternalGetMousePosition();
             List<int> entities = SystemManager.teamSystem.getTeamEntities();
 
             readInput();
+            screenMouse = new Vector2f(screenMousePosition.X, screenMousePosition.Y);
+            sfmlWorldMouse = _window.MapPixelToCoords(screenMousePosition, SystemManager.cameraSystem.worldView);
             worldMouse = new Vector2(sfmlWorldMouse.X, sfmlWorldMouse.Y);
 
             if (inFocus)

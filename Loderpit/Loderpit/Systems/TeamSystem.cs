@@ -38,6 +38,7 @@ namespace Loderpit.Systems
         public Vector2 createBridgeAnchorA { get { return _createBridgeAnchorA; } }
         public Vector2 createBridgeAnchorB { get { return _createBridgeAnchorB; } }
         public GroupComponent playerGroup { get { return _playerGroup; } set { _playerGroup = value; } }
+        public Skill initializingSkill { get { return _initializingSkill; } }
 
         public TeamSystem()
         {
