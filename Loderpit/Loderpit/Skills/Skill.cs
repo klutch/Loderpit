@@ -15,7 +15,8 @@ namespace Loderpit.Skills
         BuildBridge,
 
         // Archer
-        ShieldOfThorns
+        ShieldOfThorns,
+        PowerShot
     }
 
     abstract public class Skill

@@ -122,20 +122,23 @@ namespace Loderpit.Systems
                 {
                     switch (_initializingSkill.type)
                     {
-                        // Melee and ranged attacks
+                        // Common
                         case SkillType.MeleeAttack:
                         case SkillType.RangedAttack:
                             handleInitializeAttack(selectedEntityId);
                             break;
 
-                        // Throwing rope
+                        // Engineer
                         case SkillType.ThrowRope:
                             handleInitializeThrowRope(selectedEntityId);
                             break;
-
-                        // Building a bridge
                         case SkillType.BuildBridge:
                             handleInitializeBuildBridge(selectedEntityId);
+                            break;
+
+                        // Archer
+                        case SkillType.PowerShot:
+                            handleInitializePowerShot(selectedEntityId);
                             break;
                     }
                 }
@@ -238,6 +241,12 @@ namespace Loderpit.Systems
                 _createBridgeAnchorA = Game.worldMouse;
                 _createBridgeAnchorB = Game.worldMouse;
             }
+        }
+
+        // Handle initialize power shot skill
+        private void handleInitializePowerShot(int entityId)
+        {
+
         }
 
         public void update()

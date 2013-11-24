@@ -112,6 +112,8 @@ namespace Loderpit
             ResourceManager.addResource("wand_icon", new Texture("resources/ui/action_icons/wand.png"));
             ResourceManager.addResource("rope_icon", new Texture("resources/ui/action_icons/rope.png"));
             ResourceManager.addResource("bridge_icon", new Texture("resources/ui/action_icons/bridge.png"));
+            ResourceManager.addResource("power_shot_icon", new Texture("resources/ui/action_icons/power_shot.png"));
+            ResourceManager.addResource("reticle", new Texture("resources/ui/reticle.png"));
 
             // Debug
             _fpsText = new Text("FPS:", ResourceManager.getResource<Font>("font"), 14);

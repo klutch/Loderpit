@@ -17,6 +17,7 @@ namespace Loderpit.Systems
         private DebugView _debugView;
         private CircleShape _throwRopeShape;
         private RectangleShape _buildBridgeShape;
+        private RectangleShape _reticleShape;
         private Font _font;
         private Text _actionLabel;
         private RectangleShape[] _hpBarBackgrounds;
@@ -61,6 +62,11 @@ namespace Loderpit.Systems
                 _hpBarBackgrounds[i] = background;
                 _hpBarForegrounds[i] = foreground;
             }
+
+            _reticleShape = new RectangleShape();
+            _reticleShape.Texture = ResourceManager.getResource<Texture>("reticle");
+            _reticleShape.Size = new Vector2f(_reticleShape.Texture.Size.X, _reticleShape.Texture.Size.Y) / 35f;
+            _reticleShape.Origin = _reticleShape.Size * 0.5f;
         }
 
         // Prepare hp bars
@@ -94,6 +100,8 @@ namespace Loderpit.Systems
                 return;
             }
 
+            _actionLabel.Position = Game.screenMouse + new Vector2f(16f, 0);
+
             if (teamSystem.initializingSkill.type == SkillType.ThrowRope)
             {
                 _throwRopeShape.Position = new Vector2f(teamSystem.createRopeAnchor.X, teamSystem.createRopeAnchor.Y);
@@ -112,14 +120,18 @@ namespace Loderpit.Systems
                 _buildBridgeShape.Position = new Vector2f(pointA.X, pointA.Y);
                 _buildBridgeShape.Rotation = angle;
                 _buildBridgeShape.Size = new Vector2f(0.2f, length);
-                _actionLabel.Position = Game.screenMouse + new Vector2f(16f, 0);
                 _actionLabel.DisplayedString = "Build Bridge";
                 Game.window.Draw(_buildBridgeShape);
             }
             else if (teamSystem.initializingSkill.type == SkillType.MeleeAttack || teamSystem.initializingSkill.type == SkillType.RangedAttack)
             {
-                _actionLabel.Position = Game.screenMouse + new Vector2f(16f, 0);
                 _actionLabel.DisplayedString = "Attack";
+            }
+            else if (teamSystem.initializingSkill.type == SkillType.PowerShot)
+            {
+                _reticleShape.Position = Game.sfmlWorldMouse;
+                _actionLabel.DisplayedString = "Power Shot";
+                Game.window.Draw(_reticleShape);
             }
         }
 

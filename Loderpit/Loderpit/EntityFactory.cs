@@ -62,6 +62,7 @@ namespace Loderpit
                 case CharacterClass.Archer:
                     skills.Add(new RangedAttackSkill(1, 8f, "bow_icon"));
                     skills.Add(new ShieldOfThornsSkill(1));
+                    skills.Add(new PowerShotSkill(1));
                     break;
 
                 case CharacterClass.Mage:

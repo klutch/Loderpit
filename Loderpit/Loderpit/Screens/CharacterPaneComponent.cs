@@ -130,6 +130,7 @@ namespace Loderpit.Screens
                 {
                     switch (skill.type)
                     {
+                        // Common
                         case SkillType.MeleeAttack: 
                             drawIcon("sword_icon");
                             break;
@@ -138,12 +139,18 @@ namespace Loderpit.Screens
                             drawIcon((skill as RangedAttackSkill).textureResourceId);
                             break;
 
+                        // Engineer
                         case SkillType.ThrowRope:
                             drawIcon("rope_icon");
                             break;
 
                         case SkillType.BuildBridge:
                             drawIcon("bridge_icon");
+                            break;
+
+                        // Archer
+                        case SkillType.PowerShot:
+                            drawIcon("power_shot_icon");
                             break;
                     }
                 }
