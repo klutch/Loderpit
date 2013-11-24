@@ -20,6 +20,19 @@ namespace Loderpit.Systems
             _affectedEntitiesMap = new Dictionary<int, List<SpellEffect>>();
         }
 
+        // Get spell effects affecting a certain entity
+        public List<SpellEffect> getSpellEffectsAffecting(int entityId)
+        {
+            if (_affectedEntitiesMap.ContainsKey(entityId))
+            {
+                return _affectedEntitiesMap[entityId];
+            }
+            else
+            {
+                return new List<SpellEffect>();
+            }
+        }
+
         // Find entities friendly to an entity within a certain range
         private List<int> findEntitiesWithinRange(int entityId, float radius, Faction factionToMatch)
         {

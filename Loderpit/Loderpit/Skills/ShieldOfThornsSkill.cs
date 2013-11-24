@@ -27,7 +27,7 @@ namespace Loderpit.Skills
         {
             switch (_level)
             {
-                default: return 1.5f;
+                default: return 2.5f;
             }
         }
     }

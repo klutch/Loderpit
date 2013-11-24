@@ -6,6 +6,7 @@ using Loderpit.Components;
 using Loderpit.Managers;
 using Loderpit.Skills;
 using Loderpit.Formations;
+using Loderpit.SpellEffects;
 
 namespace Loderpit.Systems
 {
@@ -91,7 +92,9 @@ namespace Loderpit.Systems
         public void attack(int attackerId, int defenderId, bool executeSpellEffectCallbacks = true)
         {
             StatsComponent attackerStats = EntityManager.getStatsComponent(attackerId);
+            List<SpellEffect> attackerSpellEffects = SystemManager.spellEffectSystem.getSpellEffectsAffecting(attackerId);
             StatsComponent defenderStats = EntityManager.getStatsComponent(defenderId);
+            List<SpellEffect> defenderSpellEffects = SystemManager.spellEffectSystem.getSpellEffectsAffecting(defenderId);
             int attackRoll = Roller.roll("d20") + SystemManager.statSystem.getStatModifier(attackerStats.strength);
             int defenderArmorClass = SystemManager.statSystem.getArmorClass(defenderId);
 
@@ -102,6 +105,22 @@ namespace Loderpit.Systems
 
                 defenderStats.currentHp -= hitRoll;
                 addMessage(defenderId, "-" + hitRoll.ToString());
+
+                // Execute spell effect callbacks
+                if (executeSpellEffectCallbacks)
+                {
+                    // Attacker hit other
+                    foreach (SpellEffect spellEffect in attackerSpellEffects)
+                    {
+                        spellEffect.onHitOther(attackerId, defenderId);
+                    }
+
+                    // Defender hit by other
+                    foreach (SpellEffect spellEffect in defenderSpellEffects)
+                    {
+                        spellEffect.onHitByOther(attackerId, defenderId);
+                    }
+                }
 
                 // Check for zero health
                 if (defenderStats.currentHp == 0)
@@ -123,7 +142,7 @@ namespace Loderpit.Systems
 
             // Apply damage
             defenderStatsComponent.currentHp -= damage;
-            addMessage(defenderId, "-" + damage.ToString());
+            addMessage(defenderId, "Spell: -" + damage.ToString());
 
             // Check for zero health
             if (defenderStatsComponent.currentHp == 0)

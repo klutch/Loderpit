@@ -15,7 +15,7 @@ namespace Loderpit.SpellEffects
             _affectsFriendly = true;
             _onHitByOther = (attackerId, defenderId) =>
                 {
-                    SystemManager.combatSystem.applySpellDamage(attackerId, defenderId, _damage);
+                    SystemManager.combatSystem.applySpellDamage(defenderId, attackerId, _damage);
                 };
         }
     }
