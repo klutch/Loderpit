@@ -15,6 +15,8 @@ namespace Loderpit.SpellEffects
         protected bool _affectsFriendly;
         protected bool _affectsNeutral;
         protected bool _affectsHostile;
+        protected int _damage;
+        protected float _radius;
         protected int _timeToLive;   // -1 == infinite, 0 == dead, > 0 == alive
         protected Action<int, int> _onHitByOther;
         protected Action<int, int> _onHitOther;
@@ -24,6 +26,8 @@ namespace Loderpit.SpellEffects
         public bool affectsFriendly { get { return _affectsFriendly; } }
         public bool affectsNeutral { get { return _affectsNeutral; } }
         public bool affectsHostile { get { return _affectsHostile; } }
+        public int damage { get { return _damage; } }
+        public float radius { get { return _radius; } }
 
         public SpellEffect(SpellEffectType type)
         {

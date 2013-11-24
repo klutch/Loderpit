@@ -150,7 +150,7 @@ namespace Loderpit
             EntityManager.addComponent(entityId, new IgnoreBridgeRaycastComponent(entityId));
             EntityManager.addComponent(entityId, new SkillsComponent(entityId, getStartingSkills(characterClass)));
             EntityManager.addComponent(entityId, new SpellEffectsComponent(entityId));
-            EntityManager.addComponent(entityId, new FactionComponent(entityId, Faction.Player));
+            EntityManager.addComponent(entityId, new FactionComponent(entityId, Faction.Player, Faction.Enemy));
             EntityManager.addComponent(entityId, new RenderHealthComponent(entityId));
 
             return entityId;
@@ -303,7 +303,7 @@ namespace Loderpit
             EntityManager.addComponent(entityId, new IgnoreBridgeRaycastComponent(entityId));
             EntityManager.addComponent(entityId, new SkillsComponent(entityId, getStartingSkills(characterClass)));
             EntityManager.addComponent(entityId, new SpellEffectsComponent(entityId));
-            EntityManager.addComponent(entityId, new FactionComponent(entityId, Faction.Enemy));
+            EntityManager.addComponent(entityId, new FactionComponent(entityId, Faction.Enemy, Faction.Player));
             EntityManager.addComponent(entityId, new RenderHealthComponent(entityId));
 
             return entityId;
@@ -527,7 +527,7 @@ namespace Loderpit
             {
                 EntityManager.addComponent(entityId, new DestructibleObstacleComponent(entityId, body));
                 EntityManager.addComponent(entityId, new StatsComponent(entityId, 10, 10, 10, 10, 10, 100));
-                EntityManager.addComponent(entityId, new FactionComponent(entityId, Faction.Neutral));
+                EntityManager.addComponent(entityId, new FactionComponent(entityId, Faction.Neutral, Faction.None));
                 body.CollisionCategories = (ushort)(CollisionCategory.Ground | CollisionCategory.CharacterInteractionReceptor);
             }
 

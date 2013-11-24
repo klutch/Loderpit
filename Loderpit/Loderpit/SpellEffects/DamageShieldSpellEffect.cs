@@ -6,13 +6,11 @@ namespace Loderpit.SpellEffects
 {
     public class DamageShieldSpellEffect : SpellEffect
     {
-        private int _damage;
-
-        public DamageShieldSpellEffect(int damage)
+        public DamageShieldSpellEffect(int damage, float radius)
             : base(SpellEffectType.DamageShield)
         {
             _damage = damage;
-
+            _radius = radius;
             _affectsSelf = true;
             _affectsFriendly = true;
             _onHitByOther = (attackerId, defenderId) =>

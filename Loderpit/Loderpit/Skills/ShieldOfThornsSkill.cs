@@ -10,7 +10,7 @@ namespace Loderpit.Skills
             : base(SkillType.ShieldOfThorns, level, false)
         {
             _passiveSpellEffects.Add(
-                new DamageShieldSpellEffect(calculateDamage()));
+                new DamageShieldSpellEffect(calculateDamage(), calculateRadius()));
         }
 
         private int calculateDamage()
@@ -20,6 +20,14 @@ namespace Loderpit.Skills
                 case 1: return 2;
                 case 2: return 4;
                 default: return 1;
+            }
+        }
+
+        private float calculateRadius()
+        {
+            switch (_level)
+            {
+                default: return 1.5f;
             }
         }
     }
