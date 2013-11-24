@@ -111,7 +111,17 @@ namespace Loderpit.Systems
 
                     if (Game.newKeyState.isPressed((Key)i) && Game.oldKeyState.isReleased((Key)i))
                     {
-                        _initializingSkill = skills[count];
+                        Skill skill = skills[count];
+
+                        // Make sure skill is ready to be used, with the exception of melee/ranged attacks
+                        if (skill.type == SkillType.MeleeAttack || skill.type == SkillType.MeleeAttack)
+                        {
+                            _initializingSkill = skill;
+                        }
+                        else if (skill.cooldown == 0)
+                        {
+                            _initializingSkill = skill;
+                        }
                     }
 
                     count++;
@@ -120,26 +130,29 @@ namespace Loderpit.Systems
                 // Handle actions
                 if (_initializingSkill != null)
                 {
-                    switch (_initializingSkill.type)
+                    if (_initializingSkill.cooldown == 0)
                     {
-                        // Common
-                        case SkillType.MeleeAttack:
-                        case SkillType.RangedAttack:
-                            handleInitializeAttack(selectedEntityId);
-                            break;
+                        switch (_initializingSkill.type)
+                        {
+                            // Common
+                            case SkillType.MeleeAttack:
+                            case SkillType.RangedAttack:
+                                handleInitializeAttack(selectedEntityId);
+                                break;
 
-                        // Engineer
-                        case SkillType.ThrowRope:
-                            handleInitializeThrowRope(selectedEntityId);
-                            break;
-                        case SkillType.BuildBridge:
-                            handleInitializeBuildBridge(selectedEntityId);
-                            break;
+                            // Engineer
+                            case SkillType.ThrowRope:
+                                handleInitializeThrowRope(selectedEntityId);
+                                break;
+                            case SkillType.BuildBridge:
+                                handleInitializeBuildBridge(selectedEntityId);
+                                break;
 
-                        // Archer
-                        case SkillType.PowerShot:
-                            handleInitializePowerShot(selectedEntityId);
-                            break;
+                            // Archer
+                            case SkillType.PowerShot:
+                                handleInitializePowerShot(selectedEntityId);
+                                break;
+                        }
                     }
                 }
             }
@@ -275,6 +288,7 @@ namespace Loderpit.Systems
 
                     // Attack
                     SystemManager.combatSystem.attack(selectedEntityId, entityId, powerShotSkill.calculateExtraDamage());
+                    SystemManager.skillSystem.resetCooldown(selectedEntityId, SkillType.PowerShot);
                     break;
                 }
 

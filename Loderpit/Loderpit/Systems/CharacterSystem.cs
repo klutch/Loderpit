@@ -7,6 +7,7 @@ using Microsoft.Xna.Framework;
 using Loderpit.Formations;
 using Loderpit.Components;
 using Loderpit.Managers;
+using Loderpit.Skills;
 
 namespace Loderpit.Systems
 {
@@ -127,11 +128,13 @@ namespace Loderpit.Systems
                 {
                     if (createRopeComponent.delay <= 0)
                     {
+                        // Perform action
                         GroupComponent groupComponent = SystemManager.groupSystem.getGroupComponentContaining(entityId);
 
                         EntityFactory.createRope(createRopeComponent.position);
                         EntityManager.removeComponent(entityId, ComponentType.CreateRope);
                         EntityManager.removeComponent(entityId, ComponentType.PositionTarget);
+                        SystemManager.skillSystem.resetCooldown(entityId, SkillType.ThrowRope);
 
                         if (groupComponent != null)
                         {
@@ -143,6 +146,7 @@ namespace Loderpit.Systems
                     }
                     else
                     {
+                        // Decrement delay
                         createRopeComponent.delay--;
                     }
                 }
@@ -163,11 +167,13 @@ namespace Loderpit.Systems
                 {
                     if (createBridgeComponent.delay <= 0)
                     {
+                        // Perform action
                         GroupComponent groupComponent = SystemManager.groupSystem.getGroupComponentContaining(entityId);
 
                         EntityFactory.createBridge(createBridgeComponent.positionA, createBridgeComponent.positionB);
                         EntityManager.removeComponent(entityId, ComponentType.CreateBridge);
                         EntityManager.removeComponent(entityId, ComponentType.PositionTarget);
+                        SystemManager.skillSystem.resetCooldown(entityId, SkillType.BuildBridge);
 
                         if (groupComponent != null)
                         {
@@ -180,74 +186,11 @@ namespace Loderpit.Systems
                     }
                     else
                     {
+                        // Decrement delay timer
                         createBridgeComponent.delay--;
                     }
                 }
             }
-        }
-
-        // Handle entities attacking obstacles
-        private void handleAttackObstacle(List<int> entities)
-        {
-            /*
-            foreach (int entityId in entities)
-            {
-                CharacterComponent characterComponent = EntityManager.getCharacterComponent(entityId);
-                PositionComponent positionComponent = EntityManager.getPositionComponent(entityId);
-                VitalsComponent characterVitals = EntityManager.getVitalsComponent(entityId);
-                TargetComponent targetComponent = EntityManager.getTargetComponent(entityId);
-                DestructibleObstacleComponent obstacleComponent = attackObstacleComponent.destructibleObstacleComponent;
-                float difference = targetComponent.position - positionComponent.position.X;
-                float absDifference = Math.Abs(difference) - 0.5f;
-
-                if (absDifference <= targetComponent.tolerance)
-                {
-                    bool cleanUpCharacter = false;
-
-                    if (attackObstacleComponent.delay <= 0)
-                    {
-                        // Make sure the obstacle still exists (another character could have destroyed it)
-                        if (EntityManager.doesEntityExist(obstacleComponent.entityId))
-                        {
-                            VitalsComponent obstacleVitals = EntityManager.getVitalsComponent(obstacleComponent.entityId);
-
-                            SystemManager.vitalsSystem.doCombatRound(characterVitals, obstacleVitals);
-                            attackObstacleComponent.delay = characterVitals.attackDelay;
-
-                            // The obstacle is 'dead', so destroy it
-                            if (obstacleVitals.currentHp <= 0)
-                            {
-                                // Remove formations stored in the obstacle from their associated groups
-                                foreach (KeyValuePair<int, SplitFormation> groupFormationPair in obstacleComponent.formationsToRemove)
-                                {
-                                    GroupComponent groupComponent = EntityManager.getGroupComponent(groupFormationPair.Key);
-
-                                    groupComponent.removeFormation(groupFormationPair.Value);
-                                }
-
-                                SystemManager.physicsSystem.world.RemoveBody(obstacleComponent.body);
-                                EntityManager.destroyEntity(obstacleComponent.entityId);
-                                cleanUpCharacter = true;
-                            }
-                        }
-                        else
-                        {
-                            cleanUpCharacter = true;
-                        }
-
-                        // Clean up character (after obstacle is destroyed)
-                        if (cleanUpCharacter)
-                        {
-                            EntityManager.removeComponent(entityId, ComponentType.Target);
-                            EntityManager.removeComponent(entityId, ComponentType.AttackObstacle);
-                        }
-                    }
-                    else
-                    {
-                        attackObstacleComponent.delay--;
-                    }
-                }
-            }*/
         }
 
         // Handle normal walking movement
@@ -262,7 +205,6 @@ namespace Loderpit.Systems
 
                 if (targetComponent == null && formation == null)   // skip movement if there's nothing telling the character where to move
                 {
-                    //Console.WriteLine("skipping handling of walk movement");
                     continue;
                 }
                 else

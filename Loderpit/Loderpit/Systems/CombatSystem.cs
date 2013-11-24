@@ -219,26 +219,6 @@ namespace Loderpit.Systems
             EntityManager.destroyEntity(entityId);
         }
 
-        // Handle skill cooldowns
-        private void handleSkillCooldowns(List<int> entities)
-        {
-            foreach (int entityId in entities)
-            {
-                StatsComponent statsComponent = EntityManager.getStatsComponent(entityId);
-                SkillsComponent skillsComponent = EntityManager.getSkillsComponent(entityId);
-
-                foreach (Skill skill in skillsComponent.skills)
-                {
-                    skill.cooldown--;
-                    if (skill.cooldown < 0)
-                    {
-                        // TODO: Use different delay values depending on skill type
-                        skill.cooldown = statsComponent.attackDelay;
-                    }
-                }
-            }
-        }
-
         // Handle melee attacks
         private void handleMeleeAttacks(List<int> attackerEntities, List<int> attackableEntities)
         {
@@ -270,6 +250,7 @@ namespace Loderpit.Systems
                                     if (isDefenderWithinRange && isDefenderAttackable && !isDefenderIncapacitated)
                                     {
                                         attack(attackerId, defenderId);
+                                        SystemManager.skillSystem.resetCooldown(attackerId, SkillType.MeleeAttack);
                                     }
                                 }
                             }
@@ -310,6 +291,7 @@ namespace Loderpit.Systems
                                     if (isDefenderWithinRange && isDefenderAttackable && !isDefenderIncapacitated)
                                     {
                                         attack(attackerId, defenderId);
+                                        SystemManager.skillSystem.resetCooldown(attackerId, SkillType.RangedAttack);
                                     }
                                 }
                             }
@@ -324,9 +306,6 @@ namespace Loderpit.Systems
         {
             List<int> skillsEntities = EntityManager.getEntitiesPossessing(ComponentType.Skills);
             List<int> attackableEntities = EntityManager.getEntitiesPossessing(ComponentType.Stats);
-
-            // Handle skill cooldown timers
-            handleSkillCooldowns(skillsEntities);
 
             // Handle melee attacks
             handleMeleeAttacks(skillsEntities, attackableEntities);

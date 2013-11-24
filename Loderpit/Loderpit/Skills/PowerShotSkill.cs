@@ -8,6 +8,7 @@ namespace Loderpit.Skills
         public PowerShotSkill(int level)
             : base(SkillType.PowerShot, level, true)
         {
+            _baseCooldown = 360;
         }
 
         public int calculateExtraDamage()
