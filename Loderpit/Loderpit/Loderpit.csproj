@@ -149,8 +149,10 @@
     <Compile Include="Skills\BuildBridgeSkill.cs" />
     <Compile Include="Skills\MeleeAttackSkill.cs" />
     <Compile Include="Skills\RangedAttackSkill.cs" />
+    <Compile Include="Skills\ShieldOfThornsSkill.cs" />
     <Compile Include="Skills\Skill.cs" />
     <Compile Include="Skills\ThrowRopeSkill.cs" />
+    <Compile Include="SpellEffects\DamageShieldSpellEffect.cs" />
     <Compile Include="SpellEffects\SpellEffect.cs" />
     <Compile Include="Systems\CameraSystem.cs" />
     <Compile Include="Systems\CharacterSystem.cs" />

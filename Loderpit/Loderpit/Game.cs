@@ -140,6 +140,7 @@ namespace Loderpit
             SystemManager.levelSystem.generateLevel(2);
             playerGroupId = EntityFactory.createPlayerGroup(characterClasses);
             SystemManager.teamSystem.playerGroup = EntityManager.getGroupComponent(playerGroupId);
+            SystemManager.spellEffectSystem.applyAllSkillPassiveSpellEffects();
             ScreenManager.addScreen(new LevelScreen());
             _state = GameState.Level;
         }

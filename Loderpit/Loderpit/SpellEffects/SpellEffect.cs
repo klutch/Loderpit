@@ -5,18 +5,19 @@ namespace Loderpit.SpellEffects
 {
     public enum SpellEffectType
     {
+        DamageShield
     }
 
     abstract public class SpellEffect
     {
-        private SpellEffectType _type;
-        private bool _affectsSelf;
-        private bool _affectsFriendly;
-        private bool _affectsNeutral;
-        private bool _affectsHostile;
-        private int _timeToLive;   // -1 == infinite, 0 == dead, > 0 == alive
-        private Action<int, int> _onHitByOther;
-        private Action<int, int> _onHitOther;
+        protected SpellEffectType _type;
+        protected bool _affectsSelf;
+        protected bool _affectsFriendly;
+        protected bool _affectsNeutral;
+        protected bool _affectsHostile;
+        protected int _timeToLive;   // -1 == infinite, 0 == dead, > 0 == alive
+        protected Action<int, int> _onHitByOther;
+        protected Action<int, int> _onHitOther;
 
         public SpellEffectType type { get { return _type; } }
         public bool affectsSelf { get { return _affectsSelf; } }
@@ -24,16 +25,10 @@ namespace Loderpit.SpellEffects
         public bool affectsNeutral { get { return _affectsNeutral; } }
         public bool affectsHostile { get { return _affectsHostile; } }
 
-        public SpellEffect(SpellEffectType type, bool affectsSelf, bool affectsFriendly, bool affectsNeutral, bool affectsHostile, int timeToLive, Action<int, int> onHitByOther, Action<int, int> onHitOther)
+        public SpellEffect(SpellEffectType type)
         {
             _type = type;
-            _affectsSelf = affectsSelf;
-            _affectsFriendly = affectsFriendly;
-            _affectsNeutral = affectsNeutral;
-            _affectsHostile = affectsHostile;
-            _timeToLive = timeToLive;
-            _onHitByOther = onHitByOther;
-            _onHitOther = onHitOther;
+            _timeToLive = -1;
         }
 
         public void onHitByOther(int attackerId, int defenderId)

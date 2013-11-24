@@ -88,7 +88,7 @@ namespace Loderpit.Systems
          * Hit Roll:
          *  Weapon damage + strength modifier
          */
-        public void attack(int attackerId, int defenderId)
+        public void attack(int attackerId, int defenderId, bool executeSpellEffectCallbacks = true)
         {
             StatsComponent attackerStats = EntityManager.getStatsComponent(attackerId);
             StatsComponent defenderStats = EntityManager.getStatsComponent(defenderId);
@@ -112,7 +112,23 @@ namespace Loderpit.Systems
             else
             {
                 // Miss
-                addMessage(attackerId, "Miss");
+                addMessage(defenderId, "Miss");
+            }
+        }
+
+        // Apply spell damage -- Eventually this could factor in entity resistences
+        public void applySpellDamage(int attackerId, int defenderId, int damage)
+        {
+            StatsComponent defenderStatsComponent = EntityManager.getStatsComponent(defenderId);
+
+            // Apply damage
+            defenderStatsComponent.currentHp -= damage;
+            addMessage(defenderId, "-" + damage.ToString());
+
+            // Check for zero health
+            if (defenderStatsComponent.currentHp == 0)
+            {
+                handleZeroHealth(attackerId, defenderId);
             }
         }
 
