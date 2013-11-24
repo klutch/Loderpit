@@ -23,7 +23,10 @@ namespace Loderpit.Screens
         private Color _deselectedOutlineColor;
         private int _entityId;
         private CharacterComponent _characterComponent;
+        private StatsComponent _statsComponent;
         private RectangleShape[] _skillIconShapes;
+        private RectangleShape _hpBarBackground;
+        private RectangleShape _hpBarForeground;
         private int _skillCount;
 
         public CharacterPaneComponent(Screen screen, Font font, int teamPosition)
@@ -51,8 +54,32 @@ namespace Loderpit.Screens
             _backgroundShape.Position = _position;
 
             _classLabel = new Text("", _font, 14);
-            _classLabel.Position = _position + new Vector2f(16f, 16f);
+            _classLabel.Position = _position + new Vector2f(8f, 8f);
             _classLabel.Color = Color.White;
+
+            _hpBarBackground = new RectangleShape();
+            _hpBarBackground.Position = _position + new Vector2f(8f, 32f) + new Vector2f(-1f, -1f);
+            _hpBarBackground.Size = new Vector2f((WIDTH - 16f) + 2f, 6f);
+            _hpBarBackground.FillColor = Color.Black;
+
+            _hpBarForeground = new RectangleShape();
+            _hpBarForeground.Position = _position + new Vector2f(8f, 32f);
+            _hpBarForeground.Size = new Vector2f(WIDTH - 16f, 4f);
+            _hpBarForeground.FillColor = Color.Green;
+        }
+
+        private void updateCharacterInformation()
+        {
+            _classLabel.DisplayedString = _characterComponent.characterClass.ToString();
+            _backgroundShape.OutlineColor = SystemManager.teamSystem.selectedTeammate == _teamPosition ? _selectedOutlineColor : _deselectedOutlineColor;
+        }
+
+        private void updateHealthBar()
+        {
+            float fullWidth = WIDTH - 16f;
+            float percentHp = (float)_statsComponent.currentHp / (float)SystemManager.statSystem.getMaxHp(_entityId);
+
+            _hpBarForeground.Size = new Vector2f(fullWidth * percentHp, _hpBarForeground.Size.Y);
         }
 
         private void drawIcon(string resourceId)
@@ -75,10 +102,13 @@ namespace Loderpit.Screens
             {
                 // Update entity/component references
                 _characterComponent = EntityManager.getCharacterComponent(_entityId);
+                _statsComponent = EntityManager.getStatsComponent(_entityId);
 
                 // Update character information
-                _classLabel.DisplayedString = _characterComponent.characterClass.ToString();
-                _backgroundShape.OutlineColor = SystemManager.teamSystem.selectedTeammate == _teamPosition ? _selectedOutlineColor : _deselectedOutlineColor;
+                updateCharacterInformation();
+
+                // Update health bar
+                updateHealthBar();
             }
         }
 
@@ -86,6 +116,10 @@ namespace Loderpit.Screens
         {
             Game.window.Draw(_backgroundShape);
             Game.window.Draw(_classLabel);
+
+            // Draw hp bar
+            Game.window.Draw(_hpBarBackground);
+            Game.window.Draw(_hpBarForeground);
 
             // Draw skill icons
             if (_entityId != -1)
