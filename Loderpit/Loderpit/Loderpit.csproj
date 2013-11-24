@@ -111,6 +111,7 @@
     <Compile Include="Components\RopeGrabExclusionComponent.cs" />
     <Compile Include="Components\SendActivateObstacleComponent.cs" />
     <Compile Include="Components\SkillsComponent.cs" />
+    <Compile Include="Components\SpellEffectsComponent.cs" />
     <Compile Include="Components\StatsComponent.cs" />
     <Compile Include="DebugView.cs" />
     <Compile Include="EntityFactory.cs" />
@@ -150,6 +151,7 @@
     <Compile Include="Skills\RangedAttackSkill.cs" />
     <Compile Include="Skills\Skill.cs" />
     <Compile Include="Skills\ThrowRopeSkill.cs" />
+    <Compile Include="SpellEffects\SpellEffect.cs" />
     <Compile Include="Systems\CameraSystem.cs" />
     <Compile Include="Systems\CharacterSystem.cs" />
     <Compile Include="Systems\CombatSystem.cs" />
@@ -162,6 +164,7 @@
     <Compile Include="Systems\PhysicsSystem.cs" />
     <Compile Include="Systems\RenderSystem.cs" />
     <Compile Include="Systems\SkillSystem.cs" />
+    <Compile Include="Systems\SpellEffectSystem.cs" />
     <Compile Include="Systems\StatSystem.cs" />
     <Compile Include="Systems\TeamSystem.cs" />
   </ItemGroup>

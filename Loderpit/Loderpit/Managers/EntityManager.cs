@@ -125,5 +125,6 @@ namespace Loderpit.Managers
         public static CombatTargetComponent getCombatTargetComponent(int entityId) { return getComponent<CombatTargetComponent>(entityId, ComponentType.CombatTarget); }
         public static IncapacitatedComponent getIncapacitatedComponent(int entityId) { return getComponent<IncapacitatedComponent>(entityId, ComponentType.Incapacitated); }
         public static IsTouchingEndLevelComponent getIsTouchingEndLevelComponent(int entityId) { return getComponent<IsTouchingEndLevelComponent>(entityId, ComponentType.IsTouchingEndLevel); }
+        public static SpellEffectsComponent getSpellEffectsComponent(int entityId) { return getComponent<SpellEffectsComponent>(entityId, ComponentType.SpellEffects); }
     }
 }

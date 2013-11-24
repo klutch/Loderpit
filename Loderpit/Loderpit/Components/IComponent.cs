@@ -27,7 +27,8 @@ namespace Loderpit.Components
         Faction,
         Incapacitated,
         IsTouchingEndLevel,
-        RenderHealth
+        RenderHealth,
+        SpellEffects
     }
 
     public interface IComponent

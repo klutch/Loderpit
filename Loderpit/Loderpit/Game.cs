@@ -77,6 +77,7 @@ namespace Loderpit
             SystemManager.combatSystem = new CombatSystem();
             SystemManager.enemyAISystem = new EnemyAISystem();
             SystemManager.interLevelSystem = new InterLevelSystem();
+            SystemManager.spellEffectSystem = new SpellEffectSystem();
 
             // Open create team screen
             startCreateTeamState();
@@ -276,6 +277,7 @@ namespace Loderpit
             SystemManager.statSystem.update();
             SystemManager.renderSystem.update();
             SystemManager.skillSystem.update();
+            SystemManager.spellEffectSystem.update();
             SystemManager.combatSystem.update();
             ScreenManager.update();
             updateFPS();
