@@ -241,7 +241,7 @@ namespace Loderpit
 
             if (inFocus)
             {
-                if (newMouseState.isLeftButtonPressed && !oldMouseState.isLeftButtonPressed)
+                if (newMouseState.isRightButtonPressed && !oldMouseState.isRightButtonPressed)
                 {
                     Fixture fixture = SystemManager.physicsSystem.world.TestPoint(worldMouse);
 
@@ -250,14 +250,14 @@ namespace Loderpit
                         _mouseJoint = JointFactory.CreateFixedMouseJoint(SystemManager.physicsSystem.world, fixture.Body, worldMouse);
                     }
                 }
-                else if (newMouseState.isLeftButtonPressed && oldMouseState.isLeftButtonPressed)
+                else if (newMouseState.isRightButtonPressed && oldMouseState.isRightButtonPressed)
                 {
                     if (_mouseJoint != null)
                     {
                         _mouseJoint.WorldAnchorB = worldMouse;
                     }
                 }
-                else if (!newMouseState.isLeftButtonPressed && oldMouseState.isLeftButtonPressed)
+                else if (!newMouseState.isRightButtonPressed && oldMouseState.isRightButtonPressed)
                 {
                     if (_mouseJoint != null)
                     {
