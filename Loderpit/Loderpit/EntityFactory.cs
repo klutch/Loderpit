@@ -149,6 +149,7 @@ namespace Loderpit
             EntityManager.addComponent(entityId, new IgnoreBridgeRaycastComponent(entityId));
             EntityManager.addComponent(entityId, new SkillsComponent(entityId, getStartingSkills(characterClass)));
             EntityManager.addComponent(entityId, new FactionComponent(entityId, Faction.Player));
+            EntityManager.addComponent(entityId, new RenderHealthComponent(entityId));
 
             return entityId;
         }
@@ -300,6 +301,7 @@ namespace Loderpit
             EntityManager.addComponent(entityId, new IgnoreBridgeRaycastComponent(entityId));
             EntityManager.addComponent(entityId, new SkillsComponent(entityId, getStartingSkills(characterClass)));
             EntityManager.addComponent(entityId, new FactionComponent(entityId, Faction.Enemy));
+            EntityManager.addComponent(entityId, new RenderHealthComponent(entityId));
 
             return entityId;
         }

@@ -105,6 +105,7 @@
     <Compile Include="Components\PositionComponent.cs" />
     <Compile Include="Components\PositionTargetComponent.cs" />
     <Compile Include="Components\ReceiveActivateObstacleFallComponent.cs" />
+    <Compile Include="Components\RenderHealthComponent.cs" />
     <Compile Include="Components\RopeComponent.cs" />
     <Compile Include="Components\RopeGrabComponent.cs" />
     <Compile Include="Components\RopeGrabExclusionComponent.cs" />

@@ -288,6 +288,9 @@ namespace Loderpit
             // Restore screen view
             _window.SetView(_window.DefaultView);
 
+            // Draw render system again, now that the default view has been restored
+            SystemManager.renderSystem.drawUsingScreenCoords();
+
             // Screens
             ScreenManager.draw();
 
@@ -303,6 +306,7 @@ namespace Loderpit
             SystemManager.characterSystem.update();
             SystemManager.interLevelSystem.update();
             SystemManager.cameraSystem.update();
+            SystemManager.renderSystem.update();
             ScreenManager.update();
             updateFPS();
         }
@@ -318,6 +322,9 @@ namespace Loderpit
 
             // Restore screen view
             _window.SetView(_window.DefaultView);
+
+            // Draw render system again, now that the default view has been restored
+            SystemManager.renderSystem.drawUsingScreenCoords();
 
             // Screens
             ScreenManager.draw();

@@ -19,11 +19,13 @@ namespace Loderpit.Systems
         public void activateObstacle(SendActivateObstacleComponent sendActivateObstacleComponent)
         {
             _sendComponentsToProcess.Add(sendActivateObstacleComponent);
+            EntityManager.removeComponent(sendActivateObstacleComponent.entityId, ComponentType.SendActivateObstacle);
         }
 
         public void makeObstacleFall(ReceiveActivateObstacleFallComponent component)
         {
             component.body.BodyType = FarseerPhysics.Dynamics.BodyType.Dynamic;
+            EntityManager.addComponent(component.entityId, new RenderHealthComponent(component.entityId));
         }
 
         public void update()
