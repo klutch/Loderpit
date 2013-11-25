@@ -28,14 +28,14 @@ namespace Loderpit.Skills
 
     public class ExecutePowerShotSkill : ExecuteSkill
     {
-        private Vector2 _target;
+        private int _defenderId;
 
-        public Vector2 target { get { return _target; } }
+        public int defenderId { get { return _defenderId; } }
 
-        public ExecutePowerShotSkill(Skill skill, Vector2 target)
+        public ExecutePowerShotSkill(Skill skill, int defenderId)
             : base(skill)
         {
-            _target = target;
+            _defenderId = defenderId;
             _delay = 60;
         }
     }

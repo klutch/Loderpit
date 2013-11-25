@@ -148,13 +148,47 @@ namespace Loderpit.Systems
         }
 
         // Perform power shot skill
-        public void performPowerShotSkill(int entityId, PowerShotSkill powerShotSkill, Vector2 position)
+        public void performPowerShotSkill(int entityId, PowerShotSkill powerShotSkill, Vector2 target)
         {
+            FactionComponent factionComponent = EntityManager.getFactionComponent(entityId);
             PerformingSkillsComponent performingSkillsComponent = EntityManager.getPerformingSkillsComponent(entityId);
-            ExecutePowerShotSkill executePowerShotSkill = new ExecutePowerShotSkill(powerShotSkill, position);
+            ExecutePowerShotSkill executePowerShotSkill = null;
+            List<Fixture> fixtures = SystemManager.physicsSystem.world.TestPointAll(target);
 
-            EntityManager.addComponent(entityId, new PositionTargetComponent(entityId, position.X, powerShotSkill.range));
-            performingSkillsComponent.executingSkills.Add(executePowerShotSkill);
+            foreach (Fixture fixture in fixtures)
+            {
+                int targetEntityId;
+                FactionComponent targetFactionComponent;
+
+                // Skip bodies without any userdata
+                if (fixture.Body.UserData == null)
+                {
+                    continue;
+                }
+
+                targetEntityId = (int)fixture.Body.UserData;
+
+                // Skip entities without a faction component
+                if ((targetFactionComponent = EntityManager.getFactionComponent(targetEntityId)) == null)
+                {
+                    continue;
+                }
+
+                // Skip over non-attackable entities
+                if (!SystemManager.combatSystem.isFactionAttackable(factionComponent.faction, targetFactionComponent.faction))
+                {
+                    continue;
+                }
+
+                executePowerShotSkill = new ExecutePowerShotSkill(powerShotSkill, targetEntityId);
+                EntityManager.addComponent(entityId, new PositionTargetComponent(entityId, fixture.Body, powerShotSkill.range));
+                break;
+            }
+
+            if (executePowerShotSkill != null)
+            {
+                performingSkillsComponent.executingSkills.Add(executePowerShotSkill);
+            }
         }
 
         #endregion
@@ -249,40 +283,11 @@ namespace Loderpit.Systems
         {
             FactionComponent factionComponent = EntityManager.getFactionComponent(entityId);
             PerformingSkillsComponent performingSkillsComponent = EntityManager.getPerformingSkillsComponent(entityId);
-            List<Fixture> fixtures = SystemManager.physicsSystem.world.TestPointAll(executePowerShotSkill.target);
             PowerShotSkill powerShotSkill = executePowerShotSkill.skill as PowerShotSkill;
 
-            foreach (Fixture fixture in fixtures)
-            {
-                int targetEntityId;
-                FactionComponent targetFactionComponent;
-
-                // Skip bodies without any userdata
-                if (fixture.Body.UserData == null)
-                {
-                    continue;
-                }
-
-                targetEntityId = (int)fixture.Body.UserData;
-
-                // Skip entities without a faction component
-                if ((targetFactionComponent = EntityManager.getFactionComponent(targetEntityId)) == null)
-                {
-                    continue;
-                }
-
-                // Skip over non-attackable entities
-                if (!SystemManager.combatSystem.isFactionAttackable(factionComponent.faction, targetFactionComponent.faction))
-                {
-                    continue;
-                }
-
-                // Attack
-                SystemManager.combatSystem.attack(entityId, targetEntityId, powerShotSkill.calculateExtraDamage());
-                SystemManager.skillSystem.resetCooldown(entityId, SkillType.PowerShot);
-                EntityManager.removeComponent(entityId, ComponentType.PositionTarget);
-                break;
-            }
+            SystemManager.combatSystem.attack(entityId, executePowerShotSkill.defenderId, powerShotSkill.calculateExtraDamage());
+            SystemManager.skillSystem.resetCooldown(entityId, SkillType.PowerShot);
+            EntityManager.removeComponent(entityId, ComponentType.PositionTarget);
 
             removeExecutedSkill(entityId, executePowerShotSkill);
         }

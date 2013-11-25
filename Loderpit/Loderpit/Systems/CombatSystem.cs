@@ -224,32 +224,33 @@ namespace Loderpit.Systems
         {
             foreach (int attackerId in attackerEntities)
             {
-                if (EntityManager.doesEntityExist(attackerId))  // entity could have been killed earlier this frame
+                SkillsComponent attackerSkills = EntityManager.getSkillsComponent(attackerId);
+                MeleeAttackSkill attackerMeleeAttackSkill = attackerSkills.getSkill(SkillType.MeleeAttack) as MeleeAttackSkill;
+
+                if (attackerMeleeAttackSkill != null)   // attacker has a melee skill
                 {
-                    SkillsComponent attackerSkills = EntityManager.getSkillsComponent(attackerId);
-                    MeleeAttackSkill attackerMeleeAttackSkill = attackerSkills.getSkill(SkillType.MeleeAttack) as MeleeAttackSkill;
+                    PositionComponent attackerPositionComponent = EntityManager.getPositionComponent(attackerId);
+                    FactionComponent attackerFactionComponent = EntityManager.getFactionComponent(attackerId);
 
-                    if (attackerMeleeAttackSkill != null)   // attacker has a melee skill
+                    if (attackerMeleeAttackSkill.cooldown == 0)   // ready to attack
                     {
-                        PositionComponent attackerPositionComponent = EntityManager.getPositionComponent(attackerId);
-                        FactionComponent attackerFactionComponent = EntityManager.getFactionComponent(attackerId);
-
-                        if (attackerMeleeAttackSkill.cooldown == 0)   // ready to attack
+                        foreach (int defenderId in attackableEntities)
                         {
-                            foreach (int defenderId in attackableEntities)
+                            if (EntityManager.doesEntityExist(attackerId) && EntityManager.doesEntityExist(defenderId))  // either entity could have been killed earlier this frame
                             {
-                                if (EntityManager.doesEntityExist(defenderId))  // entity could have been killed earlier this frame
-                                {
-                                    PositionComponent defenderPositionComponent = EntityManager.getPositionComponent(defenderId);
-                                    FactionComponent defenderFactionComponent = EntityManager.getFactionComponent(defenderId);
-                                    Vector2 relative = defenderPositionComponent.position - attackerPositionComponent.position;
-                                    bool isDefenderWithinRange = relative.Length() <= (attackerMeleeAttackSkill.range + SKILL_RANGE_TOLERANCE);
-                                    bool isDefenderAttackable = isFactionAttackable(attackerFactionComponent.faction, defenderFactionComponent.faction);
-                                    bool isDefenderIncapacitated = EntityManager.getIncapacitatedComponent(defenderId) != null;
+                                PositionComponent defenderPositionComponent = EntityManager.getPositionComponent(defenderId);
+                                FactionComponent defenderFactionComponent = EntityManager.getFactionComponent(defenderId);
+                                Vector2 relative = defenderPositionComponent.position - attackerPositionComponent.position;
+                                bool isDefenderWithinRange = relative.Length() <= (attackerMeleeAttackSkill.range + SKILL_RANGE_TOLERANCE);
+                                bool isDefenderAttackable = isFactionAttackable(attackerFactionComponent.faction, defenderFactionComponent.faction);
+                                bool isDefenderIncapacitated = EntityManager.getIncapacitatedComponent(defenderId) != null;
 
-                                    if (isDefenderWithinRange && isDefenderAttackable && !isDefenderIncapacitated)
+                                if (isDefenderWithinRange && isDefenderAttackable && !isDefenderIncapacitated)
+                                {
+                                    attack(attackerId, defenderId);
+
+                                    if (EntityManager.doesEntityExist(attackerId))  // attacker could have been killed by a damage shield
                                     {
-                                        attack(attackerId, defenderId);
                                         SystemManager.skillSystem.resetCooldown(attackerId, SkillType.MeleeAttack);
                                     }
                                 }
@@ -291,7 +292,11 @@ namespace Loderpit.Systems
                                     if (isDefenderWithinRange && isDefenderAttackable && !isDefenderIncapacitated)
                                     {
                                         attack(attackerId, defenderId);
-                                        SystemManager.skillSystem.resetCooldown(attackerId, SkillType.RangedAttack);
+
+                                        if (EntityManager.doesEntityExist(attackerId))  // attacker could have been killed by a damage shield
+                                        {
+                                            SystemManager.skillSystem.resetCooldown(attackerId, SkillType.RangedAttack);
+                                        }
                                     }
                                 }
                             }
