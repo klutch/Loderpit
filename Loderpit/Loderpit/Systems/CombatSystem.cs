@@ -88,20 +88,22 @@ namespace Loderpit.Systems
          *  
          * Hit Roll:
          *  Weapon damage + strength modifier
+         *  
+         * Returns true if the attack was a success, and false if it was a miss
          */
-        public void attack(int attackerId, int defenderId, int extraDamage = 0, bool executeSpellEffectCallbacks = true)
+        public bool attack(int attackerId, int defenderId, int extraDamage = 0, string attackDie = "d20", string hitDie = "1d10", bool executeSpellEffectCallbacks = true)
         {
             StatsComponent attackerStats = EntityManager.getStatsComponent(attackerId);
             List<SpellEffect> attackerSpellEffects = SystemManager.spellEffectSystem.getSpellEffectsAffecting(attackerId);
             StatsComponent defenderStats = EntityManager.getStatsComponent(defenderId);
             List<SpellEffect> defenderSpellEffects = SystemManager.spellEffectSystem.getSpellEffectsAffecting(defenderId);
-            int attackRoll = Roller.roll("d20") + SystemManager.statSystem.getStatModifier(attackerStats.strength);
+            int attackRoll = Roller.roll(attackDie) + SystemManager.statSystem.getStatModifier(attackerStats.strength);
             int defenderArmorClass = SystemManager.statSystem.getArmorClass(defenderId);
 
             if (attackRoll >= defenderArmorClass)
             {
                 // Hit
-                int hitRoll = Roller.roll("1d10");
+                int hitRoll = Roller.roll(hitDie);
                 int damage = hitRoll + extraDamage;
 
                 defenderStats.currentHp -= damage;
@@ -128,11 +130,15 @@ namespace Loderpit.Systems
                 {
                     handleZeroHealth(attackerId, defenderId);
                 }
+
+                return true;
             }
             else
             {
                 // Miss
                 addMessage(defenderId, "Miss");
+
+                return false;
             }
         }
 
@@ -149,6 +155,23 @@ namespace Loderpit.Systems
             if (defenderStatsComponent.currentHp == 0)
             {
                 handleZeroHealth(attackerId, defenderId);
+            }
+        }
+
+        // Apply knockback
+        public void applyKnockback(int attackerId, int defenderId, float strength)
+        {
+            PositionComponent attackerPositionComponent = EntityManager.getPositionComponent(attackerId);
+            PositionComponent defenderPositionComponent = EntityManager.getPositionComponent(defenderId);
+            CharacterComponent defenderCharacterComponent = EntityManager.getCharacterComponent(defenderId);
+            //Vector2 normal = Vector2.Normalize((Vector2.Normalize(defenderPositionComponent.position - attackerPositionComponent.position) + new Vector2(0, -1)));
+            Vector2 normal = Vector2.Normalize(new Vector2(1f, -0.5f));
+            Vector2 force = normal * strength;
+
+            // TODO: Make this operate on some type of PhysicsBodyComponent?
+            if (defenderCharacterComponent != null)
+            {
+                defenderCharacterComponent.body.ApplyForce(ref force);
             }
         }
 
@@ -220,7 +243,7 @@ namespace Loderpit.Systems
         }
 
         // Handle melee attacks
-        private void handleMeleeAttacks(List<int> attackerEntities, List<int> attackableEntities)
+        private void handleMeleeAttacks(List<int> attackerEntities, List<int> defenderEntities)
         {
             foreach (int attackerId in attackerEntities)
             {
@@ -234,7 +257,7 @@ namespace Loderpit.Systems
 
                     if (attackerMeleeAttackSkill.cooldown == 0)   // ready to attack
                     {
-                        foreach (int defenderId in attackableEntities)
+                        foreach (int defenderId in defenderEntities)
                         {
                             if (EntityManager.doesEntityExist(attackerId) && EntityManager.doesEntityExist(defenderId))  // either entity could have been killed earlier this frame
                             {
@@ -262,7 +285,7 @@ namespace Loderpit.Systems
         }
 
         // Handle ranged attacks
-        private void handleRangedAttacks(List<int> attackerEntities, List<int> characterEntities)
+        private void handleRangedAttacks(List<int> attackerEntities, List<int> defenderEntities)
         {
             foreach (int attackerId in attackerEntities)
             {
@@ -278,7 +301,7 @@ namespace Loderpit.Systems
 
                         if (attackerRangedAttackSkill.cooldown == 0)   // ready to attack
                         {
-                            foreach (int defenderId in characterEntities)
+                            foreach (int defenderId in defenderEntities)
                             {
                                 if (EntityManager.doesEntityExist(defenderId))  // entity could have been killed earlier this frame
                                 {
@@ -306,6 +329,57 @@ namespace Loderpit.Systems
             }
         }
 
+        // Handle kick attacks
+        private void handleKickAttacks(List<int> attackerEntities, List<int> defenderEntities)
+        {
+            foreach (int attackerId in attackerEntities)
+            {
+                if (EntityManager.doesEntityExist(attackerId))  // entity could have been killed earlier this frame
+                {
+                    SkillsComponent attackerSkills = EntityManager.getSkillsComponent(attackerId);
+                    KickSkill kickSkill = attackerSkills.getSkill(SkillType.Kick) as KickSkill;
+
+                    if (kickSkill != null)   // attacker has a kick skill
+                    {
+                        PositionComponent attackerPositionComponent = EntityManager.getPositionComponent(attackerId);
+                        FactionComponent attackerFactionComponent = EntityManager.getFactionComponent(attackerId);
+
+                        if (kickSkill.cooldown == 0)   // ready to attack
+                        {
+                            foreach (int defenderId in defenderEntities)
+                            {
+                                if (EntityManager.doesEntityExist(defenderId))  // entity could have been killed earlier this frame
+                                {
+                                    PositionComponent defenderPositionComponent = EntityManager.getPositionComponent(defenderId);
+                                    FactionComponent defenderFactionComponent = EntityManager.getFactionComponent(defenderId);
+                                    Vector2 relative = defenderPositionComponent.position - attackerPositionComponent.position;
+                                    bool isDefenderWithinRange = relative.Length() <= (kickSkill.range + SKILL_RANGE_TOLERANCE);
+                                    bool isDefenderAttackable = isFactionAttackable(attackerFactionComponent.faction, defenderFactionComponent.faction);
+                                    bool isDefenderIncapacitated = EntityManager.getIncapacitatedComponent(defenderId) != null;
+
+                                    if (isDefenderWithinRange && isDefenderAttackable && !isDefenderIncapacitated)
+                                    {
+                                        if (attack(attackerId, defenderId, 0, kickSkill.calculateAttackDie(), kickSkill.calculateHitDie()))
+                                        {
+                                            if (EntityManager.doesEntityExist(defenderId))  // only knock back living entities
+                                            {
+                                                applyKnockback(attackerId, defenderId, kickSkill.calculateKnockbackForce());
+                                            }
+                                        }
+
+                                        if (EntityManager.doesEntityExist(attackerId))  // attacker could have been killed by a damage shield
+                                        {
+                                            SystemManager.skillSystem.resetCooldown(attackerId, SkillType.Kick);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
         // Update system
         public void update()
         {
@@ -317,6 +391,9 @@ namespace Loderpit.Systems
 
             // Handle ranged attacks
             handleRangedAttacks(skillsEntities, attackableEntities);
+
+            // Handle kick attacks
+            handleKickAttacks(skillsEntities, attackableEntities);
         }
     }
 }

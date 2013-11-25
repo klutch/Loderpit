@@ -16,7 +16,10 @@ namespace Loderpit.Skills
 
         // Archer
         ShieldOfThorns,
-        PowerShot
+        PowerShot,
+
+        // Fighter
+        Kick
     }
 
     abstract public class Skill
@@ -32,7 +35,6 @@ namespace Loderpit.Skills
         public SkillType type { get { return _type; } }
         public int level { get { return _level; } set { _level = value; } }
         public int cooldown { get { return _cooldown; } }
-        public int baseCooldown { get { return _baseCooldown; } }
         public bool activatable { get { return _activatable; } }
         public List<SpellEffect> passiveSpellEffects { get { return _passiveSpellEffects; } }
         public float cooldownPercentage { get { return (float)_cooldown / (float)_lastMaxCooldown; } }
@@ -54,6 +56,11 @@ namespace Loderpit.Skills
         public void decrementCooldown()
         {
             _cooldown--;
+        }
+
+        virtual public int calculateBaseCooldown()
+        {
+            return _baseCooldown;
         }
     }
 

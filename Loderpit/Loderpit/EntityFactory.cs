@@ -26,15 +26,19 @@ namespace Loderpit
             switch (characterClass)
             {
                 case CharacterClass.Archer:
+                    statsComponent.attackDelay = 100;
                     break;
 
                 case CharacterClass.Engineer:
                     break;
 
                 case CharacterClass.Defender:
+                    statsComponent.baseHp = 20;
+                    statsComponent.attackDelay = 80;
                     break;
 
                 case CharacterClass.Fighter:
+                    statsComponent.baseHp = 15;
                     break;
 
                 case CharacterClass.Healer:
@@ -56,7 +60,8 @@ namespace Loderpit
             switch (characterClass)
             {
                 case CharacterClass.Fighter:
-                    skills.Add(new MeleeAttackSkill(1, 1.2f));
+                    skills.Add(new MeleeAttackSkill(1));
+                    skills.Add(new KickSkill(1));
                     break;
 
                 case CharacterClass.Archer:
@@ -303,7 +308,7 @@ namespace Loderpit
             EntityManager.addComponent(entityId, new PositionComponent(entityId, body));
             EntityManager.addComponent(entityId, new IgnoreRopeRaycastComponent(entityId));
             EntityManager.addComponent(entityId, new IgnoreBridgeRaycastComponent(entityId));
-            EntityManager.addComponent(entityId, new SkillsComponent(entityId, getStartingSkills(characterClass)));
+            EntityManager.addComponent(entityId, new SkillsComponent(entityId, new List<Skill>( new[] { new MeleeAttackSkill(1) })));
             EntityManager.addComponent(entityId, new SpellEffectsComponent(entityId));
             EntityManager.addComponent(entityId, new FactionComponent(entityId, Faction.Enemy, Faction.Player));
             EntityManager.addComponent(entityId, new RenderHealthComponent(entityId));

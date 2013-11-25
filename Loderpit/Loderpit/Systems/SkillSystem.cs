@@ -210,7 +210,7 @@ namespace Loderpit.Systems
                     break;
 
                 default:
-                    skill.setCooldown(skill.baseCooldown);
+                    skill.setCooldown(skill.calculateBaseCooldown());
                     break;
             }
         }

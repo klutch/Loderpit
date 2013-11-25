@@ -146,6 +146,7 @@
     <Compile Include="Screens\SelectedCharacterComponent.cs" />
     <Compile Include="Screens\TemporaryWorldTextComponent.cs" />
     <Compile Include="Skills\BuildBridgeSkill.cs" />
+    <Compile Include="Skills\KickSkill.cs" />
     <Compile Include="Skills\MeleeAttackSkill.cs" />
     <Compile Include="Skills\PowerShotSkill.cs" />
     <Compile Include="Skills\RangedAttackSkill.cs" />
