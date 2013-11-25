@@ -18,4 +18,15 @@ namespace Loderpit.Skills
             _textureResourceId = textureResourceId;
         }
     }
+
+    public class ExecuteRangedAttackSkill : ExecuteSkill
+    {
+        private int _defenderId;
+
+        public ExecuteRangedAttackSkill(Skill skill, int defenderId)
+            : base(skill)
+        {
+            _defenderId = defenderId;
+        }
+    }
 }

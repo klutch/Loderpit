@@ -91,8 +91,6 @@
     <Compile Include="Components\CeilingComponent.cs" />
     <Compile Include="Components\CharacterComponent.cs" />
     <Compile Include="Components\CombatTargetComponent.cs" />
-    <Compile Include="Components\CreateBridgeComponent.cs" />
-    <Compile Include="Components\CreateRopeComponent.cs" />
     <Compile Include="Components\DestructibleObstacleComponent.cs" />
     <Compile Include="Components\FactionComponent.cs" />
     <Compile Include="Components\GroundBodyComponent.cs" />
@@ -102,6 +100,7 @@
     <Compile Include="Components\IgnoreRopeRaycastComponent.cs" />
     <Compile Include="Components\IncapacitatedComponent.cs" />
     <Compile Include="Components\IsTouchingEndLevelComponent.cs" />
+    <Compile Include="Components\PerformingSkillsComponent.cs" />
     <Compile Include="Components\PositionComponent.cs" />
     <Compile Include="Components\PositionTargetComponent.cs" />
     <Compile Include="Components\ReceiveActivateObstacleFallComponent.cs" />

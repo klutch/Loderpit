@@ -104,8 +104,6 @@ namespace Loderpit.Managers
         // Helper methods
         public static BridgeComponent getBridgeComponent(int entityId) { return getComponent<BridgeComponent>(entityId, ComponentType.Bridge); }
         public static CharacterComponent getCharacterComponent(int entityId) { return getComponent<CharacterComponent>(entityId, ComponentType.Character); }
-        public static CreateBridgeComponent getCreateBridgeComponent(int entityId) { return getComponent<CreateBridgeComponent>(entityId, ComponentType.CreateBridge); }
-        public static CreateRopeComponent getCreateRopeComponent(int entityId) { return getComponent<CreateRopeComponent>(entityId, ComponentType.CreateRope); }
         public static DestructibleObstacleComponent getDestructibleObstacleComponent(int entityId) { return getComponent<DestructibleObstacleComponent>(entityId, ComponentType.DestructibleObstacle); }
         public static GroundBodyComponent getGroundBodyComponent(int entityId) { return getComponent<GroundBodyComponent>(entityId, ComponentType.GroundBody); }
         public static IgnoreBridgeRaycastComponent getIgnoreBridgeRaycastComponent(int entityId) { return getComponent<IgnoreBridgeRaycastComponent>(entityId, ComponentType.IgnoreBridgeRaycast); }
@@ -126,5 +124,6 @@ namespace Loderpit.Managers
         public static IncapacitatedComponent getIncapacitatedComponent(int entityId) { return getComponent<IncapacitatedComponent>(entityId, ComponentType.Incapacitated); }
         public static IsTouchingEndLevelComponent getIsTouchingEndLevelComponent(int entityId) { return getComponent<IsTouchingEndLevelComponent>(entityId, ComponentType.IsTouchingEndLevel); }
         public static SpellEffectsComponent getSpellEffectsComponent(int entityId) { return getComponent<SpellEffectsComponent>(entityId, ComponentType.SpellEffects); }
+        public static PerformingSkillsComponent getPerformingSkillsComponent(int entityId) { return getComponent<PerformingSkillsComponent>(entityId, ComponentType.PerformingSkills); }
     }
 }

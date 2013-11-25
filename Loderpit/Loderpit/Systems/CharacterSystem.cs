@@ -114,6 +114,7 @@ namespace Loderpit.Systems
             }
         }
 
+        /*
         // Handle create rope actions
         private void handleCreateRope(List<int> entities)
         {
@@ -151,9 +152,10 @@ namespace Loderpit.Systems
                     }
                 }
             }
-        }
+        }*/
 
         // Handle create bridge actions
+        /*
         private void handleCreateBridge(List<int> entities)
         {
             foreach (int entityId in entities)
@@ -191,7 +193,7 @@ namespace Loderpit.Systems
                     }
                 }
             }
-        }
+        }*/
 
         // Handle normal walking movement
         private void handleWalkingMovement(List<int> characterEntities)
@@ -248,17 +250,9 @@ namespace Loderpit.Systems
         public void update()
         {
             List<int> characterEntities = EntityManager.getEntitiesPossessing(ComponentType.Character);
-            List<int> createRopeEntities = EntityManager.getEntitiesPossessing(ComponentType.CreateRope);
-            List<int> createBridgeEntities = EntityManager.getEntitiesPossessing(ComponentType.CreateBridge);
 
             // Handle rope movement
             handleRopeMovement(characterEntities);
-
-            // Handle create rope action
-            handleCreateRope(createRopeEntities);
-
-            // Handle create bridge action
-            handleCreateBridge(createBridgeEntities);
 
             // Handle walking movement
             handleWalkingMovement(characterEntities);

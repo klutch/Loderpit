@@ -163,39 +163,7 @@ namespace Loderpit.Systems
         {
             if (Game.newMouseState.isLeftButtonPressed && !Game.oldMouseState.isLeftButtonPressed)
             {
-                FactionComponent factionComponent = EntityManager.getFactionComponent(selectedEntityId);
-                float attackRange = _initializingSkill.type == SkillType.MeleeAttack ? (_initializingSkill as MeleeAttackSkill).range : (_initializingSkill as RangedAttackSkill).range;
-                List<Fixture> fixtures = SystemManager.physicsSystem.world.TestPointAll(Game.worldMouse);
-
-                foreach (Fixture fixture in fixtures)
-                {
-                    int entityId;
-                    FactionComponent targetFactionComponent;
-
-                    // Skip bodies without a user data
-                    if (fixture.Body.UserData == null)
-                    {
-                        continue;
-                    }
-
-                    entityId = (int)fixture.Body.UserData;
-
-                    // Skip entities without a faction component
-                    if ((targetFactionComponent = EntityManager.getFactionComponent(entityId)) == null)
-                    {
-                        continue;
-                    }
-
-                    // Skip over non-attackable entities
-                    if (!SystemManager.combatSystem.isFactionAttackable(factionComponent.faction, targetFactionComponent.faction))
-                    {
-                        continue;
-                    }
-
-                    SystemManager.combatSystem.startActiveAttack(selectedEntityId, entityId, attackRange);
-                    break;
-                }
-
+                SystemManager.skillSystem.performMeleeAttackSkill(selectedEntityId, _initializingSkill as MeleeAttackSkill, Game.worldMouse);
                 _initializingSkill = null;
             }
         }
@@ -206,15 +174,7 @@ namespace Loderpit.Systems
             _createRopeAnchor = Game.worldMouse;
             if (Game.newMouseState.isLeftButtonPressed && !Game.oldMouseState.isLeftButtonPressed)
             {
-                ThrowRopeSkill throwRopeSkill = _initializingSkill as ThrowRopeSkill;
-                Formation activeFormation = _playerGroup.activeFormation;
-                CreateRopeComponent createRopeComponent = new CreateRopeComponent(selectedEntityId, _createRopeAnchor);
-                LimitedRangeFormation formation = new LimitedRangeFormation(_playerGroup.entities, activeFormation.position, activeFormation.speed, float.MinValue, _createRopeAnchor.X - 4f);
-
-                EntityManager.addComponent(selectedEntityId, createRopeComponent);
-                EntityManager.addComponent(selectedEntityId, new PositionTargetComponent(selectedEntityId, _createRopeAnchor.X, throwRopeSkill.range));
-                createRopeComponent.formationToRemove = formation;
-                _playerGroup.addFormation(formation);
+                SystemManager.skillSystem.performThrowRopeSkill(selectedEntityId, _initializingSkill as ThrowRopeSkill, _createRopeAnchor);
                 _initializingSkill = null;
             }
         }
@@ -224,33 +184,25 @@ namespace Loderpit.Systems
         {
             if (Game.newMouseState.isLeftButtonPressed && !Game.oldMouseState.isLeftButtonPressed)
             {
+                // Set first anchor
                 _createBridgeAnchorA = Game.worldMouse;
                 _firstBridgeAnchorSet = true;
             }
             else if (!Game.newMouseState.isLeftButtonPressed && Game.oldMouseState.isLeftButtonPressed)
             {
-                BuildBridgeSkill buildBridgeSkill = _initializingSkill as BuildBridgeSkill;
-                Formation activeFormation = _playerGroup.activeFormation;
-                PositionComponent positionComponent = EntityManager.getPositionComponent(selectedEntityId);
-                float distanceA = Math.Abs(_createBridgeAnchorA.X - positionComponent.position.X);
-                float distanceB = Math.Abs(_createBridgeAnchorB.X - positionComponent.position.X);
-                Vector2 closestAnchor = distanceA > distanceB ? _createBridgeAnchorB : _createBridgeAnchorA;
-                CreateBridgeComponent createBridgeComponent = new CreateBridgeComponent(selectedEntityId, _createBridgeAnchorA, _createBridgeAnchorB);
-                LimitedRangeFormation formation = new LimitedRangeFormation(_playerGroup.entities, activeFormation.position, activeFormation.speed, float.MinValue, closestAnchor.X - 2f);
-
+                // Perform action
+                SystemManager.skillSystem.performBuildBridgeSkill(selectedEntityId, _initializingSkill as BuildBridgeSkill, _createBridgeAnchorA, _createBridgeAnchorB);
                 _firstBridgeAnchorSet = false;
-                EntityManager.addComponent(selectedEntityId, createBridgeComponent);
-                EntityManager.addComponent(selectedEntityId, new PositionTargetComponent(selectedEntityId, closestAnchor.X, buildBridgeSkill.range));
-                createBridgeComponent.formationToRemove = formation;
-                _playerGroup.addFormation(formation);
                 _initializingSkill = null;
             }
             if (_firstBridgeAnchorSet)
             {
+                // Set second anchor
                 _createBridgeAnchorB = Game.worldMouse;
             }
             else
             {
+                // Reset anchors
                 _createBridgeAnchorA = Game.worldMouse;
                 _createBridgeAnchorB = Game.worldMouse;
             }
@@ -261,37 +213,7 @@ namespace Loderpit.Systems
         {
             if (Game.newMouseState.isLeftButtonPressed && !Game.oldMouseState.isLeftButtonPressed)
             {
-                List<Fixture> fixtures = SystemManager.physicsSystem.world.TestPointAll(Game.worldMouse);
-                PowerShotSkill powerShotSkill = _initializingSkill as PowerShotSkill;
-
-                foreach (Fixture fixture in fixtures)
-                {
-                    int entityId;
-                    FactionComponent factionComponent;
-
-                    // Skip bodies without any userdata
-                    if (fixture.Body.UserData == null)
-                    {
-                        continue;
-                    }
-
-                    entityId = (int)fixture.Body.UserData;
-
-                    // Check faction
-                    if ((factionComponent = EntityManager.getFactionComponent(entityId)) != null)
-                    {
-                        if (factionComponent.faction == Faction.Player)
-                        {
-                            continue;
-                        }
-                    }
-
-                    // Attack
-                    SystemManager.combatSystem.attack(selectedEntityId, entityId, powerShotSkill.calculateExtraDamage());
-                    SystemManager.skillSystem.resetCooldown(selectedEntityId, SkillType.PowerShot);
-                    break;
-                }
-
+                SystemManager.skillSystem.performPowerShotSkill(selectedEntityId, _initializingSkill as PowerShotSkill, Game.worldMouse);
                 _initializingSkill = null;
             }
         }

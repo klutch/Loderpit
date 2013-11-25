@@ -56,4 +56,18 @@ namespace Loderpit.Skills
             _cooldown--;
         }
     }
+
+    abstract public class ExecuteSkill
+    {
+        protected Skill _skill;
+        protected int _delay;
+
+        public Skill skill { get { return _skill; } }
+        public int delay { get { return _delay; } set { _delay = value; } }
+
+        public ExecuteSkill(Skill skill)
+        {
+            _skill = skill;
+        }
+    }
 }

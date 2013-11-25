@@ -62,7 +62,7 @@ namespace Loderpit
                 case CharacterClass.Archer:
                     skills.Add(new RangedAttackSkill(1, 8f, "bow_icon"));
                     skills.Add(new ShieldOfThornsSkill(1));
-                    skills.Add(new PowerShotSkill(1));
+                    skills.Add(new PowerShotSkill(1, 10f));
                     break;
 
                 case CharacterClass.Mage:
@@ -153,6 +153,7 @@ namespace Loderpit
             EntityManager.addComponent(entityId, new SpellEffectsComponent(entityId));
             EntityManager.addComponent(entityId, new FactionComponent(entityId, Faction.Player, Faction.Enemy));
             EntityManager.addComponent(entityId, new RenderHealthComponent(entityId));
+            EntityManager.addComponent(entityId, new PerformingSkillsComponent(entityId));
 
             return entityId;
         }
@@ -306,6 +307,7 @@ namespace Loderpit
             EntityManager.addComponent(entityId, new SpellEffectsComponent(entityId));
             EntityManager.addComponent(entityId, new FactionComponent(entityId, Faction.Enemy, Faction.Player));
             EntityManager.addComponent(entityId, new RenderHealthComponent(entityId));
+            EntityManager.addComponent(entityId, new PerformingSkillsComponent(entityId));
 
             return entityId;
         }

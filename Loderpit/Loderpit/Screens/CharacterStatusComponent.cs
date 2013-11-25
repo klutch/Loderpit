@@ -4,6 +4,7 @@ using SFML.Graphics;
 using SFML.Window;
 using Loderpit.Components;
 using Loderpit.Managers;
+using Loderpit.Skills;
 
 namespace Loderpit.Screens
 {
@@ -36,22 +37,18 @@ namespace Loderpit.Screens
             else
             {
                 Vector2i screenPosition = Game.window.MapCoordsToPixel(new Vector2f(_positionComponent.position.X, _positionComponent.position.Y), SystemManager.cameraSystem.worldView);
+                PerformingSkillsComponent performingSkillsComponent = EntityManager.getPerformingSkillsComponent(_entityId);
 
-                if (EntityManager.getCreateRopeComponent(_entityId) != null)
+                if (performingSkillsComponent.isPerformingSkill(SkillType.ThrowRope))
                 {
                     _enabled = true;
-                    _text.DisplayedString = "Creating Rope";
+                    _text.DisplayedString = "Throwing Rope";
                 }
-                else if (EntityManager.getCreateBridgeComponent(_entityId) != null)
+                else if (performingSkillsComponent.isPerformingSkill(SkillType.BuildBridge))
                 {
                     _enabled = true;
-                    _text.DisplayedString = "Creating Bridge";
+                    _text.DisplayedString = "Building Bridge";
                 }
-                /*else if (EntityManager.getAttackObstacleComponent(_entityId) != null)
-                {
-                    _enabled = true;
-                    _text.DisplayedString = "Attacking Obstacle";
-                }*/
                 else
                 {
                     _enabled = false;
