@@ -285,7 +285,10 @@ namespace Loderpit.Systems
             PerformingSkillsComponent performingSkillsComponent = EntityManager.getPerformingSkillsComponent(entityId);
             PowerShotSkill powerShotSkill = executePowerShotSkill.skill as PowerShotSkill;
 
-            SystemManager.combatSystem.attack(entityId, executePowerShotSkill.defenderId, powerShotSkill.calculateExtraDamage());
+            if (EntityManager.doesEntityExist(executePowerShotSkill.defenderId))    // defender could have died already
+            {
+                SystemManager.combatSystem.attack(entityId, executePowerShotSkill.defenderId, powerShotSkill.calculateExtraDamage());
+            }
             SystemManager.skillSystem.resetCooldown(entityId, SkillType.PowerShot);
             EntityManager.removeComponent(entityId, ComponentType.PositionTarget);
 
