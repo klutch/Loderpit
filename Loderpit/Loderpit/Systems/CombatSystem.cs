@@ -91,12 +91,17 @@ namespace Loderpit.Systems
          *  
          * Returns true if the attack was a success, and false if it was a miss
          */
-        public bool attack(int attackerId, int defenderId, int extraDamage = 0, string attackDie = "d20", string hitDie = "1d10", bool executeSpellEffectCallbacks = true)
+        public bool attack(
+            int attackerId,
+            int defenderId,
+            int extraDamage = 0,
+            string attackDie = "d20",
+            string hitDie = "1d10",
+            List<SpellEffect> attackerSpellEffects = null,
+            List<SpellEffect> defenderSpellEffects = null)
         {
             StatsComponent attackerStats = EntityManager.getStatsComponent(attackerId);
-            List<SpellEffect> attackerSpellEffects = SystemManager.spellEffectSystem.getSpellEffectsAffecting(attackerId);
             StatsComponent defenderStats = EntityManager.getStatsComponent(defenderId);
-            List<SpellEffect> defenderSpellEffects = SystemManager.spellEffectSystem.getSpellEffectsAffecting(defenderId);
             int attackRoll = Roller.roll(attackDie) + SystemManager.statSystem.getStatModifier(attackerStats.strength);
             int defenderArmorClass = SystemManager.statSystem.getArmorClass(defenderId);
 
@@ -109,15 +114,19 @@ namespace Loderpit.Systems
                 defenderStats.currentHp -= damage;
                 addMessage(defenderId, "-" + damage.ToString());
 
-                // Execute spell effect callbacks
-                if (executeSpellEffectCallbacks)
+                // Attacker spell effect callbacks
+                if (attackerSpellEffects != null)
                 {
                     // Attacker hit other
                     foreach (SpellEffect spellEffect in attackerSpellEffects)
                     {
                         spellEffect.onHitOther(attackerId, defenderId);
                     }
+                }
 
+                // Defender spell effect callbacks
+                if (defenderSpellEffects != null)
+                {
                     // Defender hit by other
                     foreach (SpellEffect spellEffect in defenderSpellEffects)
                     {
@@ -242,134 +251,46 @@ namespace Loderpit.Systems
             EntityManager.destroyEntity(entityId);
         }
 
-        // Handle melee attacks
-        private void handleMeleeAttacks(List<int> attackerEntities, List<int> defenderEntities)
-        {
-            foreach (int attackerId in attackerEntities)
-            {
-                SkillsComponent attackerSkills = EntityManager.getSkillsComponent(attackerId);
-                MeleeAttackSkill attackerMeleeAttackSkill = attackerSkills.getSkill(SkillType.MeleeAttack) as MeleeAttackSkill;
-
-                if (attackerMeleeAttackSkill != null)   // attacker has a melee skill
-                {
-                    PositionComponent attackerPositionComponent = EntityManager.getPositionComponent(attackerId);
-                    FactionComponent attackerFactionComponent = EntityManager.getFactionComponent(attackerId);
-
-                    if (attackerMeleeAttackSkill.cooldown == 0)   // ready to attack
-                    {
-                        foreach (int defenderId in defenderEntities)
-                        {
-                            if (EntityManager.doesEntityExist(attackerId) && EntityManager.doesEntityExist(defenderId))  // either entity could have been killed earlier this frame
-                            {
-                                PositionComponent defenderPositionComponent = EntityManager.getPositionComponent(defenderId);
-                                FactionComponent defenderFactionComponent = EntityManager.getFactionComponent(defenderId);
-                                Vector2 relative = defenderPositionComponent.position - attackerPositionComponent.position;
-                                bool isDefenderWithinRange = relative.Length() <= (attackerMeleeAttackSkill.range + SKILL_RANGE_TOLERANCE);
-                                bool isDefenderAttackable = isFactionAttackable(attackerFactionComponent.faction, defenderFactionComponent.faction);
-                                bool isDefenderIncapacitated = EntityManager.getIncapacitatedComponent(defenderId) != null;
-
-                                if (isDefenderWithinRange && isDefenderAttackable && !isDefenderIncapacitated)
-                                {
-                                    attack(attackerId, defenderId);
-
-                                    if (EntityManager.doesEntityExist(attackerId))  // attacker could have been killed by a damage shield
-                                    {
-                                        SystemManager.skillSystem.resetCooldown(attackerId, SkillType.MeleeAttack);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        // Handle ranged attacks
-        private void handleRangedAttacks(List<int> attackerEntities, List<int> defenderEntities)
+        // Handle attacks
+        private void handleAttacks(List<int> attackerEntities, List<int> defenderEntities)
         {
             foreach (int attackerId in attackerEntities)
             {
                 if (EntityManager.doesEntityExist(attackerId))  // entity could have been killed earlier this frame
                 {
                     SkillsComponent attackerSkills = EntityManager.getSkillsComponent(attackerId);
-                    RangedAttackSkill attackerRangedAttackSkill = attackerSkills.getSkill(SkillType.RangedAttack) as RangedAttackSkill;
+                    List<SpellEffect> attackerSpellEffects = SystemManager.spellEffectSystem.getSpellEffectsAffecting(attackerId);
+                    List<Skill> attackerAttackSkills = attackerSkills.attackSkills;
 
-                    if (attackerRangedAttackSkill != null)   // attacker has a ranged skill
+                    foreach (Skill skill in attackerAttackSkills)
                     {
                         PositionComponent attackerPositionComponent = EntityManager.getPositionComponent(attackerId);
                         FactionComponent attackerFactionComponent = EntityManager.getFactionComponent(attackerId);
 
-                        if (attackerRangedAttackSkill.cooldown == 0)   // ready to attack
+                        // Add skill's active spell effects to attacker's list
+                        attackerSpellEffects.AddRange(skill.onActivateSpellEffects);
+
+                        if (skill.cooldown == 0)   // ready to attack
                         {
                             foreach (int defenderId in defenderEntities)
                             {
                                 if (EntityManager.doesEntityExist(defenderId))  // entity could have been killed earlier this frame
                                 {
+                                    List<SpellEffect> defenderSpellEffects = SystemManager.spellEffectSystem.getSpellEffectsAffecting(defenderId);
                                     PositionComponent defenderPositionComponent = EntityManager.getPositionComponent(defenderId);
                                     FactionComponent defenderFactionComponent = EntityManager.getFactionComponent(defenderId);
                                     Vector2 relative = defenderPositionComponent.position - attackerPositionComponent.position;
-                                    bool isDefenderWithinRange = relative.Length() <= (attackerRangedAttackSkill.range + SKILL_RANGE_TOLERANCE);
+                                    bool isDefenderWithinRange = relative.Length() <= (skill.range + SKILL_RANGE_TOLERANCE);
                                     bool isDefenderAttackable = isFactionAttackable(attackerFactionComponent.faction, defenderFactionComponent.faction);
                                     bool isDefenderIncapacitated = EntityManager.getIncapacitatedComponent(defenderId) != null;
 
                                     if (isDefenderWithinRange && isDefenderAttackable && !isDefenderIncapacitated)
                                     {
-                                        attack(attackerId, defenderId);
+                                        attack(attackerId, defenderId, 0, skill.calculateAttackDie(), skill.calculateHitDie());
 
                                         if (EntityManager.doesEntityExist(attackerId))  // attacker could have been killed by a damage shield
                                         {
-                                            SystemManager.skillSystem.resetCooldown(attackerId, SkillType.RangedAttack);
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        // Handle kick attacks
-        private void handleKickAttacks(List<int> attackerEntities, List<int> defenderEntities)
-        {
-            foreach (int attackerId in attackerEntities)
-            {
-                if (EntityManager.doesEntityExist(attackerId))  // entity could have been killed earlier this frame
-                {
-                    SkillsComponent attackerSkills = EntityManager.getSkillsComponent(attackerId);
-                    KickSkill kickSkill = attackerSkills.getSkill(SkillType.Kick) as KickSkill;
-
-                    if (kickSkill != null)   // attacker has a kick skill
-                    {
-                        PositionComponent attackerPositionComponent = EntityManager.getPositionComponent(attackerId);
-                        FactionComponent attackerFactionComponent = EntityManager.getFactionComponent(attackerId);
-
-                        if (kickSkill.cooldown == 0)   // ready to attack
-                        {
-                            foreach (int defenderId in defenderEntities)
-                            {
-                                if (EntityManager.doesEntityExist(defenderId))  // entity could have been killed earlier this frame
-                                {
-                                    PositionComponent defenderPositionComponent = EntityManager.getPositionComponent(defenderId);
-                                    FactionComponent defenderFactionComponent = EntityManager.getFactionComponent(defenderId);
-                                    Vector2 relative = defenderPositionComponent.position - attackerPositionComponent.position;
-                                    bool isDefenderWithinRange = relative.Length() <= (kickSkill.range + SKILL_RANGE_TOLERANCE);
-                                    bool isDefenderAttackable = isFactionAttackable(attackerFactionComponent.faction, defenderFactionComponent.faction);
-                                    bool isDefenderIncapacitated = EntityManager.getIncapacitatedComponent(defenderId) != null;
-
-                                    if (isDefenderWithinRange && isDefenderAttackable && !isDefenderIncapacitated)
-                                    {
-                                        if (attack(attackerId, defenderId, 0, kickSkill.calculateAttackDie(), kickSkill.calculateHitDie()))
-                                        {
-                                            if (EntityManager.doesEntityExist(defenderId))  // only knock back living entities
-                                            {
-                                                applyKnockback(attackerId, defenderId, kickSkill.calculateKnockbackForce());
-                                            }
-                                        }
-
-                                        if (EntityManager.doesEntityExist(attackerId))  // attacker could have been killed by a damage shield
-                                        {
-                                            SystemManager.skillSystem.resetCooldown(attackerId, SkillType.Kick);
+                                            SystemManager.skillSystem.resetCooldown(attackerId, skill.type);
                                         }
                                     }
                                 }
@@ -386,14 +307,8 @@ namespace Loderpit.Systems
             List<int> skillsEntities = EntityManager.getEntitiesPossessing(ComponentType.Skills);
             List<int> attackableEntities = EntityManager.getEntitiesPossessing(ComponentType.Stats);
 
-            // Handle melee attacks
-            handleMeleeAttacks(skillsEntities, attackableEntities);
-
-            // Handle ranged attacks
-            handleRangedAttacks(skillsEntities, attackableEntities);
-
-            // Handle kick attacks
-            handleKickAttacks(skillsEntities, attackableEntities);
+            // Handle attacks
+            handleAttacks(skillsEntities, attackableEntities);
         }
     }
 }

@@ -7,14 +7,10 @@ namespace Loderpit.Skills
 {
     public class BuildBridgeSkill : Skill
     {
-        private float _range;
-
-        public float range { get { return _range; } }
-
-        public BuildBridgeSkill(int level, float range)
+        public BuildBridgeSkill(int level)
             : base(SkillType.BuildBridge, level, true)
         {
-            _range = range;
+            _range = 1f;
         }
     }
 

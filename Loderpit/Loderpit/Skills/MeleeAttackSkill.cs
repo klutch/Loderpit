@@ -5,10 +5,6 @@ namespace Loderpit.Skills
 {
     public class MeleeAttackSkill : Skill
     {
-        private float _range;
-
-        public float range { get { return _range; } }
-
         public MeleeAttackSkill(int level)
             : base(SkillType.MeleeAttack, level, true)
         {

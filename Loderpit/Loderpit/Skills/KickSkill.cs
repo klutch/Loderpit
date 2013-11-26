@@ -5,10 +5,6 @@ namespace Loderpit.Skills
 {
     public class KickSkill : Skill
     {
-        private float _range;
-
-        public float range { get { return _range; } }
-
         public KickSkill(int level)
             : base(SkillType.Kick, level, false)
         {
@@ -34,7 +30,7 @@ namespace Loderpit.Skills
         }
 
         // Calculates the attack die
-        public string calculateAttackDie()
+        public override string calculateAttackDie()
         {
             switch (_level)
             {
@@ -43,7 +39,7 @@ namespace Loderpit.Skills
         }
 
         // Calculates the hit die
-        public string calculateHitDie()
+        public override string calculateHitDie()
         {
             switch (_level)
             {

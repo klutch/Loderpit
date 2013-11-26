@@ -27,7 +27,7 @@ namespace Loderpit.Components
         Incapacitated,
         IsTouchingEndLevel,
         RenderHealth,
-        SpellEffects
+        ActiveSpellEffects
     }
 
     public interface IComponent

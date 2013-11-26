@@ -14,6 +14,13 @@ namespace Loderpit.Components
         public ComponentType componentType { get { return ComponentType.Skills; } }
         public List<Skill> skills { get { return _skills; } }
         public List<Skill> activatableSkills { get { return new List<Skill>(from s in _skills where s.activatable select s); } }
+        public List<Skill> attackSkills
+        {
+            get
+            {
+                return new List<Skill>(from s in _skills where (s.type == SkillType.MeleeAttack || s.type == SkillType.RangedAttack || s.type == SkillType.Kick) select s);
+            }
+        }
 
         public SkillsComponent(int entityId, List<Skill> skills = null)
         {

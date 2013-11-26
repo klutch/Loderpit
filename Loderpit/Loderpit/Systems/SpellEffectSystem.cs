@@ -90,7 +90,7 @@ namespace Loderpit.Systems
 
             foreach (int entityId in entities)
             {
-                SpellEffectsComponent spellEffectsComponent = EntityManager.getSpellEffectsComponent(entityId);
+                ActiveSpellEffectsComponent spellEffectsComponent = EntityManager.getSpellEffectsComponent(entityId);
                 FactionComponent factionComponent = EntityManager.getFactionComponent(entityId);
                 List<int> entitiesToAdd = new List<int>();
 
@@ -151,7 +151,7 @@ namespace Loderpit.Systems
         // Apply a spell effect to an entity
         public void applySpellEffect(int entityId, SpellEffect spellEffect)
         {
-            SpellEffectsComponent spellEffectsComponent = EntityManager.getSpellEffectsComponent(entityId);
+            ActiveSpellEffectsComponent spellEffectsComponent = EntityManager.getSpellEffectsComponent(entityId);
 
             Debug.Assert(!spellEffectsComponent.effects.Contains(spellEffect), String.Format("This entity already has a spell effect of type: {0}", spellEffect.type));
 
@@ -160,7 +160,7 @@ namespace Loderpit.Systems
 
         public void update()
         {
-            List<int> spellEffectsEntities = EntityManager.getEntitiesPossessing(ComponentType.SpellEffects);
+            List<int> spellEffectsEntities = EntityManager.getEntitiesPossessing(ComponentType.ActiveSpellEffects);
 
             // Rebuild the affected entities map
             rebuildAffectedEntities(spellEffectsEntities);

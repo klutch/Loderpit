@@ -6,14 +6,10 @@ namespace Loderpit.Skills
 {
     public class PowerShotSkill : Skill
     {
-        private float _range;
-
-        public float range { get { return _range; } }
-
-        public PowerShotSkill(int level, float range)
+        public PowerShotSkill(int level)
             : base(SkillType.PowerShot, level, true)
         {
-            _range = range;
+            _range = 10f;
             _baseCooldown = 360;
         }
 

@@ -65,18 +65,18 @@ namespace Loderpit
                     break;
 
                 case CharacterClass.Archer:
-                    skills.Add(new RangedAttackSkill(1, 8f, "bow_icon"));
+                    skills.Add(new RangedAttackSkill(1, "bow_icon"));
                     skills.Add(new ShieldOfThornsSkill(1));
-                    skills.Add(new PowerShotSkill(1, 10f));
+                    skills.Add(new PowerShotSkill(1));
                     break;
 
                 case CharacterClass.Mage:
-                    skills.Add(new RangedAttackSkill(1, 8f, "wand_icon"));
+                    skills.Add(new RangedAttackSkill(1, "wand_icon"));
                     break;
 
                 case CharacterClass.Engineer:
                     skills.Add(new ThrowRopeSkill(1, 6f));
-                    skills.Add(new BuildBridgeSkill(1, 2f));
+                    skills.Add(new BuildBridgeSkill(1));
                     break;
             }
 
@@ -155,7 +155,7 @@ namespace Loderpit
             EntityManager.addComponent(entityId, new IgnoreRopeRaycastComponent(entityId));
             EntityManager.addComponent(entityId, new IgnoreBridgeRaycastComponent(entityId));
             EntityManager.addComponent(entityId, new SkillsComponent(entityId, getStartingSkills(characterClass)));
-            EntityManager.addComponent(entityId, new SpellEffectsComponent(entityId));
+            EntityManager.addComponent(entityId, new ActiveSpellEffectsComponent(entityId));
             EntityManager.addComponent(entityId, new FactionComponent(entityId, Faction.Player, Faction.Enemy));
             EntityManager.addComponent(entityId, new RenderHealthComponent(entityId));
             EntityManager.addComponent(entityId, new PerformingSkillsComponent(entityId));
@@ -309,7 +309,7 @@ namespace Loderpit
             EntityManager.addComponent(entityId, new IgnoreRopeRaycastComponent(entityId));
             EntityManager.addComponent(entityId, new IgnoreBridgeRaycastComponent(entityId));
             EntityManager.addComponent(entityId, new SkillsComponent(entityId, new List<Skill>( new[] { new MeleeAttackSkill(1) })));
-            EntityManager.addComponent(entityId, new SpellEffectsComponent(entityId));
+            EntityManager.addComponent(entityId, new ActiveSpellEffectsComponent(entityId));
             EntityManager.addComponent(entityId, new FactionComponent(entityId, Faction.Enemy, Faction.Player));
             EntityManager.addComponent(entityId, new RenderHealthComponent(entityId));
             EntityManager.addComponent(entityId, new PerformingSkillsComponent(entityId));
