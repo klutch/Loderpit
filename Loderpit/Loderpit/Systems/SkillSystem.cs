@@ -60,16 +60,17 @@ namespace Loderpit.Systems
         // Initialize block skill
         private void initializeBlockSkill(int entityId, BlockSkill skill)
         {
-            CharacterComponent characterComponent = EntityManager.getCharacterComponent(entityId);
-            Fixture fixture = FixtureFactory.AttachRectangle(1f, 1f, 0.1f, Vector2.Zero, characterComponent.body);
-
             // Create a 'shield' fixture (attached to the character's body) that only collides with hostile characters
+            CharacterComponent characterComponentA = EntityManager.getCharacterComponent(entityId);
+            Fixture fixture = FixtureFactory.AttachRectangle(1.1f, 1.4f, 0.1f, Vector2.Zero, characterComponentA.body);
+
             fixture.OnCollision += new OnCollisionEventHandler((fixtureA, fixtureB, contact) =>
                 {
                     int entityIdA = (int)fixtureA.Body.UserData;
                     int entityIdB;
                     FactionComponent factionComponentA = EntityManager.getFactionComponent(entityIdA);
                     FactionComponent factionComponentB;
+                    CharacterComponent characterComponentB;
 
                     // Skip if not touching -- not sure if this is necessary
                     if (!contact.IsTouching)
@@ -97,7 +98,17 @@ namespace Loderpit.Systems
                         return false;
                     }
 
-                    Console.WriteLine("colliding with hostile character");
+                    // Skip if the colliding body is the character's feet
+                    if ((characterComponentB = EntityManager.getCharacterComponent(entityIdB)) != null)
+                    {
+                        if (fixtureB.Body == characterComponentB.feet)
+                        {
+                            return false;
+                        }
+                    }
+
+                    // Apply a small upward/backward force to the character to push it back
+                    fixtureB.Body.ApplyForce(new Vector2(10f, -10f));
 
                     return true;
                 });
