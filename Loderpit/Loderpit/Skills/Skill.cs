@@ -84,13 +84,27 @@ namespace Loderpit.Skills
     {
         protected Skill _skill;
         protected int _delay;
+        protected Func<bool> _isDelayConditionMetCallback;
 
         public Skill skill { get { return _skill; } }
         public int delay { get { return _delay; } set { _delay = value; } }
 
-        public ExecuteSkill(Skill skill)
+        public ExecuteSkill(Skill skill, Func<bool> isDelayConditionMetCallback = null)
         {
             _skill = skill;
+            _isDelayConditionMetCallback = isDelayConditionMetCallback;
+        }
+
+        public bool isDelayConditionMet()
+        {
+            if (_isDelayConditionMetCallback == null)
+            {
+                return true;
+            }
+            else
+            {
+                return _isDelayConditionMetCallback();
+            }
         }
     }
 }

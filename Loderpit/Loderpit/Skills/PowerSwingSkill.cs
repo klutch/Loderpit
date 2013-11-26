@@ -27,11 +27,12 @@ namespace Loderpit.Skills
 
         public int defenderId { get { return _defenderId; } }
 
-        public ExecutePowerSwingSkill(Skill skill, int defenderId)
+        public ExecutePowerSwingSkill(Skill skill, int defenderId, Func<bool> isDelayConditionMetCallback)
             : base(skill)
         {
             _defenderId = defenderId;
             _delay = 60;
+            _isDelayConditionMetCallback = isDelayConditionMetCallback;
         }
     }
 }

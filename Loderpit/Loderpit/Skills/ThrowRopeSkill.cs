@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
+using Loderpit.Components;
 using Loderpit.Formations;
 
 namespace Loderpit.Skills
@@ -22,11 +23,12 @@ namespace Loderpit.Skills
         public Vector2 anchor { get { return _anchor; } }
         public Formation formationToRemove { get { return _formationToRemove; } set { _formationToRemove = value; } }
 
-        public ExecuteThrowRopeSkill(Skill skill, Vector2 anchor)
+        public ExecuteThrowRopeSkill(Skill skill, Vector2 anchor, Func<bool> isDelayConditionMetCallback)
             : base(skill)
         {
             _anchor = anchor;
             _delay = 180;
+            _isDelayConditionMetCallback = isDelayConditionMetCallback;
         }
     }
 }

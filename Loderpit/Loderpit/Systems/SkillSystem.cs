@@ -134,8 +134,22 @@ namespace Loderpit.Systems
         {
             PerformingSkillsComponent performingSkillsComponent = EntityManager.getPerformingSkillsComponent(entityId);
             GroupComponent groupComponent = SystemManager.groupSystem.getGroupComponentContaining(entityId);
-            ExecuteThrowRopeSkill executeSkill = new ExecuteThrowRopeSkill(throwRopeSkill, anchor);
+            ExecuteThrowRopeSkill executeSkill;
 
+            // Create execute skill object
+            executeSkill = new ExecuteThrowRopeSkill(
+                throwRopeSkill,
+                anchor,
+                () =>
+                {
+                    PositionComponent positionComponent = EntityManager.getPositionComponent(entityId);
+                    PositionTargetComponent positionTargetComponent = EntityManager.getPositionTargetComponent(entityId);
+                    float distance = Math.Abs(positionTargetComponent.position - positionComponent.position.X);
+
+                    return distance <= positionTargetComponent.tolerance;
+                });
+
+            // Check for a group
             if (groupComponent != null)
             {
                 LimitedRangeFormation formation = new LimitedRangeFormation(groupComponent.entities, groupComponent.activeFormation.position, groupComponent.activeFormation.speed, float.MinValue, anchor.X - 4f);
@@ -181,7 +195,19 @@ namespace Loderpit.Systems
                     continue;
                 }
 
-                executePowerShotSkill = new ExecutePowerShotSkill(powerShotSkill, targetEntityId);
+                // Create execute skill object
+                executePowerShotSkill = new ExecutePowerShotSkill(
+                    powerShotSkill,
+                    targetEntityId,
+                    () =>
+                    {
+                        PositionComponent positionComponent = EntityManager.getPositionComponent(entityId);
+                        PositionTargetComponent positionTargetComponent = EntityManager.getPositionTargetComponent(entityId);
+                        float distance = Math.Abs(positionTargetComponent.position - positionComponent.position.X);
+
+                        return distance <= positionTargetComponent.tolerance;
+                    });
+
                 EntityManager.addComponent(entityId, new PositionTargetComponent(entityId, fixture.Body, powerShotSkill.range));
                 break;
             }
@@ -225,7 +251,19 @@ namespace Loderpit.Systems
                     continue;
                 }
 
-                executePowerSwingSkill = new ExecutePowerSwingSkill(powerSwingSkill, targetEntityId);
+                // Create execute skill object
+                executePowerSwingSkill = new ExecutePowerSwingSkill(
+                    powerSwingSkill,
+                    targetEntityId,
+                    () =>
+                    {
+                        PositionComponent positionComponent = EntityManager.getPositionComponent(entityId);
+                        PositionTargetComponent positionTargetComponent = EntityManager.getPositionTargetComponent(entityId);
+                        float distance = Math.Abs(positionTargetComponent.position - positionComponent.position.X);
+
+                        return distance <= positionTargetComponent.tolerance;
+                    });
+
                 EntityManager.addComponent(entityId, new PositionTargetComponent(entityId, fixture.Body, powerSwingSkill.range));
                 break;
             }
@@ -326,49 +364,33 @@ namespace Loderpit.Systems
         // Execute power shot
         private void executePowerShot(int entityId, ExecutePowerShotSkill executePowerShotSkill)
         {
-            PositionComponent attackerPositionComponent = EntityManager.getPositionComponent(entityId);
-            PositionComponent targetPositionComponent = EntityManager.getPositionComponent(executePowerShotSkill.defenderId);
-            Vector2 relative = targetPositionComponent.position - attackerPositionComponent.position;
+            PerformingSkillsComponent performingSkillsComponent = EntityManager.getPerformingSkillsComponent(entityId);
+            PowerShotSkill powerShotSkill = executePowerShotSkill.skill as PowerShotSkill;
 
-            // Ensure we're in range
-            if (relative.Length() <= executePowerShotSkill.skill.range + SKILL_RANGE_TOLERANCE)
+            if (EntityManager.doesEntityExist(executePowerShotSkill.defenderId))    // defender could have died already
             {
-                PerformingSkillsComponent performingSkillsComponent = EntityManager.getPerformingSkillsComponent(entityId);
-                PowerShotSkill powerShotSkill = executePowerShotSkill.skill as PowerShotSkill;
-
-                if (EntityManager.doesEntityExist(executePowerShotSkill.defenderId))    // defender could have died already
-                {
-                    SystemManager.combatSystem.attack(entityId, executePowerShotSkill.defenderId, powerShotSkill.calculateExtraDamage());
-                }
-                SystemManager.skillSystem.resetCooldown(entityId, SkillType.PowerShot);
-                EntityManager.removeComponent(entityId, ComponentType.PositionTarget);
-
-                removeExecutedSkill(entityId, executePowerShotSkill);
+                SystemManager.combatSystem.attack(entityId, executePowerShotSkill.defenderId, powerShotSkill.calculateExtraDamage());
             }
+            SystemManager.skillSystem.resetCooldown(entityId, SkillType.PowerShot);
+            EntityManager.removeComponent(entityId, ComponentType.PositionTarget);
+
+            removeExecutedSkill(entityId, executePowerShotSkill);
         }
 
         // Execute power swing
         private void executePowerSwing(int entityId, ExecutePowerSwingSkill executePowerSwingSkill)
         {
-            PositionComponent attackerPositionComponent = EntityManager.getPositionComponent(entityId);
-            PositionComponent targetPositionComponent = EntityManager.getPositionComponent(executePowerSwingSkill.defenderId);
-            Vector2 relative = targetPositionComponent.position - attackerPositionComponent.position;
+            PerformingSkillsComponent performingSkillsComponent = EntityManager.getPerformingSkillsComponent(entityId);
+            PowerSwingSkill powerSwingSkill = executePowerSwingSkill.skill as PowerSwingSkill;
 
-            // Ensure we're in range
-            if (relative.Length() <= executePowerSwingSkill.skill.range + SKILL_RANGE_TOLERANCE)
+            if (EntityManager.doesEntityExist(executePowerSwingSkill.defenderId))    // defender could have died already
             {
-                PerformingSkillsComponent performingSkillsComponent = EntityManager.getPerformingSkillsComponent(entityId);
-                PowerSwingSkill powerSwingSkill = executePowerSwingSkill.skill as PowerSwingSkill;
-
-                if (EntityManager.doesEntityExist(executePowerSwingSkill.defenderId))    // defender could have died already
-                {
-                    SystemManager.combatSystem.attack(entityId, executePowerSwingSkill.defenderId, powerSwingSkill.calculateExtraDamage());
-                }
-                SystemManager.skillSystem.resetCooldown(entityId, SkillType.PowerSwing);
-                EntityManager.removeComponent(entityId, ComponentType.PositionTarget);
-
-                removeExecutedSkill(entityId, executePowerSwingSkill);
+                SystemManager.combatSystem.attack(entityId, executePowerSwingSkill.defenderId, powerSwingSkill.calculateExtraDamage());
             }
+            SystemManager.skillSystem.resetCooldown(entityId, SkillType.PowerSwing);
+            EntityManager.removeComponent(entityId, ComponentType.PositionTarget);
+
+            removeExecutedSkill(entityId, executePowerSwingSkill);
         }
 
         #endregion
@@ -395,7 +417,10 @@ namespace Loderpit.Systems
                 {
                     if (executeSkill.delay > 0)
                     {
-                        executeSkill.delay--;
+                        if (executeSkill.isDelayConditionMet())
+                        {
+                            executeSkill.delay--;
+                        }
                     }
                     else
                     {
