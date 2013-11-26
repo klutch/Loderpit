@@ -355,8 +355,7 @@ namespace Loderpit
         {
             int entityIdA = (int)fixtureA.Body.UserData;
             int entityIdB;
-            FactionComponent factionComponentA = EntityManager.getFactionComponent(entityIdA);
-            FactionComponent factionComponentB;
+            CharacterComponent characterComponentB;
 
             // Skip fixtures without userdata
             if (fixtureB.Body.UserData == null)
@@ -366,14 +365,8 @@ namespace Loderpit
 
             entityIdB = (int)fixtureB.Body.UserData;
 
-            // Skip entities without a faction component
-            if ((factionComponentB = EntityManager.getFactionComponent(entityIdB)) == null)
-            {
-                return true;
-            }
-
-            // Don't collide with other enemies
-            if (factionComponentB.faction == factionComponentA.faction)
+            // Don't collide with other characters
+            if ((characterComponentB = EntityManager.getCharacterComponent(entityIdB)) != null)
             {
                 return false;
             }
