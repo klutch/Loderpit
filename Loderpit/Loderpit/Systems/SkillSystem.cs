@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using FarseerPhysics.Dynamics;
+using FarseerPhysics.Dynamics.Contacts;
+using FarseerPhysics.Factories;
 using Loderpit.Components;
 using Loderpit.Managers;
 using Loderpit.Skills;
@@ -31,6 +33,80 @@ namespace Loderpit.Systems
         {
             _skillsToRemove = new Dictionary<int, List<ExecuteSkill>>();
         }
+
+        #region Initialize skill methods
+
+        // Initialize skills -- Perform any logic needed to set up a skill at the beginning of a level
+        public void initializeSkills()
+        {
+            List<int> entities = EntityManager.getEntitiesPossessing(ComponentType.Skills);
+
+            foreach (int entityId in entities)
+            {
+                SkillsComponent skillsComponent = EntityManager.getSkillsComponent(entityId);
+
+                foreach (Skill skill in skillsComponent.skills)
+                {
+                    switch (skill.type)
+                    {
+                        case SkillType.Block:
+                            initializeBlockSkill(entityId, skill as BlockSkill);
+                            break;
+                    }
+                }
+            }
+        }
+
+        // Initialize block skill
+        private void initializeBlockSkill(int entityId, BlockSkill skill)
+        {
+            CharacterComponent characterComponent = EntityManager.getCharacterComponent(entityId);
+            Fixture fixture = FixtureFactory.AttachRectangle(1f, 1f, 0.1f, Vector2.Zero, characterComponent.body);
+
+            // Create a 'shield' fixture (attached to the character's body) that only collides with hostile characters
+            fixture.OnCollision += new OnCollisionEventHandler((fixtureA, fixtureB, contact) =>
+                {
+                    Console.WriteLine("yo");
+
+                    int entityIdA = (int)fixtureA.Body.UserData;
+                    int entityIdB;
+                    FactionComponent factionComponentA = EntityManager.getFactionComponent(entityIdA);
+                    FactionComponent factionComponentB;
+
+                    // Skip if not touching -- not sure if this is necessary
+                    if (!contact.IsTouching)
+                    {
+                        return false;
+                    }
+
+                    // Skip fixtures whose bodies don't have a userdata
+                    if (fixtureB.Body.UserData == null)
+                    {
+                        return false;
+                    }
+
+                    entityIdB = (int)fixtureB.Body.UserData;
+
+                    // Skip if entity doesn't have a faction component
+                    if ((factionComponentB = EntityManager.getFactionComponent(entityIdB)) == null)
+                    {
+                        return false;
+                    }
+
+                    // Skip if factions aren't hostile
+                    if (factionComponentA.hostileFaction != factionComponentB.faction)
+                    {
+                        return false;
+                    }
+
+                    Console.WriteLine("colliding with hostile character");
+
+                    return true;
+                });
+        }
+
+        #endregion
+
 
         #region Perform skill methods
 

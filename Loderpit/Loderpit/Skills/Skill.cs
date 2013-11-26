@@ -20,7 +20,10 @@ namespace Loderpit.Skills
 
         // Fighter
         Kick,
-        PowerSwing
+        PowerSwing,
+
+        // Defender
+        Block
     }
 
     abstract public class Skill

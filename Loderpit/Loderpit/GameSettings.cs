@@ -9,7 +9,7 @@ namespace Loderpit
     {
         None = 0,
         All = 0xFFFF,
-        Teammate = 1,
+        Character = 1,
         Rope = 2,
         Bridge = 4,
         Ground = 8,

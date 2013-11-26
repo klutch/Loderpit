@@ -65,6 +65,10 @@ namespace Loderpit
                     skills.Add(new PowerSwingSkill(1));
                     break;
 
+                case CharacterClass.Defender:
+                    skills.Add(new BlockSkill(1));
+                    break;
+
                 case CharacterClass.Archer:
                     skills.Add(new RangedAttackSkill(1, "bow_icon"));
                     skills.Add(new ShieldOfThornsSkill(1));
@@ -123,14 +127,14 @@ namespace Loderpit
             body.FixedRotation = true;
             body.Friction = 0f;
             body.UserData = entityId;
-            body.CollisionCategories = (ushort)CollisionCategory.Teammate;
+            body.CollisionCategories = (ushort)CollisionCategory.Character;
             body.CollidesWith = (ushort)CollisionCategory.Bridge | (ushort)CollisionCategory.Ground;
 
             feet = BodyFactory.CreateCircle(world, 0.25f, 1f, position + feetOffset);
             feet.BodyType = BodyType.Dynamic;
             feet.UserData = entityId;
             feet.Friction = 10f;
-            feet.CollisionCategories = (ushort)CollisionCategory.Teammate;
+            feet.CollisionCategories = (ushort)CollisionCategory.Character;
             feet.CollidesWith = (ushort)CollisionCategory.Bridge | (ushort)CollisionCategory.Ground;
 
             feetJoint = new RevoluteJoint(body, feet, feetOffset, Vector2.Zero, false);
@@ -277,14 +281,14 @@ namespace Loderpit
             body.FixedRotation = true;
             body.Friction = 0f;
             body.UserData = entityId;
-            body.CollisionCategories = (ushort)CollisionCategory.Teammate;
+            body.CollisionCategories = (ushort)CollisionCategory.Character;
             body.CollidesWith = (ushort)CollisionCategory.Bridge | (ushort)CollisionCategory.Ground;
 
             feet = BodyFactory.CreateCircle(world, 0.25f, 1f, position + feetOffset);
             feet.BodyType = BodyType.Dynamic;
             feet.UserData = entityId;
             feet.Friction = 10f;
-            feet.CollisionCategories = (ushort)CollisionCategory.Teammate;
+            feet.CollisionCategories = (ushort)CollisionCategory.Character;
             feet.CollidesWith = (ushort)CollisionCategory.Bridge | (ushort)CollisionCategory.Ground;
 
             feetJoint = new RevoluteJoint(body, feet, feetOffset, Vector2.Zero, false);
@@ -467,7 +471,7 @@ namespace Loderpit
                 body.CollidesWith = 
                     (ushort)CollisionCategory.Rope |
                     (ushort)CollisionCategory.Bridge |
-                    (ushort)CollisionCategory.Teammate |
+                    (ushort)CollisionCategory.Character |
                     (ushort)CollisionCategory.Ground;
                 body.UserData = entityId;
                 bodies.Add(body);
