@@ -273,7 +273,7 @@ namespace Loderpit.Systems
                         {
                             foreach (int defenderId in defenderEntities)
                             {
-                                if (EntityManager.doesEntityExist(defenderId))  // entity could have been killed earlier this frame
+                                if (EntityManager.doesEntityExist(attackerId) && EntityManager.doesEntityExist(defenderId))  // entities could have been killed earlier this frame
                                 {
                                     List<SpellEffect> defenderSpellEffects = SystemManager.spellEffectSystem.getSpellEffectsAffecting(defenderId);
                                     PositionComponent defenderPositionComponent = EntityManager.getPositionComponent(defenderId);

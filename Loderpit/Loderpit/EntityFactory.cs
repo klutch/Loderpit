@@ -127,15 +127,13 @@ namespace Loderpit
             body.FixedRotation = true;
             body.Friction = 0f;
             body.UserData = entityId;
-            body.CollisionCategories = (ushort)CollisionCategory.Character;
-            body.CollidesWith = (ushort)CollisionCategory.Bridge | (ushort)CollisionCategory.Ground;
+            body.CollisionCategories = (ushort)CollisionCategory.PlayerCharacters;
 
             feet = BodyFactory.CreateCircle(world, 0.25f, 1f, position + feetOffset);
             feet.BodyType = BodyType.Dynamic;
             feet.UserData = entityId;
             feet.Friction = 10f;
-            feet.CollisionCategories = (ushort)CollisionCategory.Character;
-            feet.CollidesWith = (ushort)CollisionCategory.Bridge | (ushort)CollisionCategory.Ground;
+            feet.CollisionCategories = (ushort)CollisionCategory.PlayerCharacters;
 
             feetJoint = new RevoluteJoint(body, feet, feetOffset, Vector2.Zero, false);
             feetJoint.MotorEnabled = true;
@@ -145,14 +143,13 @@ namespace Loderpit
 
             interactionSensor = FixtureFactory.AttachCircle(0.5f, 0.00001f, body);
             interactionSensor.IsSensor = true;
-            interactionSensor.CollisionCategories = (ushort)CollisionCategory.CharacterInteractionSensor;
-            interactionSensor.CollidesWith = (ushort)CollisionCategory.CharacterInteractionReceptor;
 
             characterComponent = new CharacterComponent(entityId, body, feet, feetJoint, interactionSensor, characterClass);
-            characterComponent.feet.OnCollision += new OnCollisionEventHandler(characterFeetOnCollision);
-            characterComponent.feet.OnSeparation += new OnSeparationEventHandler(characterFeetOnSeparation);
-            characterComponent.interactionSensor.OnCollision += new OnCollisionEventHandler(characterInteractionOnCollision);
-            characterComponent.interactionSensor.OnSeparation += new OnSeparationEventHandler(characterInteractionOnSeparation);
+            characterComponent.body.OnCollision += new OnCollisionEventHandler(playerCharacterBodyOnCollision);
+            characterComponent.feet.OnCollision += new OnCollisionEventHandler(playerCharacterFeetOnCollision);
+            characterComponent.feet.OnSeparation += new OnSeparationEventHandler(playerCharacterFeetOnSeparation);
+            characterComponent.interactionSensor.OnCollision += new OnCollisionEventHandler(playerCharacterSensorOnCollision);
+            characterComponent.interactionSensor.OnSeparation += new OnSeparationEventHandler(playerCharacterSensorOnSeparation);
 
             EntityManager.addComponent(entityId, characterComponent);
             EntityManager.addComponent(entityId, getCharacterStats(entityId, characterClass));
@@ -168,28 +165,60 @@ namespace Loderpit
             return entityId;
         }
 
-        private static bool characterFeetOnCollision(Fixture fixtureA, Fixture fixtureB, Contact contact)
+        private static bool playerCharacterBodyOnCollision(Fixture fixtureA, Fixture fixtureB, Contact contact)
         {
             int entityIdA = (int)fixtureA.Body.UserData;
-            CharacterComponent characterBodyComponent = EntityManager.getCharacterComponent(entityIdA);
+            int entityIdB;
+            CharacterComponent characterComponentB;
+
+            // Skip fixtures without userdata
+            if (fixtureB.Body.UserData == null)
+            {
+                return true;
+            }
+
+            entityIdB = (int)fixtureB.Body.UserData;
+
+            // Don't collide with other characters
+            if ((characterComponentB = EntityManager.getCharacterComponent(entityIdB)) != null)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        private static bool playerCharacterFeetOnCollision(Fixture fixtureA, Fixture fixtureB, Contact contact)
+        {
+            int entityIdA = (int)fixtureA.Body.UserData;
+            CharacterComponent characterComponentA = EntityManager.getCharacterComponent(entityIdA);
 
             if (fixtureB.Body.UserData != null)
             {
                 int entityIdB = (int)fixtureB.Body.UserData;
-                GroundBodyComponent groundBodyComponent;
+                GroundBodyComponent groundBodyComponent = EntityManager.getGroundBodyComponent(entityIdB);
+                CharacterComponent characterComponentB = EntityManager.getCharacterComponent(entityIdB);
                 FixedArray2<Vector2> points;
                 Vector2 normal;
 
-                if ((groundBodyComponent = EntityManager.getGroundBodyComponent(entityIdB)) != null)
+                // Ground contacts
+                if (groundBodyComponent != null)
                 {
                     contact.GetWorldManifold(out normal, out points);
-                    characterBodyComponent.groundContactCount++;
+                    characterComponentA.groundContactCount++;
+                    return true;
+                }
+
+                // Don't collide with other characters
+                if (characterComponentB != null)
+                {
+                    return false;
                 }
             }
             return true;
         }
 
-        private static void characterFeetOnSeparation(Fixture fixtureA, Fixture fixtureB)
+        private static void playerCharacterFeetOnSeparation(Fixture fixtureA, Fixture fixtureB)
         {
             int entityIdA = (int)fixtureA.Body.UserData;
             CharacterComponent characterBodyComponent = EntityManager.getCharacterComponent(entityIdA);
@@ -197,62 +226,71 @@ namespace Loderpit
             if (fixtureB.Body.UserData != null)
             {
                 int entityIdB = (int)fixtureB.Body.UserData;
-
                 GroundBodyComponent groundBodyComponent = EntityManager.getGroundBodyComponent(entityIdB);
 
-                if (groundBodyComponent != null)
+                // Skip if no ground body component
+                if (groundBodyComponent == null)
                 {
-                    characterBodyComponent.groundContactCount--;
+                    return;
                 }
+
+                characterBodyComponent.groundContactCount--;
             }
         }
 
-        private static bool characterInteractionOnCollision(Fixture fixtureA, Fixture fixtureB, Contact contact)
+        private static bool playerCharacterSensorOnCollision(Fixture fixtureA, Fixture fixtureB, Contact contact)
         {
             int entityIdA = (int)fixtureA.Body.UserData;
+            int entityIdB;
+            RopeComponent ropeComponent;
+            RopeGrabComponent ropeGrabComponent;
+            SendActivateObstacleComponent sendActivateObstacleComponent;
+            DestructibleObstacleComponent destructibleObstacleComponent;
 
-            if (fixtureB.Body.UserData != null)
+            // Skip if fixtureB has no userdata
+            if (fixtureB.Body.UserData == null)
             {
-                int entityIdB = (int)fixtureB.Body.UserData;
-                RopeComponent ropeComponent;
-                RopeGrabComponent ropeGrabComponent;
-                SendActivateObstacleComponent sendActivateObstacleComponent;
-                DestructibleObstacleComponent destructibleObstacleComponent;
+                return false;
+            }
 
-                if (contact.IsTouching)
+            entityIdB = (int)fixtureB.Body.UserData;
+
+            // Skip if not actually touching
+            if (!contact.IsTouching)
+            {
+                return false;
+            }
+
+            if ((ropeComponent = EntityManager.getRopeComponent(entityIdB)) != null)
+            {
+                // A character is touching an entity with a rope component
+                if ((ropeGrabComponent = EntityManager.getRopeGrabComponent(entityIdA)) == null)
                 {
-                    if ((ropeComponent = EntityManager.getRopeComponent(entityIdB)) != null)
-                    {
-                        // A character is touching an entity with a rope component
-                        if ((ropeGrabComponent = EntityManager.getRopeGrabComponent(entityIdA)) == null)
-                        {
-                            SystemManager.characterSystem.grabRope(entityIdA, ropeComponent, fixtureB.Body);
-                        }
-                    }
-                    else if ((sendActivateObstacleComponent = EntityManager.getSendActivateObstacleComponent(entityIdB)) != null)
-                    {
-                        // A character has entered an area designated to activate an obstacle
-                        SystemManager.obstacleSystem.activateObstacle(sendActivateObstacleComponent);
-                    }
-                    else if ((destructibleObstacleComponent = EntityManager.getDestructibleObstacleComponent(entityIdB)) != null)
-                    {
-                        // A character has touched a destructible object
-                        GroupComponent groupComponent = SystemManager.groupSystem.getGroupComponentContaining(entityIdA);
+                    SystemManager.characterSystem.grabRope(entityIdA, ropeComponent, fixtureB.Body);
+                }
+            }
+            else if ((sendActivateObstacleComponent = EntityManager.getSendActivateObstacleComponent(entityIdB)) != null)
+            {
+                // A character has entered an area designated to activate an obstacle
+                SystemManager.obstacleSystem.activateObstacle(sendActivateObstacleComponent);
+            }
+            else if ((destructibleObstacleComponent = EntityManager.getDestructibleObstacleComponent(entityIdB)) != null)
+            {
+                // A character has touched a destructible object
+                GroupComponent groupComponent = SystemManager.groupSystem.getGroupComponentContaining(entityIdA);
 
-                        if (groupComponent != null)
-                        {
-                            SplitFormation existingSplitFormation = (SplitFormation)groupComponent.getFormation(FormationType.Split);
+                if (groupComponent != null)
+                {
+                    SplitFormation existingSplitFormation = (SplitFormation)groupComponent.getFormation(FormationType.Split);
 
-                            if (existingSplitFormation == null)
-                            {
-                                int slot = groupComponent.entities.IndexOf(entityIdA);
-                                bool hitOnLeft = fixtureB.Body.Position.X < fixtureA.Body.Position.X;
-                                SplitFormation formation = new SplitFormation(groupComponent.entities, destructibleObstacleComponent.body.Position.X, hitOnLeft ? slot : slot + 1);
+                    if (existingSplitFormation == null)
+                    {
+                        int slot = groupComponent.entities.IndexOf(entityIdA);
+                        bool hitOnLeft = fixtureB.Body.Position.X < fixtureA.Body.Position.X;
+                        SplitFormation formation = new SplitFormation(groupComponent.entities, destructibleObstacleComponent.body.Position.X, hitOnLeft ? slot : slot + 1);
 
-                                groupComponent.addFormation(formation);
-                                destructibleObstacleComponent.formationsToRemove.Add(groupComponent.entityId, formation);
-                            }
-                        }
+                        groupComponent.addFormation(formation);
+                        destructibleObstacleComponent.formationsToRemove.Add(groupComponent.entityId, formation);
                     }
                 }
             }
@@ -260,14 +298,13 @@ namespace Loderpit
             return true;
         }
 
-        private static void characterInteractionOnSeparation(Fixture fixtureA, Fixture fixtureB)
+        private static void playerCharacterSensorOnSeparation(Fixture fixtureA, Fixture fixtureB)
         {
         }
 
         public static int createEnemy(CharacterClass characterClass, Vector2 position)
         {
             int entityId = EntityManager.createEntity();
-            CharacterComponent characterComponent;
             Vector2 feetOffset = new Vector2(0, 0.25f);
             Body body;
             Body feet;
@@ -281,15 +318,13 @@ namespace Loderpit
             body.FixedRotation = true;
             body.Friction = 0f;
             body.UserData = entityId;
-            body.CollisionCategories = (ushort)CollisionCategory.Character;
-            body.CollidesWith = (ushort)CollisionCategory.Bridge | (ushort)CollisionCategory.Ground;
+            body.CollisionCategories = (ushort)CollisionCategory.EnemyCharacters;
 
             feet = BodyFactory.CreateCircle(world, 0.25f, 1f, position + feetOffset);
             feet.BodyType = BodyType.Dynamic;
             feet.UserData = entityId;
             feet.Friction = 10f;
-            feet.CollisionCategories = (ushort)CollisionCategory.Character;
-            feet.CollidesWith = (ushort)CollisionCategory.Bridge | (ushort)CollisionCategory.Ground;
+            feet.CollisionCategories = (ushort)CollisionCategory.EnemyCharacters;
 
             feetJoint = new RevoluteJoint(body, feet, feetOffset, Vector2.Zero, false);
             feetJoint.MotorEnabled = true;
@@ -299,16 +334,10 @@ namespace Loderpit
 
             interactionSensor = FixtureFactory.AttachCircle(0.5f, 0.00001f, body);
             interactionSensor.IsSensor = true;
-            interactionSensor.CollisionCategories = (ushort)CollisionCategory.CharacterInteractionSensor;
-            interactionSensor.CollidesWith = (ushort)CollisionCategory.CharacterInteractionReceptor;
 
-            characterComponent = new CharacterComponent(entityId, body, feet, feetJoint, interactionSensor, characterClass);
-            /*characterComponent.feet.OnCollision += new OnCollisionEventHandler(characterFeetOnCollision);
-            characterComponent.feet.OnSeparation += new OnSeparationEventHandler(characterFeetOnSeparation);
-            characterComponent.interactionSensor.OnCollision += new OnCollisionEventHandler(characterInteractionOnCollision);
-            characterComponent.interactionSensor.OnSeparation += new OnSeparationEventHandler(characterInteractionOnSeparation);*/
+            body.OnCollision += new OnCollisionEventHandler(enemyCharacterBodyOnCollision);
 
-            EntityManager.addComponent(entityId, characterComponent);
+            EntityManager.addComponent(entityId, new CharacterComponent(entityId, body, feet, feetJoint, interactionSensor, characterClass));
             EntityManager.addComponent(entityId, getCharacterStats(entityId, characterClass));
             EntityManager.addComponent(entityId, new PositionComponent(entityId, body));
             EntityManager.addComponent(entityId, new IgnoreRopeRaycastComponent(entityId));
@@ -320,6 +349,36 @@ namespace Loderpit
             EntityManager.addComponent(entityId, new PerformingSkillsComponent(entityId));
 
             return entityId;
+        }
+
+        private static bool enemyCharacterBodyOnCollision(Fixture fixtureA, Fixture fixtureB, Contact contact)
+        {
+            int entityIdA = (int)fixtureA.Body.UserData;
+            int entityIdB;
+            FactionComponent factionComponentA = EntityManager.getFactionComponent(entityIdA);
+            FactionComponent factionComponentB;
+
+            // Skip fixtures without userdata
+            if (fixtureB.Body.UserData == null)
+            {
+                return true;
+            }
+
+            entityIdB = (int)fixtureB.Body.UserData;
+
+            // Skip entities without a faction component
+            if ((factionComponentB = EntityManager.getFactionComponent(entityIdB)) == null)
+            {
+                return true;
+            }
+
+            // Don't collide with other enemies
+            if (factionComponentB.faction == factionComponentA.faction)
+            {
+                return false;
+            }
+
+            return true;
         }
 
         public static int createRope(Vector2 position)
@@ -371,8 +430,7 @@ namespace Loderpit
                 body.BodyType = BodyType.Dynamic;
                 body.Rotation = angle;
                 body.Friction = 0.5f;
-                body.CollisionCategories = (ushort)CollisionCategory.Rope | (ushort)CollisionCategory.CharacterInteractionReceptor;
-                body.CollidesWith = (ushort)CollisionCategory.Bridge | (ushort)CollisionCategory.Ground | (ushort)CollisionCategory.CharacterInteractionSensor;
+                body.CollidesWith = (ushort)(CollisionCategory.PlayerCharacters | CollisionCategory.EnemyCharacters);
                 body.UserData = entityId;
                 bodies.Add(body);
 
@@ -467,12 +525,6 @@ namespace Loderpit
                 body.BodyType = BodyType.Dynamic;
                 body.Rotation = angle;
                 body.Friction = 1f;
-                body.CollisionCategories = (ushort)CollisionCategory.Bridge;
-                body.CollidesWith = 
-                    (ushort)CollisionCategory.Rope |
-                    (ushort)CollisionCategory.Bridge |
-                    (ushort)CollisionCategory.Character |
-                    (ushort)CollisionCategory.Ground;
                 body.UserData = entityId;
                 bodies.Add(body);
 
@@ -509,7 +561,6 @@ namespace Loderpit
             int entityId = EntityManager.createEntity();
 
             body.UserData = entityId;
-            body.CollisionCategories = (ushort)CollisionCategory.Ground;
 
             customProperties.tryGetBool("isGround", out isGround);
             customProperties.tryGetBool("isDestructibleObstacle", out isDestructibleObstacle);
@@ -525,14 +576,12 @@ namespace Loderpit
             if (isGround)
             {
                 EntityManager.addComponent(entityId, new GroundBodyComponent(entityId, body));
-                body.CollisionCategories = (ushort)CollisionCategory.Ground;
             }
 
             // Ceiling component
             if (isCeiling)
             {
                 EntityManager.addComponent(entityId, new CeilingComponent(entityId, body));
-                body.CollisionCategories = (ushort)CollisionCategory.Ceiling;
             }
 
             // DestructibleObstacle (with Vitals) components
@@ -541,7 +590,6 @@ namespace Loderpit
                 EntityManager.addComponent(entityId, new DestructibleObstacleComponent(entityId, body));
                 EntityManager.addComponent(entityId, new StatsComponent(entityId, 10, 10, 10, 10, 10, 100));
                 EntityManager.addComponent(entityId, new FactionComponent(entityId, Faction.Neutral, Faction.None));
-                body.CollisionCategories = (ushort)(CollisionCategory.Ground | CollisionCategory.CharacterInteractionReceptor);
             }
 
             // IgnoresRopeRaycast and IgnoresBridgeRaycast components
@@ -557,8 +605,7 @@ namespace Loderpit
             // Level end
             if (isLevelEnd)
             {
-                body.CollisionCategories = (ushort)CollisionCategory.CharacterInteractionReceptor;
-                body.CollidesWith = (ushort)CollisionCategory.CharacterInteractionSensor;
+                body.CollidesWith = (ushort)CollisionCategory.PlayerCharacters;
                 body.OnCollision += new OnCollisionEventHandler(levelEndOnCollision);
                 body.OnSeparation += new OnSeparationEventHandler(levelEndOnSeparation);
             }

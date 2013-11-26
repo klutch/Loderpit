@@ -80,8 +80,6 @@ namespace Loderpit.Loaders
             // ActivatesObstacle components
             if (activatesObstacle)
             {
-                body.CollisionCategories = (ushort)CollisionCategory.CharacterInteractionReceptor;
-                body.CollidesWith = (ushort)CollisionCategory.CharacterInteractionSensor;
                 _bodyThatSendsActivateObstacle = body;
             }
 
@@ -94,7 +92,7 @@ namespace Loderpit.Loaders
             // Ignore ceiling collision
             if (ignoreCeilingCollision)
             {
-                body.CollidesWith = (ushort)(CollisionCategory.All ^ CollisionCategory.Ceiling);
+                // TODO -- Do something tons of fun.
             }
 
             base.afterLoadBody(name, body, customProperties, bodyData);
