@@ -24,12 +24,13 @@ namespace Loderpit.Skills
         public Vector2 anchorB { get { return _anchorB; } }
         public Formation formationToRemove { get { return _formationToRemove; } set { _formationToRemove = value; } }
 
-        public ExecuteBuildBridgeSkill(Skill skill, Vector2 anchorA, Vector2 anchorB)
+        public ExecuteBuildBridgeSkill(Skill skill, Vector2 anchorA, Vector2 anchorB, Func<bool> isDelayConditionMetCallback)
             : base (skill)
         {
             _anchorA = anchorA;
             _anchorB = anchorB;
             _delay = 180;
+            _isDelayConditionMetCallback = isDelayConditionMetCallback;
         }
     }
 }

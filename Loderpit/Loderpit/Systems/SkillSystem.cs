@@ -110,12 +110,26 @@ namespace Loderpit.Systems
         public void performBuildBridgeSkill(int entityId, BuildBridgeSkill buildBridgeSkill, Vector2 anchorA, Vector2 anchorB)
         {
             PerformingSkillsComponent performingSkillsComponent = EntityManager.getPerformingSkillsComponent(entityId);
-            ExecuteBuildBridgeSkill executeSkill = new ExecuteBuildBridgeSkill(buildBridgeSkill, anchorA, anchorB);
+            ExecuteBuildBridgeSkill executeSkill;
             GroupComponent groupComponent = SystemManager.groupSystem.getGroupComponentContaining(entityId);
             PositionComponent positionComponent = EntityManager.getPositionComponent(entityId);
             float distanceA = Math.Abs(anchorA.X - positionComponent.position.X);
             float distanceB = Math.Abs(anchorB.X - positionComponent.position.X);
             Vector2 closestAnchor = distanceA > distanceB ? anchorB : anchorA;
+
+            // Create execute skill object
+            executeSkill = new ExecuteBuildBridgeSkill(
+                buildBridgeSkill,
+                anchorA,
+                anchorB,
+                () =>
+                {
+                    PositionComponent futurePositionComponent = EntityManager.getPositionComponent(entityId);
+                    PositionTargetComponent positionTargetComponent = EntityManager.getPositionTargetComponent(entityId);
+                    float distance = Math.Abs(positionTargetComponent.position - futurePositionComponent.position.X);
+
+                    return distance <= positionTargetComponent.tolerance;
+                });
 
             if (groupComponent != null)
             {
