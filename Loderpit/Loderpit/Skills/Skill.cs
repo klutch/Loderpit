@@ -19,7 +19,8 @@ namespace Loderpit.Skills
         PowerShot,
 
         // Fighter
-        Kick
+        Kick,
+        PowerSwing
     }
 
     abstract public class Skill

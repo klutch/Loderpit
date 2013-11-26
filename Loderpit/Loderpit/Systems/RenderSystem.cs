@@ -133,6 +133,10 @@ namespace Loderpit.Systems
                 _actionLabel.DisplayedString = "Power Shot";
                 Game.window.Draw(_reticleShape);
             }
+            else if (teamSystem.initializingSkill.type == SkillType.PowerSwing)
+            {
+                _actionLabel.DisplayedString = "Power Swing";
+            }
         }
 
         public void update()

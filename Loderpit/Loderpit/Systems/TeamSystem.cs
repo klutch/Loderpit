@@ -152,6 +152,11 @@ namespace Loderpit.Systems
                             case SkillType.PowerShot:
                                 handleInitializePowerShot(selectedEntityId);
                                 break;
+
+                            // Fighter
+                            case SkillType.PowerSwing:
+                                handleInitializePowerSwing(selectedEntityId);
+                                break;
                         }
                     }
                 }
@@ -214,6 +219,16 @@ namespace Loderpit.Systems
             if (Game.newMouseState.isLeftButtonPressed && !Game.oldMouseState.isLeftButtonPressed)
             {
                 SystemManager.skillSystem.performPowerShotSkill(selectedEntityId, _initializingSkill as PowerShotSkill, Game.worldMouse);
+                _initializingSkill = null;
+            }
+        }
+
+        // Handle initialize power swing skill
+        private void handleInitializePowerSwing(int selectedEntityId)
+        {
+            if (Game.newMouseState.isLeftButtonPressed && !Game.oldMouseState.isLeftButtonPressed)
+            {
+                SystemManager.skillSystem.performPowerSwingSkill(selectedEntityId, _initializingSkill as PowerSwingSkill, Game.worldMouse);
                 _initializingSkill = null;
             }
         }

@@ -22,6 +22,7 @@ namespace Loderpit.Systems
      */
     public class SkillSystem : ISystem
     {
+        public const float SKILL_RANGE_TOLERANCE = 0.2f;
         private Dictionary<int, List<ExecuteSkill>> _skillsToRemove;
 
         public SystemType systemType { get { return SystemType.Skill; } }
@@ -191,6 +192,50 @@ namespace Loderpit.Systems
             }
         }
 
+        // Perform power swing skill
+        public void performPowerSwingSkill(int entityId, PowerSwingSkill powerSwingSkill, Vector2 target)
+        {
+            FactionComponent factionComponent = EntityManager.getFactionComponent(entityId);
+            PerformingSkillsComponent performingSkillsComponent = EntityManager.getPerformingSkillsComponent(entityId);
+            ExecutePowerSwingSkill executePowerSwingSkill = null;
+            List<Fixture> fixtures = SystemManager.physicsSystem.world.TestPointAll(target);
+
+            foreach (Fixture fixture in fixtures)
+            {
+                int targetEntityId;
+                FactionComponent targetFactionComponent;
+
+                // Skip bodies without any userdata
+                if (fixture.Body.UserData == null)
+                {
+                    continue;
+                }
+
+                targetEntityId = (int)fixture.Body.UserData;
+
+                // Skip entities without a faction component
+                if ((targetFactionComponent = EntityManager.getFactionComponent(targetEntityId)) == null)
+                {
+                    continue;
+                }
+
+                // Skip over non-attackable entities
+                if (!SystemManager.combatSystem.isFactionAttackable(factionComponent.faction, targetFactionComponent.faction))
+                {
+                    continue;
+                }
+
+                executePowerSwingSkill = new ExecutePowerSwingSkill(powerSwingSkill, targetEntityId);
+                EntityManager.addComponent(entityId, new PositionTargetComponent(entityId, fixture.Body, powerSwingSkill.range));
+                break;
+            }
+
+            if (executePowerSwingSkill != null)
+            {
+                performingSkillsComponent.executingSkills.Add(executePowerSwingSkill);
+            }
+        }
+
         #endregion
 
         #region Cooldown methods
@@ -281,18 +326,49 @@ namespace Loderpit.Systems
         // Execute power shot
         private void executePowerShot(int entityId, ExecutePowerShotSkill executePowerShotSkill)
         {
-            FactionComponent factionComponent = EntityManager.getFactionComponent(entityId);
-            PerformingSkillsComponent performingSkillsComponent = EntityManager.getPerformingSkillsComponent(entityId);
-            PowerShotSkill powerShotSkill = executePowerShotSkill.skill as PowerShotSkill;
+            PositionComponent attackerPositionComponent = EntityManager.getPositionComponent(entityId);
+            PositionComponent targetPositionComponent = EntityManager.getPositionComponent(executePowerShotSkill.defenderId);
+            Vector2 relative = targetPositionComponent.position - attackerPositionComponent.position;
 
-            if (EntityManager.doesEntityExist(executePowerShotSkill.defenderId))    // defender could have died already
+            // Ensure we're in range
+            if (relative.Length() <= executePowerShotSkill.skill.range + SKILL_RANGE_TOLERANCE)
             {
-                SystemManager.combatSystem.attack(entityId, executePowerShotSkill.defenderId, powerShotSkill.calculateExtraDamage());
-            }
-            SystemManager.skillSystem.resetCooldown(entityId, SkillType.PowerShot);
-            EntityManager.removeComponent(entityId, ComponentType.PositionTarget);
+                PerformingSkillsComponent performingSkillsComponent = EntityManager.getPerformingSkillsComponent(entityId);
+                PowerShotSkill powerShotSkill = executePowerShotSkill.skill as PowerShotSkill;
 
-            removeExecutedSkill(entityId, executePowerShotSkill);
+                if (EntityManager.doesEntityExist(executePowerShotSkill.defenderId))    // defender could have died already
+                {
+                    SystemManager.combatSystem.attack(entityId, executePowerShotSkill.defenderId, powerShotSkill.calculateExtraDamage());
+                }
+                SystemManager.skillSystem.resetCooldown(entityId, SkillType.PowerShot);
+                EntityManager.removeComponent(entityId, ComponentType.PositionTarget);
+
+                removeExecutedSkill(entityId, executePowerShotSkill);
+            }
+        }
+
+        // Execute power swing
+        private void executePowerSwing(int entityId, ExecutePowerSwingSkill executePowerSwingSkill)
+        {
+            PositionComponent attackerPositionComponent = EntityManager.getPositionComponent(entityId);
+            PositionComponent targetPositionComponent = EntityManager.getPositionComponent(executePowerSwingSkill.defenderId);
+            Vector2 relative = targetPositionComponent.position - attackerPositionComponent.position;
+
+            // Ensure we're in range
+            if (relative.Length() <= executePowerSwingSkill.skill.range + SKILL_RANGE_TOLERANCE)
+            {
+                PerformingSkillsComponent performingSkillsComponent = EntityManager.getPerformingSkillsComponent(entityId);
+                PowerSwingSkill powerSwingSkill = executePowerSwingSkill.skill as PowerSwingSkill;
+
+                if (EntityManager.doesEntityExist(executePowerSwingSkill.defenderId))    // defender could have died already
+                {
+                    SystemManager.combatSystem.attack(entityId, executePowerSwingSkill.defenderId, powerSwingSkill.calculateExtraDamage());
+                }
+                SystemManager.skillSystem.resetCooldown(entityId, SkillType.PowerSwing);
+                EntityManager.removeComponent(entityId, ComponentType.PositionTarget);
+
+                removeExecutedSkill(entityId, executePowerSwingSkill);
+            }
         }
 
         #endregion
@@ -336,6 +412,11 @@ namespace Loderpit.Systems
                             // Archer
                             case SkillType.PowerShot:
                                 executePowerShot(entityId, executeSkill as ExecutePowerShotSkill);
+                                break;
+
+                            // Fighter
+                            case SkillType.PowerSwing:
+                                executePowerSwing(entityId, executeSkill as ExecutePowerSwingSkill);
                                 break;
                         }
                     }

@@ -152,6 +152,11 @@ namespace Loderpit.Screens
                         case SkillType.PowerShot:
                             drawIcon("power_shot_icon");
                             break;
+
+                        // Fighter
+                        case SkillType.PowerSwing:
+                            drawIcon("power_swing_icon");
+                            break;
                     }
                 }
             }

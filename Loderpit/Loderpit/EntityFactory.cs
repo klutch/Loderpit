@@ -62,6 +62,7 @@ namespace Loderpit
                 case CharacterClass.Fighter:
                     skills.Add(new MeleeAttackSkill(1));
                     skills.Add(new KickSkill(1));
+                    skills.Add(new PowerSwingSkill(1));
                     break;
 
                 case CharacterClass.Archer:
@@ -75,7 +76,7 @@ namespace Loderpit
                     break;
 
                 case CharacterClass.Engineer:
-                    skills.Add(new ThrowRopeSkill(1, 6f));
+                    skills.Add(new ThrowRopeSkill(1));
                     skills.Add(new BuildBridgeSkill(1));
                     break;
             }

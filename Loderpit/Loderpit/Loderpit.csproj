@@ -149,6 +149,7 @@
     <Compile Include="Skills\KickSkill.cs" />
     <Compile Include="Skills\MeleeAttackSkill.cs" />
     <Compile Include="Skills\PowerShotSkill.cs" />
+    <Compile Include="Skills\PowerSwingSkill.cs" />
     <Compile Include="Skills\RangedAttackSkill.cs" />
     <Compile Include="Skills\ShieldOfThornsSkill.cs" />
     <Compile Include="Skills\Skill.cs" />
@@ -173,6 +174,9 @@
     <Compile Include="Systems\TeamSystem.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="resources\ui\action_icons\power_swing.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="resources\ui\reticle.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

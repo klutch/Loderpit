@@ -24,7 +24,6 @@ namespace Loderpit.Systems
      */
     public class CombatSystem : ISystem
     {
-        private const float SKILL_RANGE_TOLERANCE = 0.2f;
         private Random _rng;
 
         public SystemType systemType { get { return SystemType.Combat; } }
@@ -96,7 +95,7 @@ namespace Loderpit.Systems
             int defenderId,
             int extraDamage = 0,
             string attackDie = "d20",
-            string hitDie = "1d10",
+            string hitDie = "d6",
             List<SpellEffect> attackerSpellEffects = null,
             List<SpellEffect> defenderSpellEffects = null)
         {
@@ -280,7 +279,7 @@ namespace Loderpit.Systems
                                     PositionComponent defenderPositionComponent = EntityManager.getPositionComponent(defenderId);
                                     FactionComponent defenderFactionComponent = EntityManager.getFactionComponent(defenderId);
                                     Vector2 relative = defenderPositionComponent.position - attackerPositionComponent.position;
-                                    bool isDefenderWithinRange = relative.Length() <= (skill.range + SKILL_RANGE_TOLERANCE);
+                                    bool isDefenderWithinRange = relative.Length() <= (skill.range + SkillSystem.SKILL_RANGE_TOLERANCE);
                                     bool isDefenderAttackable = isFactionAttackable(attackerFactionComponent.faction, defenderFactionComponent.faction);
                                     bool isDefenderIncapacitated = EntityManager.getIncapacitatedComponent(defenderId) != null;
 
