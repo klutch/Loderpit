@@ -286,7 +286,7 @@ namespace Loderpit.Systems
 
                                     if (isDefenderWithinRange && isDefenderAttackable && !isDefenderIncapacitated)
                                     {
-                                        attack(attackerId, defenderId, 0, skill.calculateAttackDie(), skill.calculateHitDie());
+                                        attack(attackerId, defenderId, 0, skill.calculateAttackDie(), skill.calculateHitDie(), attackerSpellEffects, defenderSpellEffects);
 
                                         if (EntityManager.doesEntityExist(attackerId))  // attacker could have been killed by a damage shield
                                         {

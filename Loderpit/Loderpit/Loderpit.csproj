@@ -154,6 +154,7 @@
     <Compile Include="Skills\Skill.cs" />
     <Compile Include="Skills\ThrowRopeSkill.cs" />
     <Compile Include="SpellEffects\DamageShieldSpellEffect.cs" />
+    <Compile Include="SpellEffects\KnockbackProcSpellEffect.cs" />
     <Compile Include="SpellEffects\SpellEffect.cs" />
     <Compile Include="Systems\CameraSystem.cs" />
     <Compile Include="Systems\CharacterSystem.cs" />
