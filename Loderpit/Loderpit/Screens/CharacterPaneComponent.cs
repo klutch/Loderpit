@@ -27,7 +27,7 @@ namespace Loderpit.Screens
         private RectangleShape[] _skillIconShapes;
         private RectangleShape _hpBarBackground;
         private RectangleShape _hpBarForeground;
-        private int _skillCount;
+        private int _usedSkillIconCount;
 
         public CharacterPaneComponent(Screen screen, Font font, int teamPosition)
             : base(screen)
@@ -84,19 +84,18 @@ namespace Loderpit.Screens
 
         private void drawIcon(string resourceId)
         {
-            RectangleShape shape = _skillIconShapes[_skillCount];
+            RectangleShape shape = _skillIconShapes[_usedSkillIconCount];
 
-            shape.Position = _position + new Vector2f(4f, 54f) + new Vector2f(36f, 0f) * _skillCount;
+            shape.Position = _position + new Vector2f(4f, 54f) + new Vector2f(36f, 0f) * _usedSkillIconCount;
             shape.Texture = ResourceManager.getResource<Texture>(resourceId);
             Game.window.Draw(shape);
 
-            _skillCount++;
+            _usedSkillIconCount++;
         }
 
         public override void update()
         {
             _entityId = SystemManager.teamSystem.getTeammateEntityId(_teamPosition);
-            _skillCount = 0;
 
             if (_entityId != -1)
             {
@@ -114,6 +113,9 @@ namespace Loderpit.Screens
 
         public override void draw()
         {
+            _usedSkillIconCount = 0;
+
+            // Draw pane
             Game.window.Draw(_backgroundShape);
             Game.window.Draw(_classLabel);
 

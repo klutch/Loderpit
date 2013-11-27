@@ -43,6 +43,8 @@ namespace Loderpit
         public static Vector2f sfmlWorldMouse;
         public static Vector2f screenMouse;
         public static Vector2 worldMouse;
+        public static bool paused;
+        public static bool singleStep;
         private static GameState _state;
         private Stopwatch _stopwatch;
         private int _fps;
@@ -243,48 +245,64 @@ namespace Loderpit
             sfmlWorldMouse = _window.MapPixelToCoords(screenMousePosition, SystemManager.cameraSystem.worldView);
             worldMouse = new Vector2(sfmlWorldMouse.X, sfmlWorldMouse.Y);
 
-            if (inFocus)
+            // Debug input
+            if (newKeyState.isPressed(Key.F3) && oldKeyState.isReleased(Key.F3))
             {
-                if (newMouseState.isRightButtonPressed && !oldMouseState.isRightButtonPressed)
-                {
-                    Fixture fixture = SystemManager.physicsSystem.world.TestPoint(worldMouse);
-
-                    if (fixture != null)
-                    {
-                        _mouseJoint = JointFactory.CreateFixedMouseJoint(SystemManager.physicsSystem.world, fixture.Body, worldMouse);
-                    }
-                }
-                else if (newMouseState.isRightButtonPressed && oldMouseState.isRightButtonPressed)
-                {
-                    if (_mouseJoint != null)
-                    {
-                        _mouseJoint.WorldAnchorB = worldMouse;
-                    }
-                }
-                else if (!newMouseState.isRightButtonPressed && oldMouseState.isRightButtonPressed)
-                {
-                    if (_mouseJoint != null)
-                    {
-                        SystemManager.physicsSystem.world.RemoveJoint(_mouseJoint);
-                        _mouseJoint = null;
-                    }
-                }
+                Game.paused = !Game.paused;
+            }
+            if (Game.paused && newKeyState.isPressed(Key.F1) && oldKeyState.isReleased(Key.F1))
+            {
+                Game.singleStep = true;
             }
 
-            SystemManager.physicsSystem.update();
-            SystemManager.levelSystem.update();
-            SystemManager.teamSystem.update();
-            SystemManager.groupSystem.update();
-            SystemManager.obstacleSystem.update();
-            SystemManager.cameraSystem.update();
-            SystemManager.enemyAISystem.update();
-            SystemManager.characterSystem.update();
-            SystemManager.statSystem.update();
-            SystemManager.renderSystem.update();
-            SystemManager.skillSystem.update();
-            SystemManager.spellEffectSystem.update();
-            SystemManager.combatSystem.update();
-            ScreenManager.update();
+            // Normal update logic
+            if (!Game.paused || Game.singleStep)
+            {
+                if (inFocus)
+                {
+                    if (newMouseState.isRightButtonPressed && !oldMouseState.isRightButtonPressed)
+                    {
+                        Fixture fixture = SystemManager.physicsSystem.world.TestPoint(worldMouse);
+
+                        if (fixture != null)
+                        {
+                            _mouseJoint = JointFactory.CreateFixedMouseJoint(SystemManager.physicsSystem.world, fixture.Body, worldMouse);
+                        }
+                    }
+                    else if (newMouseState.isRightButtonPressed && oldMouseState.isRightButtonPressed)
+                    {
+                        if (_mouseJoint != null)
+                        {
+                            _mouseJoint.WorldAnchorB = worldMouse;
+                        }
+                    }
+                    else if (!newMouseState.isRightButtonPressed && oldMouseState.isRightButtonPressed)
+                    {
+                        if (_mouseJoint != null)
+                        {
+                            SystemManager.physicsSystem.world.RemoveJoint(_mouseJoint);
+                            _mouseJoint = null;
+                        }
+                    }
+                }
+
+                SystemManager.physicsSystem.update();
+                SystemManager.levelSystem.update();
+                SystemManager.teamSystem.update();
+                SystemManager.groupSystem.update();
+                SystemManager.obstacleSystem.update();
+                SystemManager.cameraSystem.update();
+                SystemManager.enemyAISystem.update();
+                SystemManager.characterSystem.update();
+                SystemManager.statSystem.update();
+                SystemManager.renderSystem.update();
+                SystemManager.skillSystem.update();
+                SystemManager.spellEffectSystem.update();
+                SystemManager.combatSystem.update();
+                ScreenManager.update();
+            }
+
+            Game.singleStep = false;
             updateFPS();
         }
 

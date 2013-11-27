@@ -155,6 +155,7 @@
     <Compile Include="Skills\ShieldOfThornsSkill.cs" />
     <Compile Include="Skills\Skill.cs" />
     <Compile Include="Skills\ThrowRopeSkill.cs" />
+    <Compile Include="SpecialFixtureTypes.cs" />
     <Compile Include="SpellEffects\DamageShieldSpellEffect.cs" />
     <Compile Include="SpellEffects\KnockbackProcSpellEffect.cs" />
     <Compile Include="SpellEffects\SpellEffect.cs" />

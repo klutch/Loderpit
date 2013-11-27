@@ -64,6 +64,7 @@ namespace Loderpit.Systems
             CharacterComponent characterComponentA = EntityManager.getCharacterComponent(entityId);
             Fixture fixture = FixtureFactory.AttachRectangle(1.1f, 1.4f, 0.1f, Vector2.Zero, characterComponentA.body);
 
+            fixture.UserData = SpecialFixtureType.Shield;
             fixture.OnCollision += new OnCollisionEventHandler((fixtureA, fixtureB, contact) =>
                 {
                     int entityIdA = (int)fixtureA.Body.UserData;
@@ -98,17 +99,26 @@ namespace Loderpit.Systems
                         return false;
                     }
 
-                    // Skip if the colliding body is the character's feet
-                    if ((characterComponentB = EntityManager.getCharacterComponent(entityIdB)) != null)
+                    // Skip if no character component
+                    if ((characterComponentB = EntityManager.getCharacterComponent(entityIdB)) == null)
                     {
-                        if (fixtureB.Body == characterComponentB.feet)
-                        {
-                            return false;
-                        }
+                        return false;
+                    }
+
+                    // Skip if colliding with a character sensor
+                    if (characterComponentB.interactionSensor == fixtureB)
+                    {
+                        return false;
+                    }
+
+                    // Skip if colliding with a character's feet
+                    if (characterComponentB.feet == fixtureB.Body)
+                    {
+                        return false;
                     }
 
                     // Apply a small upward/backward force to the character to push it back
-                    fixtureB.Body.ApplyForce(new Vector2(10f, -10f));
+                    fixtureB.Body.ApplyForce(new Vector2(5f, -5f));
 
                     return true;
                 });

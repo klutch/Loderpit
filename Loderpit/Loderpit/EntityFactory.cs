@@ -368,7 +368,15 @@ namespace Loderpit
             // Don't collide with other characters
             if ((characterComponentB = EntityManager.getCharacterComponent(entityIdB)) != null)
             {
-                return false;
+                // Make an exception for fixtures that are a shield
+                if (fixtureB.UserData != null && (SpecialFixtureType)fixtureB.UserData == SpecialFixtureType.Shield)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
             }
 
             return true;
