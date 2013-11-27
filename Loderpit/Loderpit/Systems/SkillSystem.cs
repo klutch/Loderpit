@@ -117,8 +117,14 @@ namespace Loderpit.Systems
                         return false;
                     }
 
+                    // Make sure the enemy is in front of the shield
+                    if (characterComponentB.body.Position.X <= characterComponentA.body.Position.X)
+                    {
+                        return false;
+                    }
+
                     // Apply a small upward/backward force to the character to push it back
-                    fixtureB.Body.ApplyForce(new Vector2(5f, -5f));
+                    fixtureB.Body.ApplyForce(new Vector2(10f, -10f));
 
                     return true;
                 });

@@ -336,6 +336,7 @@ namespace Loderpit
             interactionSensor.IsSensor = true;
 
             body.OnCollision += new OnCollisionEventHandler(enemyCharacterBodyOnCollision);
+            feet.OnCollision += new OnCollisionEventHandler(enemyCharacterFeetOnCollision);
 
             EntityManager.addComponent(entityId, new CharacterComponent(entityId, body, feet, feetJoint, interactionSensor, characterClass));
             EntityManager.addComponent(entityId, getCharacterStats(entityId, characterClass));
@@ -349,6 +350,29 @@ namespace Loderpit
             EntityManager.addComponent(entityId, new PerformingSkillsComponent(entityId));
 
             return entityId;
+        }
+
+        static bool enemyCharacterFeetOnCollision(Fixture fixtureA, Fixture fixtureB, Contact contact)
+        {
+            int entityIdA = (int)fixtureA.Body.UserData;
+            int entityIdB;
+            CharacterComponent characterComponentB;
+
+            // Skip fixtures without userdata
+            if (fixtureB.Body.UserData == null)
+            {
+                return true;
+            }
+
+            entityIdB = (int)fixtureB.Body.UserData;
+
+            // Don't collide with other characters
+            if ((characterComponentB = EntityManager.getCharacterComponent(entityIdB)) != null)
+            {
+                return false;
+            }
+
+            return true;
         }
 
         private static bool enemyCharacterBodyOnCollision(Fixture fixtureA, Fixture fixtureB, Contact contact)
