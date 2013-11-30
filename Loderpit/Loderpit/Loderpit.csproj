@@ -120,7 +120,7 @@
     <Compile Include="Formations\LimitedRangeFormation.cs" />
     <Compile Include="Formations\SplitFormation.cs" />
     <Compile Include="Game.cs" />
-    <Compile Include="GameSettings.cs" />
+    <Compile Include="CollisionCategories.cs" />
     <Compile Include="Helpers.cs" />
     <Compile Include="KeyboardState.cs" />
     <Compile Include="Loaders\InterLevelLoader.cs" />

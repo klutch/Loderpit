@@ -105,12 +105,6 @@ namespace Loderpit.Systems
                         return false;
                     }
 
-                    // Skip if colliding with a character sensor
-                    if (characterComponentB.interactionSensor == fixtureB)
-                    {
-                        return false;
-                    }
-
                     // Skip if colliding with a character's feet
                     if (characterComponentB.feet == fixtureB.Body)
                     {

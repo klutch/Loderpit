@@ -9,7 +9,8 @@ namespace Loderpit
     {
         None = 0,
         All = 0xFFFF,
-        PlayerCharacters = 1,
-        EnemyCharacters = 2
+        Characters = 1,
+        CharacterFeet = 2,
+        Terrain = 4
     }
 }

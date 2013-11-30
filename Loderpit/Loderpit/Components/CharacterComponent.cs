@@ -13,7 +13,6 @@ namespace Loderpit.Components
         private int _entityId;
         private Body _body;
         private Body _feet;
-        private Fixture _interactionSensor;
         private RevoluteJoint _feetJoint;
         private int _groundContactCount;
         private int _movementSpeed;
@@ -24,19 +23,17 @@ namespace Loderpit.Components
         public bool isOnGround { get { return _groundContactCount > 0; } }
         public Body body { get { return _body; } }
         public Body feet { get { return _feet; } }
-        public Fixture interactionSensor { get { return _interactionSensor; } }
         public int movementSpeed { get { return _movementSpeed; } set { _movementSpeed = value; } }
         public int groundContactCount { get { return _groundContactCount; } set { _groundContactCount = value; } }
         public RevoluteJoint feetJoint { get { return _feetJoint; } }
         public CharacterClass characterClass { get { return _characterClass; } }
 
-        public CharacterComponent(int entityId, Body body, Body feet, RevoluteJoint feetJoint, Fixture interactionSensor, CharacterClass characterClass)
+        public CharacterComponent(int entityId, Body body, Body feet, RevoluteJoint feetJoint, CharacterClass characterClass)
         {
             _entityId = entityId;
             _body = body;
             _feet = feet;
             _feetJoint = feetJoint;
-            _interactionSensor = interactionSensor;
             _characterClass = characterClass;
         }
     }
