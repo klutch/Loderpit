@@ -156,6 +156,7 @@ namespace Loderpit
             EntityManager.addComponent(entityId, new FactionComponent(entityId, Faction.Player, Faction.Enemy));
             EntityManager.addComponent(entityId, new RenderHealthComponent(entityId));
             EntityManager.addComponent(entityId, new PerformingSkillsComponent(entityId));
+            EntityManager.addComponent(entityId, new ExternalMovementSpeedsComponent(entityId));
 
             return entityId;
         }
@@ -315,6 +316,7 @@ namespace Loderpit
             EntityManager.addComponent(entityId, new FactionComponent(entityId, Faction.Enemy, Faction.Player));
             EntityManager.addComponent(entityId, new RenderHealthComponent(entityId));
             EntityManager.addComponent(entityId, new PerformingSkillsComponent(entityId));
+            EntityManager.addComponent(entityId, new ExternalMovementSpeedsComponent(entityId));
 
             return entityId;
         }

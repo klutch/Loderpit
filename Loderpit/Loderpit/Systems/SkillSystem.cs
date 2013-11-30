@@ -72,6 +72,7 @@ namespace Loderpit.Systems
                     FactionComponent factionComponentA = EntityManager.getFactionComponent(entityIdA);
                     FactionComponent factionComponentB;
                     CharacterComponent characterComponentB;
+                    ExternalMovementSpeedsComponent externalSpeedsB;
 
                     // Skip if not touching -- not sure if this is necessary
                     if (!contact.IsTouching)
@@ -105,22 +106,61 @@ namespace Loderpit.Systems
                         return false;
                     }
 
-                    // Skip if colliding with a character's feet
-                    if (characterComponentB.feet == fixtureB.Body)
-                    {
-                        return false;
-                    }
-
                     // Make sure the enemy is in front of the shield
                     if (characterComponentB.body.Position.X <= characterComponentA.body.Position.X)
                     {
                         return false;
                     }
 
-                    // Apply a small upward/backward force to the character to push it back
-                    fixtureB.Body.ApplyForce(new Vector2(10f, -10f));
+                    // Add blocker's speed to other entity's external speeds component
+                    if ((externalSpeedsB = EntityManager.getExternalMovementSpeedsComponent(entityIdB)) != null)
+                    {
+                        externalSpeedsB.addExternalMovementSpeed(ExternalMovementSpeedType.ShieldBlock, characterComponentA.movementSpeed);
+                    }
 
                     return true;
+                });
+
+            fixture.OnSeparation += new OnSeparationEventHandler((fixtureA, fixtureB) =>
+                {
+                    int entityIdA = (int)fixtureA.Body.UserData;
+                    int entityIdB;
+                    FactionComponent factionComponentA = EntityManager.getFactionComponent(entityIdA);
+                    FactionComponent factionComponentB;
+                    CharacterComponent characterComponentB;
+                    ExternalMovementSpeedsComponent externalSpeedsB;
+
+                    // Skip fixtures whose bodies don't have a userdata
+                    if (fixtureB.Body.UserData == null)
+                    {
+                        return;
+                    }
+
+                    entityIdB = (int)fixtureB.Body.UserData;
+
+                    // Skip if entity doesn't have a faction component
+                    if ((factionComponentB = EntityManager.getFactionComponent(entityIdB)) == null)
+                    {
+                        return;
+                    }
+
+                    // Skip if factions aren't hostile
+                    if (factionComponentA.hostileFaction != factionComponentB.faction)
+                    {
+                        return;
+                    }
+
+                    // Skip if no character component
+                    if ((characterComponentB = EntityManager.getCharacterComponent(entityIdB)) == null)
+                    {
+                        return;
+                    }
+
+                    // Remove external speed
+                    if ((externalSpeedsB = EntityManager.getExternalMovementSpeedsComponent(entityIdB)) != null)
+                    {
+                        externalSpeedsB.removeExternalMovementSpeed(ExternalMovementSpeedType.ShieldBlock);
+                    }
                 });
         }
 

@@ -92,6 +92,7 @@
     <Compile Include="Components\CharacterComponent.cs" />
     <Compile Include="Components\CombatTargetComponent.cs" />
     <Compile Include="Components\DestructibleObstacleComponent.cs" />
+    <Compile Include="Components\ExternalMovementSpeedsComponent.cs" />
     <Compile Include="Components\FactionComponent.cs" />
     <Compile Include="Components\GroundBodyComponent.cs" />
     <Compile Include="Components\GroupComponent.cs" />

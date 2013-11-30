@@ -44,11 +44,17 @@ namespace Loderpit.Systems
         {
             foreach (int entityId in characters)
             {
-                CharacterComponent characterBodyComponent = EntityManager.getCharacterComponent(entityId);
-                float motorSpeed = getMotorSpeed(characterBodyComponent.movementSpeed);
+                CharacterComponent characterComponent = EntityManager.getCharacterComponent(entityId);
+                int characterMovementSpeed;
+                ExternalMovementSpeedsComponent externalSpeeds = EntityManager.getExternalMovementSpeedsComponent(entityId);
 
-                characterBodyComponent.feetJoint.MotorSpeed = motorSpeed;
-                characterBodyComponent.movementSpeed = 0;
+                // Handle external movement speeds
+                if (!externalSpeeds.tryGetExternalMovementSpeed(ExternalMovementSpeedType.ShieldBlock, out characterMovementSpeed))
+                {
+                    characterMovementSpeed = characterComponent.movementSpeed;
+                }
+
+                characterComponent.feetJoint.MotorSpeed = getMotorSpeed(characterMovementSpeed);
             }
         }
 
