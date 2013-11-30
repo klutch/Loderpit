@@ -62,7 +62,7 @@ namespace Loderpit.Systems
         {
             // Create a 'shield' fixture (attached to the character's body) that only collides with hostile characters
             CharacterComponent characterComponentA = EntityManager.getCharacterComponent(entityId);
-            Fixture fixture = FixtureFactory.AttachRectangle(1.1f, 1.4f, 0.1f, Vector2.Zero, characterComponentA.body);
+            Fixture fixture = FixtureFactory.AttachRectangle(1.1f, 1.4f, 0f, Vector2.Zero, characterComponentA.body);
 
             fixture.UserData = SpecialFixtureType.Shield;
             fixture.OnCollision += new OnCollisionEventHandler((fixtureA, fixtureB, contact) =>
