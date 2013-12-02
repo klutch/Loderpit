@@ -71,16 +71,6 @@ namespace Loderpit.Skills
         {
             return _baseCooldown;
         }
-
-        virtual public string calculateAttackDie()
-        {
-            return "d20";
-        }
-
-        virtual public string calculateHitDie()
-        {
-            return "d10";
-        }
     }
 
     abstract public class ExecuteSkill

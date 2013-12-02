@@ -307,7 +307,7 @@ namespace Loderpit
             feet.OnCollision += new OnCollisionEventHandler(enemyCharacterFeetOnCollision);
 
             EntityManager.addComponent(entityId, new CharacterComponent(entityId, body, feet, feetJoint, characterClass));
-            EntityManager.addComponent(entityId, getCharacterStats(entityId, characterClass));
+            EntityManager.addComponent(entityId, new StatsComponent(entityId, 6, 6, 10, 1, 1, 120, "d3"));
             EntityManager.addComponent(entityId, new PositionComponent(entityId, body));
             EntityManager.addComponent(entityId, new IgnoreRopeRaycastComponent(entityId));
             EntityManager.addComponent(entityId, new IgnoreBridgeRaycastComponent(entityId));
@@ -584,7 +584,7 @@ namespace Loderpit
             if (isDestructibleObstacle)
             {
                 EntityManager.addComponent(entityId, new DestructibleObstacleComponent(entityId, body));
-                EntityManager.addComponent(entityId, new StatsComponent(entityId, 10, 10, 10, 10, 10, 100));
+                EntityManager.addComponent(entityId, new StatsComponent(entityId, 10, 10, 0, 0, 0, 100));
                 EntityManager.addComponent(entityId, new FactionComponent(entityId, Faction.Neutral, Faction.None));
             }
 

@@ -30,23 +30,5 @@ namespace Loderpit.Skills
                 default: return 200f;
             }
         }
-
-        // Calculates the attack die
-        public override string calculateAttackDie()
-        {
-            switch (_level)
-            {
-                default: return "d20";
-            }
-        }
-
-        // Calculates the hit die
-        public override string calculateHitDie()
-        {
-            switch (_level)
-            {
-                default: return "1d5";
-            }
-        }
     }
 }

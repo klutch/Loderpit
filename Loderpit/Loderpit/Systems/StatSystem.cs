@@ -33,6 +33,21 @@ namespace Loderpit.Systems
             return 10 + getStatModifier(statsComponent.dexterity);
         }
 
+        // Attack die
+        public string getAttackDie(int entityId)
+        {
+            return "d20";
+        }
+
+        // Hit die
+        public string getHitDie(int entityId)
+        {
+            StatsComponent statsComponent = EntityManager.getStatsComponent(entityId);
+
+            // TODO: Get hit die from weapons
+            return statsComponent.unarmedHitDie;
+        }
+
         public void update()
         {
         }
