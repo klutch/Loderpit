@@ -168,7 +168,14 @@ namespace Loderpit.Systems
         {
             if (Game.newMouseState.isLeftButtonPressed && !Game.oldMouseState.isLeftButtonPressed)
             {
-                SystemManager.skillSystem.performMeleeAttackSkill(selectedEntityId, _initializingSkill as MeleeAttackSkill, Game.worldMouse);
+                if (_initializingSkill.type == SkillType.MeleeAttack)
+                {
+                    SystemManager.skillSystem.performMeleeAttackSkill(selectedEntityId, _initializingSkill as MeleeAttackSkill, Game.worldMouse);
+                }
+                else if (_initializingSkill.type == SkillType.RangedAttack)
+                {
+                    SystemManager.skillSystem.performRangedAttackSkill(selectedEntityId, _initializingSkill as RangedAttackSkill, Game.worldMouse);
+                }
                 _initializingSkill = null;
             }
         }
