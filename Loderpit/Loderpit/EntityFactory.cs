@@ -131,7 +131,7 @@ namespace Loderpit
             feet = BodyFactory.CreateCircle(world, 0.25f, 1f, position + feetOffset);
             feet.BodyType = BodyType.Dynamic;
             feet.UserData = entityId;
-            feet.Friction = 10f;
+            feet.Friction = 5f;
             feet.CollisionCategories = (ushort)CollisionCategory.CharacterFeet;
             feet.CollidesWith = (ushort)CollisionCategory.Terrain;
 
@@ -293,7 +293,7 @@ namespace Loderpit
             feet = BodyFactory.CreateCircle(world, 0.25f, 1f, position + feetOffset);
             feet.BodyType = BodyType.Dynamic;
             feet.UserData = entityId;
-            feet.Friction = 10f;
+            feet.Friction = 5f;
             feet.CollisionCategories = (ushort)CollisionCategory.CharacterFeet;
             feet.CollidesWith = (ushort)CollisionCategory.Terrain;
 

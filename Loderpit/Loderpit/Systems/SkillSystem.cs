@@ -64,6 +64,7 @@ namespace Loderpit.Systems
             CharacterComponent characterComponentA = EntityManager.getCharacterComponent(entityId);
             Fixture fixture = FixtureFactory.AttachRectangle(1.1f, 1.4f, 0f, Vector2.Zero, characterComponentA.body);
 
+            fixture.Friction = 0f;
             fixture.UserData = SpecialFixtureType.Shield;
             fixture.OnCollision += new OnCollisionEventHandler((fixtureA, fixtureB, contact) =>
                 {
@@ -116,6 +117,7 @@ namespace Loderpit.Systems
                     if ((externalSpeedsB = EntityManager.getExternalMovementSpeedsComponent(entityIdB)) != null)
                     {
                         externalSpeedsB.addExternalMovementSpeed(ExternalMovementSpeedType.ShieldBlock, characterComponentA.movementSpeed);
+                        characterComponentB.feet.Friction = 0f;
                     }
 
                     return true;
@@ -160,6 +162,7 @@ namespace Loderpit.Systems
                     if ((externalSpeedsB = EntityManager.getExternalMovementSpeedsComponent(entityIdB)) != null)
                     {
                         externalSpeedsB.removeExternalMovementSpeed(ExternalMovementSpeedType.ShieldBlock);
+                        characterComponentB.feet.Friction = 5f;
                     }
                 });
         }

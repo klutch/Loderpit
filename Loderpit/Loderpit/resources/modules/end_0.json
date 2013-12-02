@@ -74,7 +74,7 @@
 				
 				{
 					"density" : 1,
-					"friction" : 0.2,
+					"friction" : 1,
 					"name" : "fixture0",
 					"polygon" : 
 					{
@@ -88,7 +88,7 @@
 				
 				{
 					"density" : 1,
-					"friction" : 0.2,
+					"friction" : 1,
 					"name" : "fixture0",
 					"polygon" : 
 					{
@@ -102,7 +102,7 @@
 				
 				{
 					"density" : 1,
-					"friction" : 0.2,
+					"friction" : 1,
 					"name" : "fixture0",
 					"polygon" : 
 					{
@@ -116,7 +116,7 @@
 				
 				{
 					"density" : 1,
-					"friction" : 0.2,
+					"friction" : 1,
 					"name" : "fixture0",
 					"polygon" : 
 					{
@@ -130,7 +130,7 @@
 				
 				{
 					"density" : 1,
-					"friction" : 0.2,
+					"friction" : 1,
 					"name" : "fixture0",
 					"polygon" : 
 					{
@@ -144,7 +144,7 @@
 				
 				{
 					"density" : 1,
-					"friction" : 0.2,
+					"friction" : 1,
 					"name" : "fixture0",
 					"polygon" : 
 					{
@@ -158,7 +158,7 @@
 				
 				{
 					"density" : 1,
-					"friction" : 0.2,
+					"friction" : 1,
 					"name" : "fixture0",
 					"polygon" : 
 					{
@@ -172,7 +172,7 @@
 				
 				{
 					"density" : 1,
-					"friction" : 0.2,
+					"friction" : 1,
 					"name" : "fixture0",
 					"polygon" : 
 					{
@@ -186,7 +186,7 @@
 				
 				{
 					"density" : 1,
-					"friction" : 0.2,
+					"friction" : 1,
 					"name" : "fixture0",
 					"polygon" : 
 					{
@@ -200,7 +200,7 @@
 				
 				{
 					"density" : 1,
-					"friction" : 0.2,
+					"friction" : 1,
 					"name" : "fixture0",
 					"polygon" : 
 					{
