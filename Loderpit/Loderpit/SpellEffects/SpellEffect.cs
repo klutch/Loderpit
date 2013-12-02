@@ -6,7 +6,9 @@ namespace Loderpit.SpellEffects
     public enum SpellEffectType
     {
         DamageShield,
-        KnockbackProc
+        KnockbackProc,
+        IgniteProc,
+        Ignite
     }
 
     abstract public class SpellEffect
@@ -16,8 +18,6 @@ namespace Loderpit.SpellEffects
         protected bool _affectsFriendly;
         protected bool _affectsNeutral;
         protected bool _affectsHostile;
-        protected int _damage;          // not always used
-        protected float _radius;        // not always used
         protected int _timeToLive;      // -1 == infinite, 0 == dead, > 0 == alive
         protected Action<int, int> _onHitByOther;
         protected Action<int, int> _onHitOther;
@@ -27,8 +27,7 @@ namespace Loderpit.SpellEffects
         public bool affectsFriendly { get { return _affectsFriendly; } }
         public bool affectsNeutral { get { return _affectsNeutral; } }
         public bool affectsHostile { get { return _affectsHostile; } }
-        public int damage { get { return _damage; } }
-        public float radius { get { return _radius; } }
+        public int timeToLive { get { return _timeToLive; } set { _timeToLive = value; } }
 
         public SpellEffect(SpellEffectType type)
         {

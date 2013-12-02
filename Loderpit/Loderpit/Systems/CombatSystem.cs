@@ -136,7 +136,7 @@ namespace Loderpit.Systems
                 // Check for zero health
                 if (defenderStats.currentHp == 0)
                 {
-                    handleZeroHealth(attackerId, defenderId);
+                    handleZeroHealth(defenderId);
                 }
 
                 return true;
@@ -151,7 +151,7 @@ namespace Loderpit.Systems
         }
 
         // Apply spell damage -- Eventually this could factor in entity resistences
-        public void applySpellDamage(int attackerId, int defenderId, int damage)
+        public void applySpellDamage(int defenderId, int damage)
         {
             StatsComponent defenderStatsComponent = EntityManager.getStatsComponent(defenderId);
 
@@ -162,7 +162,7 @@ namespace Loderpit.Systems
             // Check for zero health
             if (defenderStatsComponent.currentHp == 0)
             {
-                handleZeroHealth(attackerId, defenderId);
+                handleZeroHealth(defenderId);
             }
         }
 
@@ -184,10 +184,9 @@ namespace Loderpit.Systems
         }
 
         // Handle an entity with zero health
-        private void handleZeroHealth(int attackerId, int defenderId)
+        private void handleZeroHealth(int defenderId)
         {
             FactionComponent factionComponent = EntityManager.getFactionComponent(defenderId);
-            CombatTargetComponent combatTargetComponent = EntityManager.getCombatTargetComponent(attackerId);
             List<int> allCombatEntities;
 
             if (factionComponent.faction == Faction.Player)

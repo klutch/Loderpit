@@ -23,7 +23,10 @@ namespace Loderpit.Skills
         PowerSwing,
 
         // Defender
-        Block
+        Block,
+
+        // Mage
+        Ignite
     }
 
     abstract public class Skill

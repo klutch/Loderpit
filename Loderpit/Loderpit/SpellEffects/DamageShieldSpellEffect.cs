@@ -4,8 +4,14 @@ using Loderpit.Managers;
 
 namespace Loderpit.SpellEffects
 {
-    public class DamageShieldSpellEffect : SpellEffect
+    public class DamageShieldSpellEffect : SpellEffect, IAoESpellEffect
     {
+        private int _damage;
+        private float _radius;
+
+        public int damage { get { return _damage; } }
+        public float radius { get { return _radius; } }
+
         public DamageShieldSpellEffect(int damage, float radius)
             : base(SpellEffectType.DamageShield)
         {
@@ -15,7 +21,7 @@ namespace Loderpit.SpellEffects
             _affectsFriendly = true;
             _onHitByOther = (attackerId, defenderId) =>
                 {
-                    SystemManager.combatSystem.applySpellDamage(defenderId, attackerId, _damage);
+                    SystemManager.combatSystem.applySpellDamage(defenderId, _damage);
                 };
         }
     }

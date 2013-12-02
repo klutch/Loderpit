@@ -77,6 +77,7 @@ namespace Loderpit
 
                 case CharacterClass.Mage:
                     skills.Add(new RangedAttackSkill(1, "wand_icon"));
+                    skills.Add(new IgniteSkill(1));
                     break;
 
                 case CharacterClass.Engineer:
@@ -586,6 +587,7 @@ namespace Loderpit
                 EntityManager.addComponent(entityId, new DestructibleObstacleComponent(entityId, body));
                 EntityManager.addComponent(entityId, new StatsComponent(entityId, 10, 10, 0, 0, 0, 100));
                 EntityManager.addComponent(entityId, new FactionComponent(entityId, Faction.Neutral, Faction.None));
+                EntityManager.addComponent(entityId, new ActiveSpellEffectsComponent(entityId));
             }
 
             // IgnoresRopeRaycast and IgnoresBridgeRaycast components

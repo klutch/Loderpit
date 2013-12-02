@@ -102,22 +102,28 @@ namespace Loderpit.Systems
                         entitiesToAdd.Add(entityId);
                     }
 
-                    // Add friendly entities to the affected entity map
-                    if (spellEffect.affectsFriendly)
+                    // AoE spell effects
+                    if (spellEffect is IAoESpellEffect)
                     {
-                        entitiesToAdd.AddRange(findEntitiesWithinRange(entityId, spellEffect.radius, factionComponent.faction));
-                    }
+                        IAoESpellEffect aeSpellEffect = spellEffect as IAoESpellEffect;
 
-                    // Add hostile entities to the affected entity map
-                    if (spellEffect.affectsHostile)
-                    {
-                        entitiesToAdd.AddRange(findEntitiesWithinRange(entityId, spellEffect.radius, factionComponent.hostileFaction));
-                    }
+                        // Add friendly entities to the affected entity map
+                        if (spellEffect.affectsFriendly)
+                        {
+                            entitiesToAdd.AddRange(findEntitiesWithinRange(entityId, aeSpellEffect.radius, factionComponent.faction));
+                        }
 
-                    // Add neutral entities to the affected entity map
-                    if (spellEffect.affectsNeutral)
-                    {
-                        entitiesToAdd.AddRange(findEntitiesWithinRange(entityId, spellEffect.radius, Faction.Neutral));
+                        // Add hostile entities to the affected entity map
+                        if (spellEffect.affectsHostile)
+                        {
+                            entitiesToAdd.AddRange(findEntitiesWithinRange(entityId, aeSpellEffect.radius, factionComponent.hostileFaction));
+                        }
+
+                        // Add neutral entities to the affected entity map
+                        if (spellEffect.affectsNeutral)
+                        {
+                            entitiesToAdd.AddRange(findEntitiesWithinRange(entityId, aeSpellEffect.radius, Faction.Neutral));
+                        }
                     }
 
                     // Add accumulated entities to the affected entity map
@@ -158,12 +164,81 @@ namespace Loderpit.Systems
             spellEffectsComponent.effects.Add(spellEffect);
         }
 
+        // Remove a spell effect from an entity
+        public void removeSpellEffect(int entityId, SpellEffect spellEffect)
+        {
+            ActiveSpellEffectsComponent spellEffectsComponent = EntityManager.getSpellEffectsComponent(entityId);
+
+            Debug.Assert(spellEffectsComponent.effects.Contains(spellEffect), String.Format("This entity doesn't have the spell effect it's trying to remove: {0}", spellEffect.type));
+
+            spellEffectsComponent.effects.Remove(spellEffect);
+        }
+
+        // Handle spell effect time to level
+        private void handleTTL()
+        {
+            foreach (KeyValuePair<int, List<SpellEffect>> entitySpellsPair in _affectedEntitiesMap)
+            {
+                int entityId = entitySpellsPair.Key;
+                List<SpellEffect> spellEffects = entitySpellsPair.Value;
+
+                foreach (SpellEffect spellEffect in spellEffects)
+                {
+                    if (spellEffect.timeToLive > 0)
+                    {
+                        spellEffect.timeToLive--;
+                    }
+
+                    if (spellEffect.timeToLive == 0)
+                    {
+                        removeSpellEffect(entityId, spellEffect);
+                    }
+                }
+            }
+        }
+
+        // Handle DoT spell effects
+        private void handleDoTSpellEffects()
+        {
+            foreach (KeyValuePair<int, List<SpellEffect>> entitySpellsPair in _affectedEntitiesMap)
+            {
+                int entityId = entitySpellsPair.Key;
+                List<SpellEffect> spellEffects = entitySpellsPair.Value;
+
+                foreach (SpellEffect spellEffect in spellEffects)
+                {
+                    if (spellEffect is IDoTSpellEffect)
+                    {
+                        IDoTSpellEffect dotSpellEffect = spellEffect as IDoTSpellEffect;
+
+                        if (dotSpellEffect.currentDelay > 0)
+                        {
+                            dotSpellEffect.currentDelay--;
+                        }
+
+                        if (dotSpellEffect.currentDelay == 0)
+                        {
+                            dotSpellEffect.onTick(entityId);
+                            dotSpellEffect.currentDelay = dotSpellEffect.baseDelay;
+                        }
+                    }
+                }
+            }
+        }
+
+        // Update
         public void update()
         {
             List<int> spellEffectsEntities = EntityManager.getEntitiesPossessing(ComponentType.ActiveSpellEffects);
 
             // Rebuild the affected entities map
             rebuildAffectedEntities(spellEffectsEntities);
+
+            // Handle DoT spell effects
+            handleDoTSpellEffects();
+
+            // Handle spell effect's time to live
+            handleTTL();
         }
     }
 }
