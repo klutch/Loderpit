@@ -110,6 +110,7 @@
     <Compile Include="Components\RopeGrabComponent.cs" />
     <Compile Include="Components\RopeGrabExclusionComponent.cs" />
     <Compile Include="Components\SendActivateObstacleComponent.cs" />
+    <Compile Include="Components\ShieldComponent.cs" />
     <Compile Include="Components\SkillsComponent.cs" />
     <Compile Include="Components\ActiveSpellEffectsComponent.cs" />
     <Compile Include="Components\StatsComponent.cs" />

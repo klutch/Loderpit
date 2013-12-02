@@ -28,7 +28,8 @@ namespace Loderpit.Components
         IsTouchingEndLevel,
         RenderHealth,
         ActiveSpellEffects,
-        ExternalMovementSpeeds
+        ExternalMovementSpeeds,
+        Shield
     }
 
     public interface IComponent

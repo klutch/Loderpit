@@ -41,37 +41,41 @@ namespace Loderpit.Systems
         private void placeTemporaryEnemies()
         {
             Random rng = new Random();
+            int numEntitiesPerSegment = 4;
 
-            for (int i = 1; i < _map.moduleEndPointsCount; i++)
+            for (int i = 1; i < _map.moduleEndPointsCount - 1; i++)
             {
-                float x = Helpers.randomBetween(rng, _map.moduleEndPoints[i - 1].X, _map.moduleEndPoints[i].X);
-                float y = 0;
-                bool hit = false;
-
-                SystemManager.physicsSystem.world.RayCast((f, p, n, fr) =>
+                for (int j = 0; j < numEntitiesPerSegment; j++)
                 {
-                    if (f.Body.UserData == null)
-                    {
-                        return -1;
-                    }
+                    float x = Helpers.randomBetween(rng, _map.moduleEndPoints[i - 1].X, _map.moduleEndPoints[i].X);
+                    float y = 0;
+                    bool hit = false;
 
-                    if (EntityManager.getGroundBodyComponent((int)f.Body.UserData) != null)
+                    SystemManager.physicsSystem.world.RayCast((f, p, n, fr) =>
                     {
-                        y = p.Y;
-                        hit = true;
-                        return fr;
-                    }
-                    else
-                    {
-                        return -1;
-                    }
-                },
-                new Vector2(x, -1000f),
-                new Vector2(x, 1000f));
+                        if (f.Body.UserData == null)
+                        {
+                            return -1;
+                        }
 
-                if (hit)
-                {
-                    EntityFactory.createEnemy(CharacterClass.Fighter, new Vector2(x, y - 1f));
+                        if (EntityManager.getGroundBodyComponent((int)f.Body.UserData) != null)
+                        {
+                            y = p.Y;
+                            hit = true;
+                            return fr;
+                        }
+                        else
+                        {
+                            return -1;
+                        }
+                    },
+                    new Vector2(x, -1000f),
+                    new Vector2(x, 1000f));
+
+                    if (hit)
+                    {
+                        EntityFactory.createEnemy(CharacterClass.Fighter, new Vector2(x, y - 1f));
+                    }
                 }
             }
         }

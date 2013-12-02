@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework;
 using FarseerPhysics.Dynamics;
 using FarseerPhysics.Dynamics.Contacts;
 using FarseerPhysics.Factories;
+using FarseerPhysics.Common;
 using Loderpit.Components;
 using Loderpit.Managers;
 using Loderpit.Skills;
@@ -62,11 +63,18 @@ namespace Loderpit.Systems
         {
             // Create a 'shield' fixture (attached to the character's body) that only collides with hostile characters
             CharacterComponent characterComponentA = EntityManager.getCharacterComponent(entityId);
-            Fixture fixture = FixtureFactory.AttachRectangle(1.1f, 1.4f, 0f, Vector2.Zero, characterComponentA.body);
+            Body shieldBody = BodyFactory.CreateBody(SystemManager.physicsSystem.world, characterComponentA.body.Position);
+            Fixture fixture = FixtureFactory.AttachPolygon(new Vertices(new Vector2[] {
+                new Vector2(-1f, -1f),
+                new Vector2(0.75f, -1f),
+                new Vector2(1f, 1f),
+                new Vector2(0.75f, 1.5f),
+                new Vector2(-1f, 1f)
+            }), 1f, shieldBody);
 
-            fixture.Friction = 0f;
-            fixture.UserData = SpecialFixtureType.Shield;
-            fixture.OnCollision += new OnCollisionEventHandler((fixtureA, fixtureB, contact) =>
+            shieldBody.Friction = 0f;
+            shieldBody.UserData = entityId;
+            shieldBody.OnCollision += new OnCollisionEventHandler((fixtureA, fixtureB, contact) =>
                 {
                     int entityIdA = (int)fixtureA.Body.UserData;
                     int entityIdB;
@@ -113,24 +121,26 @@ namespace Loderpit.Systems
                         return false;
                     }
 
-                    // Add blocker's speed to other entity's external speeds component
-                    if ((externalSpeedsB = EntityManager.getExternalMovementSpeedsComponent(entityIdB)) != null)
+                    // Make sure external speeds component exists
+                    if ((externalSpeedsB = EntityManager.getExternalMovementSpeedsComponent(entityIdB)) == null)
                     {
-                        externalSpeedsB.addExternalMovementSpeed(ExternalMovementSpeedType.ShieldBlock, characterComponentA.movementSpeed);
-                        characterComponentB.feet.Friction = 0f;
+                        return false;
                     }
+
+                    characterComponentB.feet.Friction = 0f;
+                    externalSpeedsB.addExternalMovementSpeed(ExternalMovementSpeedType.ShieldBlock, characterComponentA.movementSpeed);
 
                     return true;
                 });
 
-            fixture.OnSeparation += new OnSeparationEventHandler((fixtureA, fixtureB) =>
+            shieldBody.OnSeparation += new OnSeparationEventHandler((fixtureA, fixtureB) =>
                 {
                     int entityIdA = (int)fixtureA.Body.UserData;
                     int entityIdB;
                     FactionComponent factionComponentA = EntityManager.getFactionComponent(entityIdA);
                     FactionComponent factionComponentB;
                     CharacterComponent characterComponentB;
-                    ExternalMovementSpeedsComponent externalSpeedsB;
+                    ExternalMovementSpeedsComponent externalSpeeds;
 
                     // Skip fixtures whose bodies don't have a userdata
                     if (fixtureB.Body.UserData == null)
@@ -158,13 +168,21 @@ namespace Loderpit.Systems
                         return;
                     }
 
-                    // Remove external speed
-                    if ((externalSpeedsB = EntityManager.getExternalMovementSpeedsComponent(entityIdB)) != null)
+                    // Make sure external movement speeds component exists
+                    if ((externalSpeeds = EntityManager.getExternalMovementSpeedsComponent(entityIdB)) == null)
                     {
-                        externalSpeedsB.removeExternalMovementSpeed(ExternalMovementSpeedType.ShieldBlock);
-                        characterComponentB.feet.Friction = 5f;
+                        return;
                     }
+
+                    characterComponentB.feet.Friction = 5f;
+                    characterComponentB.feet.Enabled = false;
+                    characterComponentB.feet.Enabled = true;
+                    externalSpeeds.removeExternalMovementSpeed(ExternalMovementSpeedType.ShieldBlock);
                 });
+
+            fixture.UserData = SpecialFixtureType.Shield;
+
+            EntityManager.addComponent(entityId, new ShieldComponent(entityId, shieldBody));
         }
 
         #endregion
@@ -618,11 +636,24 @@ namespace Loderpit.Systems
             _skillsToRemove.Clear();
         }
 
+        // Move shield bodies
+        private void moveShieldBodies(List<int> entities)
+        {
+            foreach (int entityId in entities)
+            {
+                ShieldComponent shieldComponent = EntityManager.getShieldComponent(entityId);
+                PositionComponent positionComponent = EntityManager.getPositionComponent(entityId);
+
+                shieldComponent.body.Position = positionComponent.position;
+            }
+        }
+
         // Update
         public void update()
         {
             List<int> skillsEntities = EntityManager.getEntitiesPossessing(ComponentType.Skills);
             List<int> performSkillsEntities = EntityManager.getEntitiesPossessing(ComponentType.PerformingSkills);
+            List<int> shieldEntities = EntityManager.getEntitiesPossessing(ComponentType.Shield);
 
             // Decrement skill cooldowns
             decrementSkillCooldowns(skillsEntities);
@@ -632,6 +663,9 @@ namespace Loderpit.Systems
 
             // Handle executed skills cleanup
             handleExecutedSkillsCleanup();
+
+            // Move shield bodies
+            moveShieldBodies(shieldEntities);
         }
     }
 }
