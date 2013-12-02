@@ -40,6 +40,7 @@ namespace Loderpit.Systems
             return value * (speed < 0 ? -1 : 1);
         }
 
+        // Move characters
         public void moveCharacters(List<int> characters)
         {
             foreach (int entityId in characters)
@@ -58,12 +59,32 @@ namespace Loderpit.Systems
             }
         }
 
+        // Correct characters feet
+        private void correctCharactersFeet(List<int> entities)
+        {
+            foreach (int entityId in entities)
+            {
+                CharacterComponent characterComponent = EntityManager.getCharacterComponent(entityId);
+                Vector2 relative = characterComponent.body.Position - characterComponent.feet.Position;
+
+                if (relative.Length() >= 0.4f)
+                {
+                    characterComponent.feet.Position = characterComponent.body.Position;
+                }
+            }
+        }
+
         public void update()
         {
             List<int> characterEntities = EntityManager.getEntitiesPossessing(ComponentType.Character);
 
+            // Move characters
             moveCharacters(characterEntities);
 
+            // Correct characters feet
+            correctCharactersFeet(characterEntities);
+
+            // Step physics simulation
             _world.Step(Game.DT);
         }
     }
