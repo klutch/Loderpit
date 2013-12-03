@@ -13,6 +13,7 @@ namespace Loderpit.Skills
         public ShieldBashSkill(int level)
             : base(SkillType.ShieldBash, level, true)
         {
+            _baseCooldown = 180;
             _onActivateSpellEffects.Add(new KnockbackProcSpellEffect(calculateKnockbackStrength(), new Vector2(1, -0.5f)));
         }
 
