@@ -169,6 +169,11 @@ namespace Loderpit.Screens
                         case SkillType.Fireball:
                             drawIcon("fireball_icon");
                             break;
+
+                        // Healer
+                        case SkillType.HealingBlast:
+                            drawIcon("healing_blast_icon");
+                            break;
                     }
                 }
             }

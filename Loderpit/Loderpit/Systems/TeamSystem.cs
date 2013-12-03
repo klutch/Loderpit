@@ -167,6 +167,11 @@ namespace Loderpit.Systems
                             case SkillType.Fireball:
                                 handleInitializeFireball(selectedEntityId);
                                 break;
+
+                            // Healer
+                            case SkillType.HealingBlast:
+                                handleInitializeHealingBlast(selectedEntityId);
+                                break;
                         }
                     }
                 }
@@ -265,6 +270,16 @@ namespace Loderpit.Systems
         {
             SystemManager.skillSystem.performShieldBashSkill(entityId, _initializingSkill as ShieldBashSkill);
             _initializingSkill = null;
+        }
+
+        // Handle initialize healing blast skill
+        private void handleInitializeHealingBlast(int entityId)
+        {
+            if (Game.newMouseState.isLeftButtonPressed && !Game.oldMouseState.isLeftButtonPressed)
+            {
+                SystemManager.skillSystem.performHealingBlastSkill(entityId, _initializingSkill as HealingBlastSkill, Game.worldMouse);
+                _initializingSkill = null;
+            }
         }
 
         public void update()

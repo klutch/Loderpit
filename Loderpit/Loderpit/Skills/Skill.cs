@@ -31,7 +31,8 @@ namespace Loderpit.Skills
         Fireball,
 
         // Healer
-        Heal
+        Heal,
+        HealingBlast
     }
 
     abstract public class Skill

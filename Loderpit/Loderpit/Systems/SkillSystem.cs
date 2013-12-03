@@ -483,6 +483,62 @@ namespace Loderpit.Systems
             }
         }
 
+        // Perform healing blast
+        public void performHealingBlastSkill(int entityId, HealingBlastSkill healingBlastSkill, Vector2 target)
+        {
+            FactionComponent factionComponent = EntityManager.getFactionComponent(entityId);
+            PerformingSkillsComponent performingSkillsComponent = EntityManager.getPerformingSkillsComponent(entityId);
+            ExecuteHealingBlastSkill executeSkill = null;
+            List<Fixture> fixtures = SystemManager.physicsSystem.world.TestPointAll(target);
+
+            foreach (Fixture fixture in fixtures)
+            {
+                int targetEntityId;
+                FactionComponent targetFactionComponent;
+
+                // Skip bodies without any userdata
+                if (fixture.Body.UserData == null)
+                {
+                    continue;
+                }
+
+                targetEntityId = (int)fixture.Body.UserData;
+
+                // Skip entities without a faction component
+                if ((targetFactionComponent = EntityManager.getFactionComponent(targetEntityId)) == null)
+                {
+                    continue;
+                }
+
+                // Skip over hostile entities
+                if (factionComponent.faction != targetFactionComponent.faction)
+                {
+                    continue;
+                }
+
+                // Create execute skill object
+                executeSkill = new ExecuteHealingBlastSkill(
+                    healingBlastSkill,
+                    targetEntityId,
+                    () =>
+                    {
+                        PositionComponent positionComponent = EntityManager.getPositionComponent(entityId);
+                        PositionTargetComponent positionTargetComponent = EntityManager.getPositionTargetComponent(entityId);
+                        float distance = Math.Abs(positionTargetComponent.position - positionComponent.position.X);
+
+                        return distance <= positionTargetComponent.tolerance;
+                    });
+
+                EntityManager.addComponent(entityId, new PositionTargetComponent(entityId, fixture.Body, healingBlastSkill.range));
+                break;
+            }
+
+            if (executeSkill != null)
+            {
+                performingSkillsComponent.executingSkills.Add(executeSkill);
+            }
+        }
+
         #endregion
 
         #region Cooldown methods
@@ -626,6 +682,18 @@ namespace Loderpit.Systems
             removeExecutedSkill(entityId, executeFireballSkill);
         }
 
+        // Execute healing blast
+        private void executeHealingBlast(int entityId, ExecuteHealingBlastSkill executeHealingBlast)
+        {
+            PerformingSkillsComponent performingSkillsComponent = EntityManager.getPerformingSkillsComponent(entityId);
+            HealingBlastSkill healingBlastSkill = executeHealingBlast.skill as HealingBlastSkill;
+            int targetId = executeHealingBlast.targetId;
+
+            SystemManager.combatSystem.applySpellHeal(entityId, targetId, Roller.roll(healingBlastSkill.healDie));
+            EntityManager.removeComponent(entityId, ComponentType.PositionTarget);
+            removeExecutedSkill(entityId, executeHealingBlast);
+        }
+
         #endregion
 
         // Remove executed action from a PerformSkillsComponent
@@ -680,6 +748,11 @@ namespace Loderpit.Systems
                             // Mage
                             case SkillType.Fireball:
                                 executeFireball(entityId, executeSkill as ExecuteFireballSkill);
+                                break;
+
+                            // Healer
+                            case SkillType.HealingBlast:
+                                executeHealingBlast(entityId, executeSkill as ExecuteHealingBlastSkill);
                                 break;
                         }
                     }

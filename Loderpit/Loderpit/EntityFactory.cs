@@ -89,6 +89,7 @@ namespace Loderpit
 
                 case CharacterClass.Healer:
                     skills.Add(new HealSkill(1));
+                    skills.Add(new HealingBlastSkill(1));
                     break;
             }
 

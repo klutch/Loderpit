@@ -150,6 +150,7 @@
     <Compile Include="Skills\BlockSkill.cs" />
     <Compile Include="Skills\BuildBridgeSkill.cs" />
     <Compile Include="Skills\FireballSkill.cs" />
+    <Compile Include="Skills\HealingBlastSkill.cs" />
     <Compile Include="Skills\HealSkill.cs" />
     <Compile Include="Skills\IgniteSkill.cs" />
     <Compile Include="Skills\KickSkill.cs" />
@@ -186,6 +187,9 @@
     <Compile Include="Systems\TeamSystem.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="resources\ui\action_icons\healing_blast.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="resources\ui\action_icons\bash.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

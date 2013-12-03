@@ -118,6 +118,7 @@ namespace Loderpit
             ResourceManager.addResource("power_swing_icon", new Texture("resources/ui/action_icons/power_swing.png"));
             ResourceManager.addResource("fireball_icon", new Texture("resources/ui/action_icons/fireball.png"));
             ResourceManager.addResource("shield_bash_icon", new Texture("resources/ui/action_icons/bash.png"));
+            ResourceManager.addResource("healing_blast_icon", new Texture("resources/ui/action_icons/healing_blast.png"));
             ResourceManager.addResource("reticle", new Texture("resources/ui/reticle.png"));
 
             // Debug

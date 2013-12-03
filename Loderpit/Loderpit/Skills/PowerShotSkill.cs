@@ -29,11 +29,10 @@ namespace Loderpit.Skills
         public int defenderId { get { return _defenderId; } }
 
         public ExecutePowerShotSkill(Skill skill, int defenderId, Func<bool> isDelayConditionMetCallback)
-            : base(skill)
+            : base(skill, isDelayConditionMetCallback)
         {
             _defenderId = defenderId;
             _delay = 60;
-            _isDelayConditionMetCallback = isDelayConditionMetCallback;
         }
     }
 }
