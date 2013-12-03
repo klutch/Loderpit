@@ -48,7 +48,7 @@ namespace Loderpit.Skills
         {
             switch (_level)
             {
-                default: return "3d3";
+                default: return "d4";
             }
         }
 

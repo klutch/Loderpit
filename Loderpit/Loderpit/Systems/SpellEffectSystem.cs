@@ -177,7 +177,7 @@ namespace Loderpit.Systems
         }
 
         // Create explosion
-        public void createExplosion(int entityId, Vector2 position, float radius, int damage, float force)
+        public List<int> createExplosion(int entityId, Vector2 position, float radius, int damage, float force)
         {
             AABB aabb = new AABB(position - new Vector2(radius, radius), position + new Vector2(radius, radius));
             List<int> affectedEntities = new List<int>();
@@ -227,6 +227,8 @@ namespace Loderpit.Systems
                 ref aabb);
 
             // TODO: Handle any other types of entities here...
+
+            return affectedEntities;
         }
 
         // Handle spell effect time to level

@@ -9,6 +9,7 @@ using Loderpit.Components;
 using Loderpit.Managers;
 using Loderpit.Skills;
 using Loderpit.Formations;
+using Loderpit.SpellEffects;
 
 namespace Loderpit.Systems
 {
@@ -588,8 +589,19 @@ namespace Loderpit.Systems
         {
             PerformingSkillsComponent performingSkillsComponent = EntityManager.getPerformingSkillsComponent(entityId);
             FireballSkill fireballSkill = executeFireballSkill.skill as FireballSkill;
+            List<int> affectedEntities = SystemManager.spellEffectSystem.createExplosion(entityId, executeFireballSkill.target, fireballSkill.explosionRadius, Roller.roll(fireballSkill.explosionDamageDie), fireballSkill.explosionForce);
 
-            SystemManager.spellEffectSystem.createExplosion(entityId, executeFireballSkill.target, fireballSkill.explosionRadius, Roller.roll(fireballSkill.explosionDamageDie), fireballSkill.explosionForce);
+            foreach (int affectedEntityId in affectedEntities)
+            {
+                if (EntityManager.doesEntityExist(affectedEntityId))
+                {
+                    if (Roller.roll(fireballSkill.igniteChanceDie) == 1)
+                    {
+                        SystemManager.spellEffectSystem.applySpellEffect(affectedEntityId, new IgniteSpellEffect(fireballSkill.igniteDamageDie, 60, 6));
+                    }
+                }
+            }
+
             SystemManager.skillSystem.resetCooldown(entityId, SkillType.Fireball);
             EntityManager.removeComponent(entityId, ComponentType.PositionTarget);
 

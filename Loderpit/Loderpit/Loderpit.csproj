@@ -161,7 +161,6 @@
     <Compile Include="Skills\ThrowRopeSkill.cs" />
     <Compile Include="SpecialFixtureTypes.cs" />
     <Compile Include="SpellEffects\DamageShieldSpellEffect.cs" />
-    <Compile Include="SpellEffects\ExplosionProcSpellEffect.cs" />
     <Compile Include="SpellEffects\IAoESpellEffect.cs" />
     <Compile Include="SpellEffects\IDoTSpellEffect.cs" />
     <Compile Include="SpellEffects\IgniteProcSpellEffect.cs" />
