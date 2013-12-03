@@ -29,7 +29,15 @@ namespace Loderpit.Skills
         {
             _anchorA = anchorA;
             _anchorB = anchorB;
-            _delay = 180;
+            _delay = calculateDelay();
+        }
+
+        private int calculateDelay()
+        {
+            switch (skill.level)
+            {
+                default: return 180;
+            }
         }
     }
 }

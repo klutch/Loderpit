@@ -11,7 +11,7 @@ namespace Loderpit.Skills
         public ThrowRopeSkill(int level)
             : base(SkillType.ThrowRope, level, true)
         {
-            _range = 6f;
+            _range = 4f;
         }
     }
 
@@ -24,11 +24,18 @@ namespace Loderpit.Skills
         public Formation formationToRemove { get { return _formationToRemove; } set { _formationToRemove = value; } }
 
         public ExecuteThrowRopeSkill(Skill skill, Vector2 anchor, Func<bool> isDelayConditionMetCallback)
-            : base(skill)
+            : base(skill, isDelayConditionMetCallback)
         {
             _anchor = anchor;
-            _delay = 180;
-            _isDelayConditionMetCallback = isDelayConditionMetCallback;
+            _delay = calculateDelay();
+        }
+
+        private int calculateDelay()
+        {
+            switch (skill.level)
+            {
+                default: return 180;
+            }
         }
     }
 }
