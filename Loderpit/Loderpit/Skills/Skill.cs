@@ -28,7 +28,10 @@ namespace Loderpit.Skills
 
         // Mage
         Ignite,
-        Fireball
+        Fireball,
+
+        // Healer
+        Heal
     }
 
     abstract public class Skill

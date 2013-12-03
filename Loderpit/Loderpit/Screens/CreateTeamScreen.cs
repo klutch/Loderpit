@@ -46,13 +46,13 @@ namespace Loderpit.Screens
         // Initialize assets and components
         public override void initialize()
         {
-            int count = 3;
+            int count = 4;
             float offsetWidth = 72f;
             float totalWidth = (count - 1) * offsetWidth;
             Vector2f position = new Vector2f(Game.window.Size.X, Game.window.Size.Y) * 0.5f - new Vector2f(totalWidth * 0.5f, 0f);
 
             _classSelectorComponents = new List<ClassSelectorComponent>();
-            for (int i = 0; i < 3; i++)
+            for (int i = 0; i < count; i++)
             {
                 Vector2f offset = new Vector2f(72f, 0f) * i;
                 ClassSelectorComponent classSelectorComponent = new ClassSelectorComponent(this, _upArrowTexture, _downArrowTexture, _classSelectorTexture, _classTextures, position + offset);

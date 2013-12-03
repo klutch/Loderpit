@@ -170,6 +170,15 @@ namespace Loderpit.Systems
             }
         }
 
+        // Apply spell healing
+        public void applySpellHeal(int healerId, int targetId, int amount)
+        {
+            StatsComponent targetStats = EntityManager.getStatsComponent(targetId);
+
+            targetStats.currentHp += amount;
+            addMessage(targetId, "Heal: " + amount.ToString());
+        }
+
         // Apply knockback
         public void applyKnockback(int attackerId, int defenderId, float strength, Vector2 normal)
         {
@@ -301,6 +310,63 @@ namespace Loderpit.Systems
             }
         }
 
+        // Handle (passive) heals
+        private void handleHeals(List<int> entities)
+        {
+            foreach (int entityId in entities)
+            {
+                SkillsComponent skillsComponent = EntityManager.getSkillsComponent(entityId);
+                FactionComponent factionComponent = EntityManager.getFactionComponent(entityId);
+                HealSkill healSkill;
+                List<int> friendlyEntities;
+                int healTargetId = 0;
+                int lowestHp = int.MaxValue;
+                bool foundHealTarget = false;
+
+                // Skip if entity is already dead (possible, since this happens after attacks have been handled)
+                if (!EntityManager.doesEntityExist(entityId))
+                {
+                    continue;
+                }
+
+                // Skip if no heal skill
+                if ((healSkill = skillsComponent.getSkill(SkillType.Heal) as HealSkill) == null)
+                {
+                    continue;
+                }
+
+                // Skip if cooldown is not zero
+                if (healSkill.cooldown != 0)
+                {
+                    continue;
+                }
+
+                // Find target with the lowest hp
+                friendlyEntities = Helpers.findEntitiesWithinRange(entityId, healSkill.range, factionComponent.faction);
+                friendlyEntities.Add(entityId); // consider healing self
+                foreach (int friendId in friendlyEntities)
+                {
+                    StatsComponent statsComponent = EntityManager.getStatsComponent(friendId);
+
+                    // If entity is damaged and has less than the lowest hp
+                    if (statsComponent.currentHp < SystemManager.statSystem.getMaxHp(statsComponent) && statsComponent.currentHp < lowestHp)
+                    {
+                        foundHealTarget = true;
+                        healTargetId = friendId;
+                    }
+                }
+
+                // Skip if no suitable heal target was found
+                if (!foundHealTarget)
+                {
+                    continue;
+                }
+
+                // Heal target
+                applySpellHeal(entityId, healTargetId, Roller.roll(healSkill.healDie));
+            }
+        }
+
         // Update system
         public void update()
         {
@@ -309,6 +375,9 @@ namespace Loderpit.Systems
 
             // Handle attacks
             handleAttacks(skillsEntities, attackableEntities);
+
+            // Handle heals
+            handleHeals(skillsEntities);
         }
     }
 }

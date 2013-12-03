@@ -86,6 +86,10 @@ namespace Loderpit
                     skills.Add(new ThrowRopeSkill(1));
                     skills.Add(new BuildBridgeSkill(1));
                     break;
+
+                case CharacterClass.Healer:
+                    skills.Add(new HealSkill(1));
+                    break;
             }
 
             return skills;

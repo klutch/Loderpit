@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Loderpit.Managers;
 
 namespace Loderpit.Components
 {
@@ -17,7 +18,7 @@ namespace Loderpit.Components
         public int entityId { get { return _entityId; } }
         public ComponentType componentType { get { return ComponentType.Stats; } }
         public int baseHp { get { return _baseHp; } set { _baseHp = value; } }
-        public int currentHp { get { return _currentHp; } set { _currentHp = Math.Max(value, 0); } }
+        public int currentHp { get { return _currentHp; } set { _currentHp = Math.Max(Math.Min(value, SystemManager.statSystem.getMaxHp(this)), 0); } }
         public int dexterity { get { return _dexterity; } set { _dexterity = value; } }
         public int strength { get { return _strength; } set { _strength = value; } }
         public int intelligence { get { return _intelligence; } set { _intelligence = value; } }

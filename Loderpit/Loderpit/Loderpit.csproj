@@ -150,6 +150,7 @@
     <Compile Include="Skills\BlockSkill.cs" />
     <Compile Include="Skills\BuildBridgeSkill.cs" />
     <Compile Include="Skills\FireballSkill.cs" />
+    <Compile Include="Skills\HealSkill.cs" />
     <Compile Include="Skills\IgniteSkill.cs" />
     <Compile Include="Skills\KickSkill.cs" />
     <Compile Include="Skills\MeleeAttackSkill.cs" />
