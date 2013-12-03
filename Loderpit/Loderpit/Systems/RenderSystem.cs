@@ -153,6 +153,12 @@ namespace Loderpit.Systems
                 _reticleShape.Position = Game.sfmlWorldMouse;
                 Game.window.Draw(_reticleShape);
             }
+            else if (teamSystem.initializingSkill.type == SkillType.HealingBlast)
+            {
+                _actionLabel.DisplayedString = "Healing Blast";
+                _reticleShape.Position = Game.sfmlWorldMouse;
+                Game.window.Draw(_reticleShape);
+            }
         }
 
         public void update()
