@@ -15,7 +15,6 @@ namespace Loderpit.Systems
         private const float HP_BAR_WIDTH = 30f;
         private const float HP_BAR_HEIGHT = 4f;
         private DebugView _debugView;
-        private CircleShape _throwRopeShape;
         private RectangleShape _buildBridgeShape;
         private RectangleShape _reticleShape;
         private Font _font;
@@ -34,10 +33,6 @@ namespace Loderpit.Systems
 
             _actionLabel = new Text("", _font, 14);
             _actionLabel.Color = Color.White;
-            
-            _throwRopeShape = new CircleShape(1f);
-            _throwRopeShape.Origin = new Vector2f(1f, 1f);
-            _throwRopeShape.FillColor = new Color(0, 255, 0, 128);
 
             _buildBridgeShape = new RectangleShape(new Vector2f(0.2f, 0f));
             _buildBridgeShape.FillColor = new Color(255, 255, 0, 128);
@@ -89,6 +84,14 @@ namespace Loderpit.Systems
             }
         }
 
+        // Draw reticle (helper method)
+        private void drawReticle(Vector2f worldPosition, Color color)
+        {
+            _reticleShape.Position = worldPosition;
+            _reticleShape.FillColor = color;
+            Game.window.Draw(_reticleShape);
+        }
+
         // Draw actions currently being performed
         private void drawCurrentActions()
         {
@@ -104,10 +107,8 @@ namespace Loderpit.Systems
 
             if (teamSystem.initializingSkill.type == SkillType.ThrowRope)
             {
-                _throwRopeShape.Position = new Vector2f(teamSystem.createRopeAnchor.X, teamSystem.createRopeAnchor.Y);
-                _actionLabel.Position = Game.screenMouse + new Vector2f(16f, 0);
                 _actionLabel.DisplayedString = "Throw Rope";
-                Game.window.Draw(_throwRopeShape);
+                drawReticle(Game.sfmlWorldMouse, Color.Yellow);
             }
             else if (teamSystem.initializingSkill.type == SkillType.BuildBridge)
             {
@@ -122,42 +123,33 @@ namespace Loderpit.Systems
                 _buildBridgeShape.Size = new Vector2f(0.2f, length);
                 _actionLabel.DisplayedString = "Build Bridge";
                 Game.window.Draw(_buildBridgeShape);
+                drawReticle(new Vector2f(pointA.X, pointA.Y), Color.Yellow);
+                drawReticle(new Vector2f(pointB.X, pointB.Y), Color.Yellow);
             }
             else if (teamSystem.initializingSkill.type == SkillType.MeleeAttack || teamSystem.initializingSkill.type == SkillType.RangedAttack)
             {
                 _actionLabel.DisplayedString = "Attack";
-                _reticleShape.Position = Game.sfmlWorldMouse;
-                Game.window.Draw(_reticleShape);
+                drawReticle(Game.sfmlWorldMouse, Color.Red);
             }
             else if (teamSystem.initializingSkill.type == SkillType.PowerShot)
             {
-                _reticleShape.Position = Game.sfmlWorldMouse;
                 _actionLabel.DisplayedString = "Power Shot";
-                Game.window.Draw(_reticleShape);
+                drawReticle(Game.sfmlWorldMouse, Color.Red);
             }
             else if (teamSystem.initializingSkill.type == SkillType.PowerSwing)
             {
                 _actionLabel.DisplayedString = "Power Swing";
-                _reticleShape.Position = Game.sfmlWorldMouse;
-                Game.window.Draw(_reticleShape);
+                drawReticle(Game.sfmlWorldMouse, Color.Red);
             }
             else if (teamSystem.initializingSkill.type == SkillType.Fireball)
             {
                 _actionLabel.DisplayedString = "Cast Fireball";
-                _reticleShape.Position = Game.sfmlWorldMouse;
-                Game.window.Draw(_reticleShape);
-            }
-            else if (teamSystem.initializingSkill.type == SkillType.ShieldBash)
-            {
-                _actionLabel.DisplayedString = "Shield Bash";
-                _reticleShape.Position = Game.sfmlWorldMouse;
-                Game.window.Draw(_reticleShape);
+                drawReticle(Game.sfmlWorldMouse, Color.Red);
             }
             else if (teamSystem.initializingSkill.type == SkillType.HealingBlast)
             {
                 _actionLabel.DisplayedString = "Healing Blast";
-                _reticleShape.Position = Game.sfmlWorldMouse;
-                Game.window.Draw(_reticleShape);
+                drawReticle(Game.sfmlWorldMouse, Color.Green);
             }
         }
 

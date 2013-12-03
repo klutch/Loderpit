@@ -187,6 +187,9 @@
     <Compile Include="Systems\TeamSystem.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="resources\ui\reticle.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="resources\ui\action_icons\healing_blast.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -197,9 +200,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="resources\ui\action_icons\power_swing.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="resources\ui\reticle.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="resources\ui\action_icons\power_shot.png">
