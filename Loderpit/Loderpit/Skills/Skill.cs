@@ -17,6 +17,7 @@ namespace Loderpit.Skills
         // Archer
         ShieldOfThorns,
         PowerShot,
+        Deadeye,
 
         // Fighter
         Kick,

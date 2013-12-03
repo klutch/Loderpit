@@ -74,6 +74,7 @@ namespace Loderpit
                     skills.Add(new RangedAttackSkill(1, "bow_icon"));
                     skills.Add(new ShieldOfThornsSkill(1));
                     skills.Add(new PowerShotSkill(1));
+                    skills.Add(new DeadeyeSkill(1));
                     break;
 
                 case CharacterClass.Mage:
