@@ -26,7 +26,8 @@ namespace Loderpit.Skills
         Block,
 
         // Mage
-        Ignite
+        Ignite,
+        Fireball
     }
 
     abstract public class Skill

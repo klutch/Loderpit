@@ -126,6 +126,8 @@ namespace Loderpit.Systems
             else if (teamSystem.initializingSkill.type == SkillType.MeleeAttack || teamSystem.initializingSkill.type == SkillType.RangedAttack)
             {
                 _actionLabel.DisplayedString = "Attack";
+                _reticleShape.Position = Game.sfmlWorldMouse;
+                Game.window.Draw(_reticleShape);
             }
             else if (teamSystem.initializingSkill.type == SkillType.PowerShot)
             {
@@ -136,6 +138,14 @@ namespace Loderpit.Systems
             else if (teamSystem.initializingSkill.type == SkillType.PowerSwing)
             {
                 _actionLabel.DisplayedString = "Power Swing";
+                _reticleShape.Position = Game.sfmlWorldMouse;
+                Game.window.Draw(_reticleShape);
+            }
+            else if (teamSystem.initializingSkill.type == SkillType.Fireball)
+            {
+                _actionLabel.DisplayedString = "Cast Fireball";
+                _reticleShape.Position = Game.sfmlWorldMouse;
+                Game.window.Draw(_reticleShape);
             }
         }
 

@@ -149,6 +149,7 @@
     <Compile Include="Screens\TemporaryWorldTextComponent.cs" />
     <Compile Include="Skills\BlockSkill.cs" />
     <Compile Include="Skills\BuildBridgeSkill.cs" />
+    <Compile Include="Skills\FireballSkill.cs" />
     <Compile Include="Skills\IgniteSkill.cs" />
     <Compile Include="Skills\KickSkill.cs" />
     <Compile Include="Skills\MeleeAttackSkill.cs" />
@@ -160,6 +161,7 @@
     <Compile Include="Skills\ThrowRopeSkill.cs" />
     <Compile Include="SpecialFixtureTypes.cs" />
     <Compile Include="SpellEffects\DamageShieldSpellEffect.cs" />
+    <Compile Include="SpellEffects\ExplosionProcSpellEffect.cs" />
     <Compile Include="SpellEffects\IAoESpellEffect.cs" />
     <Compile Include="SpellEffects\IDoTSpellEffect.cs" />
     <Compile Include="SpellEffects\IgniteProcSpellEffect.cs" />
@@ -183,6 +185,9 @@
     <Compile Include="Systems\TeamSystem.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="resources\ui\action_icons\fireball.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="resources\ui\action_icons\power_swing.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

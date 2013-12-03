@@ -49,6 +49,21 @@ namespace Loderpit.Screens
                     _enabled = true;
                     _text.DisplayedString = "Building Bridge";
                 }
+                else if (performingSkillsComponent.isPerformingSkill(SkillType.Fireball))
+                {
+                    _enabled = true;
+                    _text.DisplayedString = "Casting Fireball";
+                }
+                else if (performingSkillsComponent.isPerformingSkill(SkillType.PowerShot))
+                {
+                    _enabled = true;
+                    _text.DisplayedString = "Power Shot";
+                }
+                else if (performingSkillsComponent.isPerformingSkill(SkillType.PowerSwing))
+                {
+                    _enabled = true;
+                    _text.DisplayedString = "Power Swing";
+                }
                 else
                 {
                     _enabled = false;

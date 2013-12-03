@@ -8,7 +8,8 @@ namespace Loderpit.SpellEffects
         DamageShield,
         KnockbackProc,
         IgniteProc,
-        Ignite
+        Ignite,
+        ExplosionProc
     }
 
     abstract public class SpellEffect

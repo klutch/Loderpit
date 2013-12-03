@@ -444,6 +444,26 @@ namespace Loderpit.Systems
             }
         }
 
+        // Perform fireball skill
+        public void performFireballSkill(int entityId, FireballSkill fireballSkill, Vector2 target)
+        {
+            PerformingSkillsComponent performingSkillsComponent = EntityManager.getPerformingSkillsComponent(entityId);
+            ExecuteFireballSkill executeFireballSkill = new ExecuteFireballSkill(
+                fireballSkill,
+                target,
+                () =>
+                {
+                    PositionComponent positionComponent = EntityManager.getPositionComponent(entityId);
+                    PositionTargetComponent positionTargetComponent = EntityManager.getPositionTargetComponent(entityId);
+                    float distance = Math.Abs(positionTargetComponent.position - positionComponent.position.X);
+
+                    return distance <= positionTargetComponent.tolerance;
+                });
+
+            performingSkillsComponent.executingSkills.Add(executeFireballSkill);
+            EntityManager.addComponent(entityId, new PositionTargetComponent(entityId, target.X, fireballSkill.range));
+        }
+
         #endregion
 
         #region Cooldown methods
@@ -563,6 +583,19 @@ namespace Loderpit.Systems
             removeExecutedSkill(entityId, executePowerSwingSkill);
         }
 
+        // Execute fireball
+        private void executeFireball(int entityId, ExecuteFireballSkill executeFireballSkill)
+        {
+            PerformingSkillsComponent performingSkillsComponent = EntityManager.getPerformingSkillsComponent(entityId);
+            FireballSkill fireballSkill = executeFireballSkill.skill as FireballSkill;
+
+            SystemManager.spellEffectSystem.createExplosion(entityId, executeFireballSkill.target, fireballSkill.explosionRadius, Roller.roll(fireballSkill.explosionDamageDie), fireballSkill.explosionForce);
+            SystemManager.skillSystem.resetCooldown(entityId, SkillType.Fireball);
+            EntityManager.removeComponent(entityId, ComponentType.PositionTarget);
+
+            removeExecutedSkill(entityId, executeFireballSkill);
+        }
+
         #endregion
 
         // Remove executed action from a PerformSkillsComponent
@@ -612,6 +645,11 @@ namespace Loderpit.Systems
                             // Fighter
                             case SkillType.PowerSwing:
                                 executePowerSwing(entityId, executeSkill as ExecutePowerSwingSkill);
+                                break;
+
+                            // Mage
+                            case SkillType.Fireball:
+                                executeFireball(entityId, executeSkill as ExecuteFireballSkill);
                                 break;
                         }
                     }

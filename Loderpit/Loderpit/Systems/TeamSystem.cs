@@ -157,6 +157,11 @@ namespace Loderpit.Systems
                             case SkillType.PowerSwing:
                                 handleInitializePowerSwing(selectedEntityId);
                                 break;
+
+                            // Mage
+                            case SkillType.Fireball:
+                                handleInitializeFireball(selectedEntityId);
+                                break;
                         }
                     }
                 }
@@ -236,6 +241,16 @@ namespace Loderpit.Systems
             if (Game.newMouseState.isLeftButtonPressed && !Game.oldMouseState.isLeftButtonPressed)
             {
                 SystemManager.skillSystem.performPowerSwingSkill(selectedEntityId, _initializingSkill as PowerSwingSkill, Game.worldMouse);
+                _initializingSkill = null;
+            }
+        }
+
+        // Handle initialize fireball skill
+        private void handleInitializeFireball(int selectedEntityId)
+        {
+            if (Game.newMouseState.isLeftButtonPressed && !Game.oldMouseState.isLeftButtonPressed)
+            {
+                SystemManager.skillSystem.performFireballSkill(selectedEntityId, _initializingSkill as FireballSkill, Game.worldMouse);
                 _initializingSkill = null;
             }
         }

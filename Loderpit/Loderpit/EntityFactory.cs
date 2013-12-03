@@ -78,6 +78,7 @@ namespace Loderpit
                 case CharacterClass.Mage:
                     skills.Add(new RangedAttackSkill(1, "wand_icon"));
                     skills.Add(new IgniteSkill(1));
+                    skills.Add(new FireballSkill(1));
                     break;
 
                 case CharacterClass.Engineer:
