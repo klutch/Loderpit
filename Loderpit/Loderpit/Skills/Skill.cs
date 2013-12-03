@@ -24,6 +24,7 @@ namespace Loderpit.Skills
 
         // Defender
         Block,
+        ShieldBash,
 
         // Mage
         Ignite,

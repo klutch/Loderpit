@@ -465,6 +465,24 @@ namespace Loderpit.Systems
             EntityManager.addComponent(entityId, new PositionTargetComponent(entityId, target.X, fireballSkill.range));
         }
 
+        // Perform shield bash skill
+        public void performShieldBashSkill(int entityId, ShieldBashSkill shieldBashSkill)
+        {
+            FactionComponent factionComponent = EntityManager.getFactionComponent(entityId);
+            List<int> affectedEntities = Helpers.findEntitiesWithinRange(entityId, 3f, factionComponent.hostileFaction);
+            List<SpellEffect> attackerSpellEffects = SystemManager.spellEffectSystem.getSpellEffectsAffecting(entityId);
+
+            // Add shield bash skills to attacker spell effects
+            attackerSpellEffects.AddRange(shieldBashSkill.onActivateSpellEffects);
+
+            foreach (int affectedId in affectedEntities)
+            {
+                if (SystemManager.combatSystem.attack(entityId, affectedId, 0, shieldBashSkill.attackDie, shieldBashSkill.damageDie, attackerSpellEffects, SystemManager.spellEffectSystem.getSpellEffectsAffecting(affectedId)))
+                {
+                }
+            }
+        }
+
         #endregion
 
         #region Cooldown methods

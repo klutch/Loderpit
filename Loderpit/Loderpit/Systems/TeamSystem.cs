@@ -140,6 +140,11 @@ namespace Loderpit.Systems
                                 handleInitializeAttack(selectedEntityId);
                                 break;
 
+                            // Defender
+                            case SkillType.ShieldBash:
+                                handleInitializeShieldBash(selectedEntityId);
+                                break;
+
                             // Engineer
                             case SkillType.ThrowRope:
                                 handleInitializeThrowRope(selectedEntityId);
@@ -253,6 +258,13 @@ namespace Loderpit.Systems
                 SystemManager.skillSystem.performFireballSkill(selectedEntityId, _initializingSkill as FireballSkill, Game.worldMouse);
                 _initializingSkill = null;
             }
+        }
+
+        // Handle initialize shield bash skill
+        private void handleInitializeShieldBash(int entityId)
+        {
+            SystemManager.skillSystem.performShieldBashSkill(entityId, _initializingSkill as ShieldBashSkill);
+            _initializingSkill = null;
         }
 
         public void update()

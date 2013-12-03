@@ -67,6 +67,7 @@ namespace Loderpit
 
                 case CharacterClass.Defender:
                     skills.Add(new BlockSkill(1));
+                    skills.Add(new ShieldBashSkill(1));
                     break;
 
                 case CharacterClass.Archer:

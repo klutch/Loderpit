@@ -93,16 +93,20 @@ namespace Loderpit.Systems
         public bool attack(
             int attackerId,
             int defenderId,
-            int extraDamage = 0,
+            int extraDamage = 0,    // TODO: -- this parameter could be co-opted into a damage die
+            string attackDie = null,
+            string hitDie = null,
             List<SpellEffect> attackerSpellEffects = null,
             List<SpellEffect> defenderSpellEffects = null)
         {
             StatsComponent attackerStats = EntityManager.getStatsComponent(attackerId);
             StatsComponent defenderStats = EntityManager.getStatsComponent(defenderId);
             int defenderArmorClass = SystemManager.statSystem.getArmorClass(defenderId);
-            string attackDie = SystemManager.statSystem.getAttackDie(attackerId);
-            string hitDie = SystemManager.statSystem.getHitDie(attackerId);
-            int attackRoll = Roller.roll(attackDie) + SystemManager.statSystem.getStatModifier(attackerStats.strength);
+            int attackRoll;
+
+            attackDie = attackDie ?? SystemManager.statSystem.getAttackDie(attackerId);
+            hitDie = hitDie ?? SystemManager.statSystem.getHitDie(attackerId);
+            attackRoll = Roller.roll(attackDie) + SystemManager.statSystem.getStatModifier(attackerStats.strength);
 
             if (attackRoll >= defenderArmorClass)
             {
@@ -167,13 +171,11 @@ namespace Loderpit.Systems
         }
 
         // Apply knockback
-        public void applyKnockback(int attackerId, int defenderId, float strength)
+        public void applyKnockback(int attackerId, int defenderId, float strength, Vector2 normal)
         {
             PositionComponent attackerPositionComponent = EntityManager.getPositionComponent(attackerId);
             PositionComponent defenderPositionComponent = EntityManager.getPositionComponent(defenderId);
             CharacterComponent defenderCharacterComponent = EntityManager.getCharacterComponent(defenderId);
-            //Vector2 normal = Vector2.Normalize((Vector2.Normalize(defenderPositionComponent.position - attackerPositionComponent.position) + new Vector2(0, -1)));
-            Vector2 normal = Vector2.Normalize(new Vector2(1f, -0.5f));
             Vector2 force = normal * strength;
 
             // TODO: Make this operate on some type of PhysicsBodyComponent?
@@ -284,7 +286,7 @@ namespace Loderpit.Systems
 
                                     if (isDefenderWithinRange && isDefenderAttackable && !isDefenderIncapacitated)
                                     {
-                                        attack(attackerId, defenderId, 0, attackerSpellEffects, defenderSpellEffects);
+                                        attack(attackerId, defenderId, 0, null, null, attackerSpellEffects, defenderSpellEffects);
 
                                         if (EntityManager.doesEntityExist(attackerId))  // attacker could have been killed by a damage shield
                                         {

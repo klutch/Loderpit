@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Microsoft.Xna.Framework;
 using Loderpit.SpellEffects;
 
 namespace Loderpit.Skills
@@ -10,7 +11,7 @@ namespace Loderpit.Skills
             : base(SkillType.Kick, level, false)
         {
             _range = 1.5f;
-            _onActivateSpellEffects.Add(new KnockbackProcSpellEffect(calculateKnockbackForce()));
+            _onActivateSpellEffects.Add(new KnockbackProcSpellEffect(calculateKnockbackForce(), new Vector2(1f, -0.5f)));
         }
 
         // Calculates the cooldown duration

@@ -156,6 +156,7 @@
     <Compile Include="Skills\PowerShotSkill.cs" />
     <Compile Include="Skills\PowerSwingSkill.cs" />
     <Compile Include="Skills\RangedAttackSkill.cs" />
+    <Compile Include="Skills\ShieldBashSkill.cs" />
     <Compile Include="Skills\ShieldOfThornsSkill.cs" />
     <Compile Include="Skills\Skill.cs" />
     <Compile Include="Skills\ThrowRopeSkill.cs" />
@@ -184,6 +185,9 @@
     <Compile Include="Systems\TeamSystem.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="resources\ui\action_icons\bash.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="resources\ui\action_icons\fireball.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

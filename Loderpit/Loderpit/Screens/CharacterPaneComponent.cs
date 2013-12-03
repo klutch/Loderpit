@@ -141,6 +141,11 @@ namespace Loderpit.Screens
                             drawIcon((skill as RangedAttackSkill).textureResourceId);
                             break;
 
+                        // Defender
+                        case SkillType.ShieldBash:
+                            drawIcon("shield_bash_icon");
+                            break;
+
                         // Engineer
                         case SkillType.ThrowRope:
                             drawIcon("rope_icon");

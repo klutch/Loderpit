@@ -147,6 +147,12 @@ namespace Loderpit.Systems
                 _reticleShape.Position = Game.sfmlWorldMouse;
                 Game.window.Draw(_reticleShape);
             }
+            else if (teamSystem.initializingSkill.type == SkillType.ShieldBash)
+            {
+                _actionLabel.DisplayedString = "Shield Bash";
+                _reticleShape.Position = Game.sfmlWorldMouse;
+                Game.window.Draw(_reticleShape);
+            }
         }
 
         public void update()

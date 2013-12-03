@@ -35,45 +35,6 @@ namespace Loderpit.Systems
             }
         }
 
-        // Find entities friendly to an entity within a certain range
-        private List<int> findEntitiesWithinRange(int entityId, float radius, Faction factionToMatch)
-        {
-            PositionComponent positionComponent = EntityManager.getPositionComponent(entityId);
-            List<int> entitiesWithFaction = EntityManager.getEntitiesPossessing(ComponentType.Faction);
-            List<int> results = new List<int>();
-
-            foreach (int targetEntityId in entitiesWithFaction)
-            {
-                PositionComponent targetPositionComponent;
-                FactionComponent targetFactionComponent;
-                Vector2 relative;
-
-                // Skip self
-                if (targetEntityId == entityId)
-                {
-                    continue;
-                }
-
-                targetPositionComponent = EntityManager.getPositionComponent(targetEntityId);
-                targetFactionComponent = EntityManager.getFactionComponent(targetEntityId);
-                relative = targetPositionComponent.position - positionComponent.position;
-
-                // Check faction
-                if (targetFactionComponent.faction != factionToMatch)
-                {
-                    continue;
-                }
-
-                // Check range
-                if (relative.Length() <= radius)
-                {
-                    results.Add(targetEntityId);
-                }
-            }
-
-            return results;
-        }
-
         // Add an affected entity to the affected entity map
         private void addAffectedEntity(int entityId, SpellEffect spellEffect)
         {
@@ -112,19 +73,19 @@ namespace Loderpit.Systems
                         // Add friendly entities to the affected entity map
                         if (spellEffect.affectsFriendly)
                         {
-                            entitiesToAdd.AddRange(findEntitiesWithinRange(entityId, aeSpellEffect.radius, factionComponent.faction));
+                            entitiesToAdd.AddRange(Helpers.findEntitiesWithinRange(entityId, aeSpellEffect.radius, factionComponent.faction));
                         }
 
                         // Add hostile entities to the affected entity map
                         if (spellEffect.affectsHostile)
                         {
-                            entitiesToAdd.AddRange(findEntitiesWithinRange(entityId, aeSpellEffect.radius, factionComponent.hostileFaction));
+                            entitiesToAdd.AddRange(Helpers.findEntitiesWithinRange(entityId, aeSpellEffect.radius, factionComponent.hostileFaction));
                         }
 
                         // Add neutral entities to the affected entity map
                         if (spellEffect.affectsNeutral)
                         {
-                            entitiesToAdd.AddRange(findEntitiesWithinRange(entityId, aeSpellEffect.radius, Faction.Neutral));
+                            entitiesToAdd.AddRange(Helpers.findEntitiesWithinRange(entityId, aeSpellEffect.radius, Faction.Neutral));
                         }
                     }
 
