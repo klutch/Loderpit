@@ -671,7 +671,7 @@ namespace Loderpit.Systems
                 {
                     if (Roller.roll(fireballSkill.igniteChanceDie) == 1)
                     {
-                        SystemManager.spellEffectSystem.applySpellEffect(affectedEntityId, new IgniteSpellEffect(fireballSkill.igniteDamageDie, 60, 6));
+                        SystemManager.spellEffectSystem.applySpellEffect(affectedEntityId, new IgniteSpellEffect(affectedEntityId, fireballSkill.igniteDamageDie, 60, 6));
                     }
                 }
             }

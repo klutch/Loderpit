@@ -10,11 +10,11 @@ namespace Loderpit.Skills
         public string attackDie { get { return calculateAttackDie(); } }
         public string damageDie { get { return calculateDamageDie(); } }
 
-        public ShieldBashSkill(int level)
-            : base(SkillType.ShieldBash, level, true)
+        public ShieldBashSkill(int entityId, int level)
+            : base(SkillType.ShieldBash, entityId, level, true)
         {
             _baseCooldown = 180;
-            _onActivateSpellEffects.Add(new KnockbackProcSpellEffect(calculateKnockbackStrength(), new Vector2(1, -0.5f)));
+            _onActivateSpellEffects.Add(new KnockbackProcSpellEffect(entityId, calculateKnockbackStrength(), new Vector2(1, -0.5f)));
         }
 
         private float calculateKnockbackStrength()

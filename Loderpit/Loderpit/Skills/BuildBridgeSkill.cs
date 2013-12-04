@@ -7,8 +7,8 @@ namespace Loderpit.Skills
 {
     public class BuildBridgeSkill : Skill
     {
-        public BuildBridgeSkill(int level)
-            : base(SkillType.BuildBridge, level, true)
+        public BuildBridgeSkill(int entityId, int level)
+            : base(SkillType.BuildBridge, entityId, level, true)
         {
             _range = 1f;
         }

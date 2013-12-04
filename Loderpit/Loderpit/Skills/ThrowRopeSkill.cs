@@ -8,8 +8,8 @@ namespace Loderpit.Skills
 {
     public class ThrowRopeSkill : Skill
     {
-        public ThrowRopeSkill(int level)
-            : base(SkillType.ThrowRope, level, true)
+        public ThrowRopeSkill(int entityId, int level)
+            : base(SkillType.ThrowRope, entityId, level, true)
         {
             _range = 4f;
         }

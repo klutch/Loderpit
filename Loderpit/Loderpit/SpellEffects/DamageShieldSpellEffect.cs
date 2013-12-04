@@ -12,8 +12,8 @@ namespace Loderpit.SpellEffects
         public int damage { get { return _damage; } }
         public float radius { get { return _radius; } }
 
-        public DamageShieldSpellEffect(int damage, float radius)
-            : base(SpellEffectType.DamageShield)
+        public DamageShieldSpellEffect(int sourceEntityId, int damage, float radius)
+            : base(SpellEffectType.DamageShield, sourceEntityId)
         {
             _damage = damage;
             _radius = radius;

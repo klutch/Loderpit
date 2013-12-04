@@ -9,8 +9,8 @@ namespace Loderpit.Skills
 
         public string textureResourceId { get { return _textureResourceId; } }
 
-        public RangedAttackSkill(int level, string textureResourceId = "ranged_attack_skill_icon")
-            : base(SkillType.RangedAttack, level, true)
+        public RangedAttackSkill(int entityId, int level, string textureResourceId = "ranged_attack_skill_icon")
+            : base(SkillType.RangedAttack, entityId, level, true)
         {
             _range = 8f;
             _textureResourceId = textureResourceId;

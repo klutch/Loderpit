@@ -24,6 +24,7 @@ namespace Loderpit.SpellEffects
         public float radius { get { return _radius; } }
 
         public StatBuffSpellEffect(
+            int sourceEntityId,
             int attackRollModifier,
             int hitRollModifier,
             int armorClassModifier,
@@ -35,7 +36,7 @@ namespace Loderpit.SpellEffects
             bool affectsFriendly,
             bool affectsHostile,
             float radius)
-            : base(SpellEffectType.StatBuff)
+            : base(SpellEffectType.StatBuff, sourceEntityId)
         {
             _attackRollModifier = attackRollModifier;
             _hitRollModifier = hitRollModifier;

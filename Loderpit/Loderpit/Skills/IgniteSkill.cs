@@ -6,10 +6,10 @@ namespace Loderpit.Skills
 {
     public class IgniteSkill : Skill
     {
-        public IgniteSkill(int level)
-            : base(SkillType.Ignite, level, false)
+        public IgniteSkill(int entityId, int level)
+            : base(SkillType.Ignite, entityId, level, false)
         {
-            _passiveSpellEffects.Add(new IgniteProcSpellEffect(calculateChanceDie(), calculateDamageDie()));
+            _passiveSpellEffects.Add(new IgniteProcSpellEffect(entityId, calculateChanceDie(), calculateDamageDie()));
         }
 
         private string calculateChanceDie()

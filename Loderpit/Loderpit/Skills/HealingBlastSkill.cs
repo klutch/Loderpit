@@ -7,8 +7,8 @@ namespace Loderpit.Skills
     {
         public string healDie { get { return calculateHealDie(); } }
 
-        public HealingBlastSkill(int level)
-            : base(SkillType.HealingBlast, level, true)
+        public HealingBlastSkill(int entityId, int level)
+            : base(SkillType.HealingBlast, entityId, level, true)
         {
             _baseCooldown = 180;
             _range = 8f;

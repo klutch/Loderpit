@@ -9,11 +9,13 @@ namespace Loderpit.SpellEffects
         KnockbackProc,
         IgniteProc,
         Ignite,
-        StatBuff
+        StatBuff,
+        DamageAura
     }
 
     abstract public class SpellEffect
     {
+        protected int _sourceEntityId;
         protected SpellEffectType _type;
         protected bool _affectsSelf;
         protected bool _affectsFriendly;
@@ -29,10 +31,12 @@ namespace Loderpit.SpellEffects
         public bool affectsNeutral { get { return _affectsNeutral; } }
         public bool affectsHostile { get { return _affectsHostile; } }
         public int timeToLive { get { return _timeToLive; } set { _timeToLive = value; } }
+        public int sourceEntityId { get { return _sourceEntityId; } }
 
-        public SpellEffect(SpellEffectType type)
+        public SpellEffect(SpellEffectType type, int sourceEntityId)
         {
             _type = type;
+            _sourceEntityId = sourceEntityId;
             _timeToLive = -1;
         }
 

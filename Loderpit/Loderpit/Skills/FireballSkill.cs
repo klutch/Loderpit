@@ -13,8 +13,8 @@ namespace Loderpit.Skills
         public float explosionRadius { get { return calculateExplosionRadius(); } }
         public float explosionForce { get { return calculateExplosionForce(); } }
 
-        public FireballSkill(int level)
-            : base(SkillType.Fireball, level, true)
+        public FireballSkill(int entityId, int level)
+            : base(SkillType.Fireball, entityId, level, true)
         {
             _baseCooldown = 180;
             _range = 8f;

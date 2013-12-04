@@ -10,8 +10,8 @@ namespace Loderpit.SpellEffects
         private float _strength;
         private Vector2 _directionNormal;
 
-        public KnockbackProcSpellEffect(float strength, Vector2 directionNormal)
-            : base(SpellEffectType.KnockbackProc)
+        public KnockbackProcSpellEffect(int sourceEntityId, float strength, Vector2 directionNormal)
+            : base(SpellEffectType.KnockbackProc, sourceEntityId)
         {
             _strength = strength;
             _directionNormal = directionNormal;

@@ -53,44 +53,45 @@ namespace Loderpit
             return statsComponent;
         }
 
-        private static List<Skill> getStartingSkills(CharacterClass characterClass)
+        private static List<Skill> getStartingSkills(int entityId, CharacterClass characterClass)
         {
             List<Skill> skills = new List<Skill>();
 
             switch (characterClass)
             {
                 case CharacterClass.Fighter:
-                    skills.Add(new MeleeAttackSkill(1));
-                    skills.Add(new KickSkill(1));
-                    skills.Add(new PowerSwingSkill(1));
+                    skills.Add(new MeleeAttackSkill(entityId, 1));
+                    skills.Add(new KickSkill(entityId, 1));
+                    skills.Add(new PowerSwingSkill(entityId, 1));
                     break;
 
                 case CharacterClass.Defender:
-                    skills.Add(new BlockSkill(1));
-                    skills.Add(new ShieldBashSkill(1));
+                    skills.Add(new BlockSkill(entityId, 1));
+                    skills.Add(new ShieldBashSkill(entityId, 1));
+                    skills.Add(new SpikedShieldSkill(entityId, 1));
                     break;
 
                 case CharacterClass.Archer:
-                    skills.Add(new RangedAttackSkill(1, "bow_icon"));
-                    skills.Add(new ShieldOfThornsSkill(1));
-                    skills.Add(new PowerShotSkill(1));
-                    skills.Add(new DeadeyeSkill(1));
+                    skills.Add(new RangedAttackSkill(entityId, 1, "bow_icon"));
+                    skills.Add(new ShieldOfThornsSkill(entityId, 1));
+                    skills.Add(new PowerShotSkill(entityId, 1));
+                    skills.Add(new DeadeyeSkill(entityId, 1));
                     break;
 
                 case CharacterClass.Mage:
-                    skills.Add(new RangedAttackSkill(1, "wand_icon"));
-                    skills.Add(new IgniteSkill(1));
-                    skills.Add(new FireballSkill(1));
+                    skills.Add(new RangedAttackSkill(entityId, 1, "wand_icon"));
+                    skills.Add(new IgniteSkill(entityId, 1));
+                    skills.Add(new FireballSkill(entityId, 1));
                     break;
 
                 case CharacterClass.Engineer:
-                    skills.Add(new ThrowRopeSkill(1));
-                    skills.Add(new BuildBridgeSkill(1));
+                    skills.Add(new ThrowRopeSkill(entityId, 1));
+                    skills.Add(new BuildBridgeSkill(entityId, 1));
                     break;
 
                 case CharacterClass.Healer:
-                    skills.Add(new HealSkill(1));
-                    skills.Add(new HealingBlastSkill(1));
+                    skills.Add(new HealSkill(entityId, 1));
+                    skills.Add(new HealingBlastSkill(entityId, 1));
                     break;
             }
 
@@ -160,7 +161,7 @@ namespace Loderpit
             EntityManager.addComponent(entityId, new PositionComponent(entityId, body));
             EntityManager.addComponent(entityId, new IgnoreRopeRaycastComponent(entityId));
             EntityManager.addComponent(entityId, new IgnoreBridgeRaycastComponent(entityId));
-            EntityManager.addComponent(entityId, new SkillsComponent(entityId, getStartingSkills(characterClass)));
+            EntityManager.addComponent(entityId, new SkillsComponent(entityId, getStartingSkills(entityId, characterClass)));
             EntityManager.addComponent(entityId, new ActiveSpellEffectsComponent(entityId));
             EntityManager.addComponent(entityId, new FactionComponent(entityId, Faction.Player, Faction.Enemy));
             EntityManager.addComponent(entityId, new RenderHealthComponent(entityId));
@@ -320,7 +321,7 @@ namespace Loderpit
             EntityManager.addComponent(entityId, new PositionComponent(entityId, body));
             EntityManager.addComponent(entityId, new IgnoreRopeRaycastComponent(entityId));
             EntityManager.addComponent(entityId, new IgnoreBridgeRaycastComponent(entityId));
-            EntityManager.addComponent(entityId, new SkillsComponent(entityId, new List<Skill>( new[] { new MeleeAttackSkill(1) })));
+            EntityManager.addComponent(entityId, new SkillsComponent(entityId, new List<Skill>( new[] { new MeleeAttackSkill(entityId, 1) })));
             EntityManager.addComponent(entityId, new ActiveSpellEffectsComponent(entityId));
             EntityManager.addComponent(entityId, new FactionComponent(entityId, Faction.Enemy, Faction.Player));
             EntityManager.addComponent(entityId, new RenderHealthComponent(entityId));

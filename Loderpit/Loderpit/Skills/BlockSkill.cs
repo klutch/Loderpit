@@ -5,8 +5,8 @@ namespace Loderpit.Skills
 {
     public class BlockSkill : Skill
     {
-        public BlockSkill(int level)
-            : base(SkillType.Block, level, false)
+        public BlockSkill(int entityId, int level)
+            : base(SkillType.Block, entityId, level, false)
         {
         }
 

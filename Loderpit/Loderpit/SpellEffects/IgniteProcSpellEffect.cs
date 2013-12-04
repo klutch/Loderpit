@@ -9,8 +9,8 @@ namespace Loderpit.SpellEffects
         private string _chanceDie;
         private string _damageDie;
 
-        public IgniteProcSpellEffect(string chanceDie, string damageDie)
-            : base(SpellEffectType.IgniteProc)
+        public IgniteProcSpellEffect(int sourceEntityId, string chanceDie, string damageDie)
+            : base(SpellEffectType.IgniteProc, sourceEntityId)
         {
             _chanceDie = chanceDie;
             _damageDie = damageDie;
@@ -19,7 +19,7 @@ namespace Loderpit.SpellEffects
                 {
                     if (Roller.roll(_chanceDie) == 1)
                     {
-                        SystemManager.spellEffectSystem.applySpellEffect(defenderId, new IgniteSpellEffect(_damageDie, 60, 6));
+                        SystemManager.spellEffectSystem.applySpellEffect(defenderId, new IgniteSpellEffect(defenderId, _damageDie, 60, 6));
                     }
                 };
         }

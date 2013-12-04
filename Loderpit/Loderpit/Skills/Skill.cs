@@ -26,6 +26,7 @@ namespace Loderpit.Skills
         // Defender
         Block,
         ShieldBash,
+        SpikedShield,
 
         // Mage
         Ignite,
@@ -39,6 +40,7 @@ namespace Loderpit.Skills
     abstract public class Skill
     {
         protected SkillType _type;
+        protected int _entityId;
         protected int _level;
         protected int _cooldown;
         protected int _lastMaxCooldown;
@@ -57,9 +59,10 @@ namespace Loderpit.Skills
         public List<SpellEffect> onActivateSpellEffects { get { return _onActivateSpellEffects; } }
         public float cooldownPercentage { get { return (float)_cooldown / (float)_lastMaxCooldown; } }
 
-        public Skill(SkillType type, int level, bool activatable)
+        public Skill(SkillType type, int entityId, int level, bool activatable)
         {
             _type = type;
+            _entityId = entityId;
             _level = level;
             _activatable = activatable;
             _passiveSpellEffects = new List<SpellEffect>();

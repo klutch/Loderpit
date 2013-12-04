@@ -6,8 +6,8 @@ namespace Loderpit.Skills
 {
     public class PowerShotSkill : Skill
     {
-        public PowerShotSkill(int level)
-            : base(SkillType.PowerShot, level, true)
+        public PowerShotSkill(int entityId, int level)
+            : base(SkillType.PowerShot, entityId, level, true)
         {
             _range = 10f;
             _baseCooldown = 360;

@@ -10,6 +10,6 @@ namespace Loderpit.SpellEffects
         string damageDie { get; }
         int baseDelay { get; }
         int currentDelay { get; set; }
-        void onTick(int entityId);
+        void onTick(int ownerId, int receiverId);
     }
 }

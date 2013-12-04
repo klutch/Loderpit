@@ -65,7 +65,7 @@ namespace Loderpit.Systems
                         entitiesToAdd.Add(entityId);
                     }
 
-                    // AoE spell effects
+                    // AoE/aura spell effects
                     if (spellEffect is IAoESpellEffect)
                     {
                         IAoESpellEffect aeSpellEffect = spellEffect as IAoESpellEffect;
@@ -238,7 +238,7 @@ namespace Loderpit.Systems
                         {
                             if (EntityManager.doesEntityExist(entityId))
                             {
-                                dotSpellEffect.onTick(entityId);
+                                dotSpellEffect.onTick(spellEffect.sourceEntityId, entityId);
                             }
                             dotSpellEffect.currentDelay = dotSpellEffect.baseDelay;
                         }

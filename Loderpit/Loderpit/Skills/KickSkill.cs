@@ -7,11 +7,11 @@ namespace Loderpit.Skills
 {
     public class KickSkill : Skill
     {
-        public KickSkill(int level)
-            : base(SkillType.Kick, level, false)
+        public KickSkill(int entityId, int level)
+            : base(SkillType.Kick, entityId, level, false)
         {
             _range = 1.5f;
-            _onActivateSpellEffects.Add(new KnockbackProcSpellEffect(calculateKnockbackForce(), new Vector2(1f, -0.5f)));
+            _onActivateSpellEffects.Add(new KnockbackProcSpellEffect(entityId, calculateKnockbackForce(), new Vector2(1f, -0.5f)));
         }
 
         // Calculates the cooldown duration
