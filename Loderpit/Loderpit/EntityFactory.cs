@@ -715,8 +715,10 @@ namespace Loderpit
             DamageOverTimeComponent damageOverTimeComponent = new DamageOverTimeComponent(entityId, damageDie, tickDelay);
             TimeToLiveComponent timeToLiveComponent = new TimeToLiveComponent(entityId, tickCount * tickDelay);
             AffectedEntitiesComponent affectedEntitiesComponent = new AffectedEntitiesComponent(entityId);
+            AffectedBySpellEntitiesComponent affectedBySpellEntitiesComponent = EntityManager.getAffectedBySpellEntitiesComponent(targetEntityId);
 
             affectedEntitiesComponent.entities.Add(targetEntityId);
+            affectedBySpellEntitiesComponent.spellEntities.Add(entityId);
             
             EntityManager.addComponent(entityId, damageOverTimeComponent);
             EntityManager.addComponent(entityId, timeToLiveComponent);
@@ -775,6 +777,22 @@ namespace Loderpit
             EntityManager.addComponent(entityId, areaOfEffectComponent);
             EntityManager.addComponent(entityId, new IgnoreBridgeRaycastComponent(entityId));
             EntityManager.addComponent(entityId, new IgnoreRopeRaycastComponent(entityId));
+
+            return entityId;
+        }
+
+        // Create general proc spell
+        public static int createProcSpell(int targetEntityId, Action<int, int> onHitOther = null, Action<int, int> onHitByOther = null)
+        {
+            int entityId = EntityManager.createEntity();
+            ProcComponent procComponent = new ProcComponent(entityId, onHitOther, onHitByOther);
+            AffectedEntitiesComponent affectedEntitiesComponent = new AffectedEntitiesComponent(entityId);
+            AffectedBySpellEntitiesComponent affectedBySpellEntitiesComponent = EntityManager.getAffectedBySpellEntitiesComponent(targetEntityId);
+
+            affectedEntitiesComponent.entities.Add(targetEntityId);
+            affectedBySpellEntitiesComponent.spellEntities.Add(entityId);
+
+            EntityManager.addComponent(entityId, procComponent);
 
             return entityId;
         }

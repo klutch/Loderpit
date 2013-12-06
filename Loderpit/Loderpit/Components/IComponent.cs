@@ -36,7 +36,8 @@ namespace Loderpit.Components
         DamageOverTime,
         DamageShield,
         AreaOfEffect,
-        AffectedBySpellEntities
+        AffectedBySpellEntities,
+        Proc
     }
 
     public interface IComponent

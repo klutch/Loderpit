@@ -136,5 +136,6 @@ namespace Loderpit.Managers
         public static TimeToLiveComponent getTimeToLiveComponent(int entityId) { return getComponent<TimeToLiveComponent>(entityId, ComponentType.TimeToLive); }
         public static TrackEntityPositionComponent getTrackEntityPositionComponent(int entityId) { return getComponent<TrackEntityPositionComponent>(entityId, ComponentType.TrackEntityPosition); }
         public static AffectedBySpellEntitiesComponent getAffectedBySpellEntitiesComponent(int entityId) { return getComponent<AffectedBySpellEntitiesComponent>(entityId, ComponentType.AffectedBySpellEntities); }
+        public static ProcComponent getProcComponent(int entityId) { return getComponent<ProcComponent>(entityId, ComponentType.Proc); }
     }
 }

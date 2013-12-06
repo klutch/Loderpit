@@ -117,6 +117,34 @@ namespace Loderpit.Systems
                 defenderStats.currentHp -= damage;
                 addMessage(defenderId, "-" + damage.ToString());
 
+                // Check for attacker procs
+                foreach (int spellId in attackerSpells.spellEntities)
+                {
+                    ProcComponent procComponent = EntityManager.getProcComponent(spellId);
+
+                    if (procComponent != null)
+                    {
+                        if (procComponent.onHitOther != null)
+                        {
+                            procComponent.onHitOther(attackerId, defenderId);
+                        }
+                    }
+                }
+
+                // Check for defender procs
+                foreach (int spellId in defenderSpells.spellEntities)
+                {
+                    ProcComponent procComponent = EntityManager.getProcComponent(spellId);
+
+                    if (procComponent != null)
+                    {
+                        if (procComponent.onHitByOther != null)
+                        {
+                            procComponent.onHitByOther(attackerId, defenderId);
+                        }
+                    }
+                }
+
                 // Check defender for damage shields
                 foreach (int spellId in defenderSpells.spellEntities)
                 {

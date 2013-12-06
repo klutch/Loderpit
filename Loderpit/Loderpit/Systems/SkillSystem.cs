@@ -50,10 +50,16 @@ namespace Loderpit.Systems
                 {
                     switch (skill.type)
                     {
+                        // Defender
                         case SkillType.Block:
                             initializeBlockSkill(entityId, skill as BlockSkill);
                             break;
 
+                        case SkillType.SpikedShield:
+                            initializeSpikedShieldSkill(entityId, skill as SpikedShieldSkill);
+                            break;
+
+                        // Archer
                         case SkillType.Deadeye:
                             initializeDeadeyeSkill(entityId, skill as DeadeyeSkill);
                             break;
@@ -62,8 +68,9 @@ namespace Loderpit.Systems
                             initializeShieldOfThornsSkill(entityId, skill as ShieldOfThornsSkill);
                             break;
 
-                        case SkillType.SpikedShield:
-                            initializeSpikedShieldSkill(entityId, skill as SpikedShieldSkill);
+                        // Fighter
+                        case SkillType.Kick:
+                            initializeKickSkill(entityId, skill as KickSkill);
                             break;
                     }
                 }
@@ -219,6 +226,24 @@ namespace Loderpit.Systems
             FactionComponent factionComponent = EntityManager.getFactionComponent(entityId);
 
             EntityFactory.createSpikedShieldSpell(entityId, spikedShieldSkill.damageDie, spikedShieldSkill.range, new List<Faction>(new [] { factionComponent.hostileFaction }));
+        }
+
+        // Initialize kick skill
+        private void initializeKickSkill(int entityId, KickSkill kickSkill)
+        {
+            Action<int, int> onHitOther = (attackerId, defenderId) =>
+                {
+                    if (Roller.roll(kickSkill.chanceToKnockback) == 1)
+                    {
+                        PositionComponent attackerPosition = EntityManager.getPositionComponent(attackerId);
+                        PositionComponent defenderPosition = EntityManager.getPositionComponent(defenderId);
+                        Vector2 normal = attackerPosition.position.X < defenderPosition.position.X ? new Vector2(1f, -0.5f) : new Vector2(-1f, -0.5f);
+
+                        SystemManager.combatSystem.applyKnockback(attackerId, defenderId, kickSkill.knockbackForce, normal);
+                    }
+                };
+
+            EntityFactory.createProcSpell(entityId, onHitOther);
         }
 
         #endregion

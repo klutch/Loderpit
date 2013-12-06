@@ -117,6 +117,7 @@
     <Compile Include="Components\SpellEffects\AreaOfEffectComponent.cs" />
     <Compile Include="Components\SpellEffects\DamageOverTimeComponent.cs" />
     <Compile Include="Components\SpellEffects\DamageShieldComponent.cs" />
+    <Compile Include="Components\SpellEffects\ProcComponent.cs" />
     <Compile Include="Components\SpellEffects\StatModifierComponent.cs" />
     <Compile Include="Components\SpellEffects\TimeToLiveComponent.cs" />
     <Compile Include="Components\SpellEffects\TrackEntityPositionComponent.cs" />
