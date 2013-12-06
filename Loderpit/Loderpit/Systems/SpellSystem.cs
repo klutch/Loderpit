@@ -218,7 +218,10 @@ namespace Loderpit.Systems
 
                     foreach (int affectedId in affectedEntitiesComponent.entities)
                     {
-                        SystemManager.combatSystem.applySpellDamage(affectedId, Roller.roll(damageOverTimeComponent.damageDie));
+                        if (EntityManager.doesEntityExist(affectedId))
+                        {
+                            SystemManager.combatSystem.applySpellDamage(affectedId, Roller.roll(damageOverTimeComponent.damageDie));
+                        }
                     }
                 }
                 else
@@ -231,27 +234,20 @@ namespace Loderpit.Systems
         // Update
         public void update()
         {
-            List<int> affectedEntities = EntityManager.getEntitiesPossessing(ComponentType.AffectedEntities);
-            List<int> affectedBySpellEntities = EntityManager.getEntitiesPossessing(ComponentType.AffectedBySpellEntities);
-            List<int> characterEntities = EntityManager.getEntitiesPossessing(ComponentType.Character);
-            List<int> trackPositionEntities = EntityManager.getEntitiesPossessing(ComponentType.TrackEntityPosition);
-            List<int> timeToLiveEntities = EntityManager.getEntitiesPossessing(ComponentType.TimeToLive);
-            List<int> damageOverTimeEntities = EntityManager.getEntitiesPossessing(ComponentType.DamageOverTime);
-
             // Clear affected entities
-            clearAffectedEntities(affectedEntities, affectedBySpellEntities);
+            clearAffectedEntities(EntityManager.getEntitiesPossessing(ComponentType.AffectedEntities), EntityManager.getEntitiesPossessing(ComponentType.AffectedBySpellEntities));
 
             // Handle time to live
-            handleTimeToLive(timeToLiveEntities);
+            handleTimeToLive(EntityManager.getEntitiesPossessing(ComponentType.TimeToLive));
 
             // Track positions
-            trackEntityPositions(trackPositionEntities);
+            trackEntityPositions(EntityManager.getEntitiesPossessing(ComponentType.TrackEntityPosition));
 
             // Find affected entities
-            findAffectedEntities(characterEntities);
+            findAffectedEntities(EntityManager.getEntitiesPossessing(ComponentType.Character));
 
             // Handle damage over time
-            handleDamageOverTime(damageOverTimeEntities);
+            handleDamageOverTime(EntityManager.getEntitiesPossessing(ComponentType.DamageOverTime));
         }
     }
 }

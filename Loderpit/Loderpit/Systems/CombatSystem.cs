@@ -317,6 +317,8 @@ namespace Loderpit.Systems
                                         {
                                             SystemManager.skillSystem.resetCooldown(attackerId, skill.type);
                                         }
+
+                                        break;  // prevent attacking multiple entities
                                     }
                                 }
                             }

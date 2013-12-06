@@ -72,6 +72,11 @@ namespace Loderpit.Systems
                         case SkillType.Kick:
                             initializeKickSkill(entityId, skill as KickSkill);
                             break;
+
+                        // Mage
+                        case SkillType.Ignite:
+                            initializeIgniteSkill(entityId, skill as IgniteSkill);
+                            break;
                     }
                 }
             }
@@ -247,6 +252,27 @@ namespace Loderpit.Systems
                         Vector2 normal = attackerPosition.position.X < defenderPosition.position.X ? new Vector2(1f, -0.5f) : new Vector2(-1f, -0.5f);
 
                         SystemManager.combatSystem.applyKnockback(attackerId, defenderId, kickSkill.knockbackForce, normal);
+                    }
+                };
+
+            EntityFactory.createProcSpell(entityId, onHitOther);
+        }
+
+        // Initialize ignite skill
+        private void initializeIgniteSkill(int entityId, IgniteSkill igniteSkill)
+        {
+            Action<Skill, int, int> onHitOther = (skill, attackerId, defenderId) =>
+                {
+                    // Skip if not ignite skill
+                    if (skill.type != SkillType.RangedAttack)
+                    {
+                        return;
+                    }
+
+                    // Check chance to proc
+                    if (Roller.roll(igniteSkill.chanceToProc) == 1)
+                    {
+                        EntityFactory.createBurningSpell(defenderId, igniteSkill.damageDie, igniteSkill.tickDelay, igniteSkill.tickCount);
                     }
                 };
 

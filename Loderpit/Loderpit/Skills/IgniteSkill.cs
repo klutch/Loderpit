@@ -5,6 +5,8 @@ namespace Loderpit.Skills
 {
     public class IgniteSkill : Skill
     {
+        public string damageDie { get { return calculateDamageDie(); } }
+        public string chanceToProc { get { return calculateChanceToProc(); } }
         public int tickDelay { get { return calculateTickDelay(); } }
         public int tickCount { get { return calculateTickCount(); } }
 
@@ -29,11 +31,11 @@ namespace Loderpit.Skills
             }
         }
 
-        private string calculateChanceDie()
+        private string calculateChanceToProc()
         {
             switch (_level)
             {
-                default: return "d6";
+                default: return "d1";
             }
         }
 
