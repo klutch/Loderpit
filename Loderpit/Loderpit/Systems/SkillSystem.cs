@@ -9,7 +9,6 @@ using Loderpit.Components;
 using Loderpit.Managers;
 using Loderpit.Skills;
 using Loderpit.Formations;
-using Loderpit.SpellEffects;
 
 namespace Loderpit.Systems
 {
@@ -470,16 +469,10 @@ namespace Loderpit.Systems
         {
             FactionComponent factionComponent = EntityManager.getFactionComponent(entityId);
             List<int> affectedEntities = Helpers.findEntitiesWithinRange(entityId, 3f, factionComponent.hostileFaction);
-            List<SpellEffect> attackerSpellEffects = SystemManager.spellEffectSystem.getSpellEffectsAffecting(entityId);
-
-            // Add shield bash skills to attacker spell effects
-            attackerSpellEffects.AddRange(shieldBashSkill.onActivateSpellEffects);
 
             foreach (int affectedId in affectedEntities)
             {
-                if (SystemManager.combatSystem.attack(entityId, affectedId, 0, shieldBashSkill.attackDie, shieldBashSkill.damageDie, attackerSpellEffects, SystemManager.spellEffectSystem.getSpellEffectsAffecting(affectedId)))
-                {
-                }
+                SystemManager.combatSystem.attack(entityId, affectedId, 0, shieldBashSkill.attackDie, shieldBashSkill.damageDie);
             }
         }
 
@@ -663,15 +656,15 @@ namespace Loderpit.Systems
         {
             PerformingSkillsComponent performingSkillsComponent = EntityManager.getPerformingSkillsComponent(entityId);
             FireballSkill fireballSkill = executeFireballSkill.skill as FireballSkill;
-            List<int> affectedEntities = SystemManager.spellEffectSystem.createExplosion(entityId, executeFireballSkill.target, fireballSkill.explosionRadius, Roller.roll(fireballSkill.explosionDamageDie), fireballSkill.explosionForce);
+            List<int> hitEntities = SystemManager.spellSystem.createExplosion(entityId, executeFireballSkill.target, fireballSkill.explosionRadius, Roller.roll(fireballSkill.explosionDamageDie), fireballSkill.explosionForce);
 
-            foreach (int affectedEntityId in affectedEntities)
+            foreach (int hitEntityId in hitEntities)
             {
-                if (EntityManager.doesEntityExist(affectedEntityId))
+                if (EntityManager.doesEntityExist(hitEntityId))
                 {
                     if (Roller.roll(fireballSkill.igniteChanceDie) == 1)
                     {
-                        SystemManager.spellEffectSystem.applySpellEffect(affectedEntityId, new IgniteSpellEffect(affectedEntityId, fireballSkill.igniteDamageDie, 60, 6));
+                        EntityFactory.createIgniteSpell(hitEntityId, fireballSkill.igniteTickDelay, fireballSkill.igniteTickCount);
                     }
                 }
             }

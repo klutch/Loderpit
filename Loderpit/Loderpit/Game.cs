@@ -79,7 +79,7 @@ namespace Loderpit
             SystemManager.combatSystem = new CombatSystem();
             SystemManager.enemyAISystem = new EnemyAISystem();
             SystemManager.interLevelSystem = new InterLevelSystem();
-            SystemManager.spellEffectSystem = new SpellEffectSystem();
+            SystemManager.spellSystem = new SpellSystem();
 
             // Open create team screen
             startCreateTeamState();
@@ -148,7 +148,6 @@ namespace Loderpit
             SystemManager.levelSystem.generateLevel(12);
             playerGroupId = EntityFactory.createPlayerGroup(characterClasses);
             SystemManager.teamSystem.playerGroup = EntityManager.getGroupComponent(playerGroupId);
-            SystemManager.spellEffectSystem.applyAllSkillPassiveSpellEffects();
             SystemManager.skillSystem.initializeSkills();
             ScreenManager.addScreen(new LevelScreen());
             _state = GameState.Level;
@@ -300,7 +299,7 @@ namespace Loderpit
                 SystemManager.statSystem.update();
                 SystemManager.renderSystem.update();
                 SystemManager.skillSystem.update();
-                SystemManager.spellEffectSystem.update();
+                SystemManager.spellSystem.update();
                 SystemManager.combatSystem.update();
                 ScreenManager.update();
             }

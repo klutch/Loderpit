@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
-using Loderpit.SpellEffects;
 
 namespace Loderpit.Skills
 {
@@ -12,12 +11,30 @@ namespace Loderpit.Skills
         public string explosionDamageDie { get { return calculateExplosionDamageDie(); } }
         public float explosionRadius { get { return calculateExplosionRadius(); } }
         public float explosionForce { get { return calculateExplosionForce(); } }
+        public int igniteTickCount { get { return calculateTickCount(); } }
+        public int igniteTickDelay { get { return calculateTickDelay(); } }
 
         public FireballSkill(int entityId, int level)
             : base(SkillType.Fireball, entityId, level, true)
         {
             _baseCooldown = 180;
             _range = 8f;
+        }
+
+        private int calculateTickCount()
+        {
+            switch (_level)
+            {
+                default: return 4;
+            }
+        }
+
+        private int calculateTickDelay()
+        {
+            switch (_level)
+            {
+                default: return 60;
+            }
         }
 
         private float calculateExplosionRadius()

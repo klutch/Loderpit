@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
-using Loderpit.SpellEffects;
 
 namespace Loderpit.Skills
 {
@@ -14,7 +13,6 @@ namespace Loderpit.Skills
             : base(SkillType.ShieldBash, entityId, level, true)
         {
             _baseCooldown = 180;
-            _onActivateSpellEffects.Add(new KnockbackProcSpellEffect(entityId, calculateKnockbackStrength(), new Vector2(1, -0.5f)));
         }
 
         private float calculateKnockbackStrength()

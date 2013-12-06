@@ -1,25 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
-using Loderpit.SpellEffects;
 
 namespace Loderpit.Skills
 {
     public class ShieldOfThornsSkill : Skill
     {
+        public string damageDie { get { return calculateDamageDie(); } }
+
         public ShieldOfThornsSkill(int entityId, int level)
             : base(SkillType.ShieldOfThorns, entityId, level, false)
         {
-            _passiveSpellEffects.Add(
-                new DamageShieldSpellEffect(entityId, calculateDamage(), calculateRadius()));
+            _range = calculateRadius();
         }
 
-        private int calculateDamage()
+        private string calculateDamageDie()
         {
             switch (_level)
             {
-                case 1: return 2;
-                case 2: return 4;
-                default: return 1;
+                default: return "d2";
             }
         }
 

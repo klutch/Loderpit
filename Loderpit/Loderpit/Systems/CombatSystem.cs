@@ -6,7 +6,6 @@ using Loderpit.Components;
 using Loderpit.Managers;
 using Loderpit.Skills;
 using Loderpit.Formations;
-using Loderpit.SpellEffects;
 
 namespace Loderpit.Systems
 {
@@ -95,9 +94,7 @@ namespace Loderpit.Systems
             int defenderId,
             int extraDamage = 0,    // TODO: -- this parameter could be co-opted into a damage die
             string attackDie = null,
-            string hitDie = null,
-            List<SpellEffect> attackerSpellEffects = null,
-            List<SpellEffect> defenderSpellEffects = null)
+            string hitDie = null)
         {
             StatsComponent attackerStats = EntityManager.getStatsComponent(attackerId);
             StatsComponent defenderStats = EntityManager.getStatsComponent(defenderId);
@@ -116,26 +113,6 @@ namespace Loderpit.Systems
 
                 defenderStats.currentHp -= damage;
                 addMessage(defenderId, "-" + damage.ToString());
-
-                // Attacker spell effect callbacks
-                if (attackerSpellEffects != null)
-                {
-                    // Attacker hit other
-                    foreach (SpellEffect spellEffect in attackerSpellEffects)
-                    {
-                        spellEffect.onHitOther(attackerId, defenderId);
-                    }
-                }
-
-                // Defender spell effect callbacks
-                if (defenderSpellEffects != null)
-                {
-                    // Defender hit by other
-                    foreach (SpellEffect spellEffect in defenderSpellEffects)
-                    {
-                        spellEffect.onHitByOther(attackerId, defenderId);
-                    }
-                }
 
                 // Check for zero health
                 if (defenderStats.currentHp == 0)
@@ -268,7 +245,6 @@ namespace Loderpit.Systems
                 if (EntityManager.doesEntityExist(attackerId))  // entity could have been killed earlier this frame
                 {
                     SkillsComponent attackerSkills = EntityManager.getSkillsComponent(attackerId);
-                    List<SpellEffect> attackerSpellEffects = SystemManager.spellEffectSystem.getSpellEffectsAffecting(attackerId);
                     List<Skill> attackerAttackSkills = attackerSkills.attackSkills;
 
                     foreach (Skill skill in attackerAttackSkills)
@@ -276,16 +252,12 @@ namespace Loderpit.Systems
                         PositionComponent attackerPositionComponent = EntityManager.getPositionComponent(attackerId);
                         FactionComponent attackerFactionComponent = EntityManager.getFactionComponent(attackerId);
 
-                        // Add skill's active spell effects to attacker's list
-                        attackerSpellEffects.AddRange(skill.onActivateSpellEffects);
-
                         if (skill.cooldown == 0)   // ready to attack
                         {
                             foreach (int defenderId in defenderEntities)
                             {
                                 if (EntityManager.doesEntityExist(attackerId) && EntityManager.doesEntityExist(defenderId))  // entities could have been killed earlier this frame
                                 {
-                                    List<SpellEffect> defenderSpellEffects = SystemManager.spellEffectSystem.getSpellEffectsAffecting(defenderId);
                                     PositionComponent defenderPositionComponent = EntityManager.getPositionComponent(defenderId);
                                     FactionComponent defenderFactionComponent = EntityManager.getFactionComponent(defenderId);
                                     Vector2 relative = defenderPositionComponent.position - attackerPositionComponent.position;
@@ -295,7 +267,7 @@ namespace Loderpit.Systems
 
                                     if (isDefenderWithinRange && isDefenderAttackable && !isDefenderIncapacitated)
                                     {
-                                        attack(attackerId, defenderId, 0, null, null, attackerSpellEffects, defenderSpellEffects);
+                                        attack(attackerId, defenderId, 0, null, null);
 
                                         if (EntityManager.doesEntityExist(attackerId))  // attacker could have been killed by a damage shield
                                         {

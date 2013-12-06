@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Loderpit.SpellEffects;
 
 namespace Loderpit.Skills
 {
@@ -47,16 +46,12 @@ namespace Loderpit.Skills
         protected int _baseCooldown;    // not used by all skills (i.e.,  melee/ranged attacks)
         protected bool _activatable;
         protected float _range;
-        protected List<SpellEffect> _passiveSpellEffects;
-        protected List<SpellEffect> _onActivateSpellEffects;
 
         public SkillType type { get { return _type; } }
         public int level { get { return _level; } set { _level = value; } }
         public int cooldown { get { return _cooldown; } }
         public bool activatable { get { return _activatable; } }
         public float range { get { return _range; } }
-        public List<SpellEffect> passiveSpellEffects { get { return _passiveSpellEffects; } }
-        public List<SpellEffect> onActivateSpellEffects { get { return _onActivateSpellEffects; } }
         public float cooldownPercentage { get { return (float)_cooldown / (float)_lastMaxCooldown; } }
 
         public Skill(SkillType type, int entityId, int level, bool activatable)
@@ -65,8 +60,6 @@ namespace Loderpit.Skills
             _entityId = entityId;
             _level = level;
             _activatable = activatable;
-            _passiveSpellEffects = new List<SpellEffect>();
-            _onActivateSpellEffects = new List<SpellEffect>();
         }
 
         public void setCooldown(int value)

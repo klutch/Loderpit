@@ -11,6 +11,7 @@ using FarseerPhysics.Factories;
 using FarseerRubeLoader;
 using Loderpit.Formations;
 using Loderpit.Components;
+using Loderpit.Components.SpellEffects;
 using Loderpit.Managers;
 using Loderpit.Systems;
 using Loderpit.Skills;
@@ -162,11 +163,11 @@ namespace Loderpit
             EntityManager.addComponent(entityId, new IgnoreRopeRaycastComponent(entityId));
             EntityManager.addComponent(entityId, new IgnoreBridgeRaycastComponent(entityId));
             EntityManager.addComponent(entityId, new SkillsComponent(entityId, getStartingSkills(entityId, characterClass)));
-            EntityManager.addComponent(entityId, new ActiveSpellEffectsComponent(entityId));
             EntityManager.addComponent(entityId, new FactionComponent(entityId, Faction.Player, Faction.Enemy));
             EntityManager.addComponent(entityId, new RenderHealthComponent(entityId));
             EntityManager.addComponent(entityId, new PerformingSkillsComponent(entityId));
             EntityManager.addComponent(entityId, new ExternalMovementSpeedsComponent(entityId));
+            EntityManager.addComponent(entityId, new AffectedBySpellEntitiesComponent(entityId));
 
             return entityId;
         }
@@ -322,7 +323,6 @@ namespace Loderpit
             EntityManager.addComponent(entityId, new IgnoreRopeRaycastComponent(entityId));
             EntityManager.addComponent(entityId, new IgnoreBridgeRaycastComponent(entityId));
             EntityManager.addComponent(entityId, new SkillsComponent(entityId, new List<Skill>( new[] { new MeleeAttackSkill(entityId, 1) })));
-            EntityManager.addComponent(entityId, new ActiveSpellEffectsComponent(entityId));
             EntityManager.addComponent(entityId, new FactionComponent(entityId, Faction.Enemy, Faction.Player));
             EntityManager.addComponent(entityId, new RenderHealthComponent(entityId));
             EntityManager.addComponent(entityId, new PerformingSkillsComponent(entityId));
@@ -596,7 +596,6 @@ namespace Loderpit
                 EntityManager.addComponent(entityId, new DestructibleObstacleComponent(entityId, body));
                 EntityManager.addComponent(entityId, new StatsComponent(entityId, 10, 10, 0, 0, 0, 100));
                 EntityManager.addComponent(entityId, new FactionComponent(entityId, Faction.Neutral, Faction.None));
-                EntityManager.addComponent(entityId, new ActiveSpellEffectsComponent(entityId));
             }
 
             // IgnoresRopeRaycast and IgnoresBridgeRaycast components
@@ -676,6 +675,70 @@ namespace Loderpit
 
             // Player character has stopped touching the level end sensor
             EntityManager.removeComponent(entityIdB, ComponentType.IsTouchingEndLevel);
+        }
+
+        // Deadeye spell entity
+        public static int createDeadeyeSpell(int targetEntityId, DeadeyeSkill deadeyeSkill)
+        {
+            int entityId = EntityManager.createEntity();
+            TrackEntityPositionComponent trackEntityPositionComponent = new TrackEntityPositionComponent(entityId, targetEntityId);
+            AffectedEntitiesComponent affectedEntitiesComponent = new AffectedEntitiesComponent(entityId);
+            StatModifierComponent statModifierComponent = new StatModifierComponent(entityId);
+            AreaOfEffectComponent areaOfEffectComponent;
+            Body sensor = BodyFactory.CreateCircle(SystemManager.physicsSystem.world, deadeyeSkill.range, 1f);
+
+            sensor.UserData = entityId;
+            sensor.CollidesWith = (ushort)CollisionCategory.None;
+            sensor.BodyType = BodyType.Static;
+            areaOfEffectComponent = new AreaOfEffectComponent(entityId, sensor);
+            statModifierComponent.attackDieMod = deadeyeSkill.attackDieMod;
+
+            EntityManager.addComponent(entityId, trackEntityPositionComponent);
+            EntityManager.addComponent(entityId, affectedEntitiesComponent);
+            EntityManager.addComponent(entityId, statModifierComponent);
+            EntityManager.addComponent(entityId, areaOfEffectComponent);
+
+            return entityId;
+        }
+
+        // Ignite spell entity
+        public static int createIgniteSpell(int targetEntityId, int tickDelay, int tickCount)
+        {
+            int entityId = EntityManager.createEntity();
+            DamageOverTimeComponent damageOverTimeComponent = new DamageOverTimeComponent(entityId, tickDelay);
+            TimeToLiveComponent timeToLiveComponent = new TimeToLiveComponent(entityId, tickCount * tickDelay);
+            AffectedEntitiesComponent affectedEntitiesComponent = new AffectedEntitiesComponent(entityId);
+
+            affectedEntitiesComponent.entities.Add(targetEntityId);
+            
+            EntityManager.addComponent(entityId, damageOverTimeComponent);
+            EntityManager.addComponent(entityId, timeToLiveComponent);
+            EntityManager.addComponent(entityId, affectedEntitiesComponent);
+
+            return entityId;
+        }
+
+        // Shield of thorns spell entity
+        public static int createShieldOfThornsSpell(int targetEntityId, ShieldOfThornsSkill shieldOfThornsSkill)
+        {
+            int entityId = EntityManager.createEntity();
+            TrackEntityPositionComponent trackEntityPositionComponent = new TrackEntityPositionComponent(entityId, targetEntityId);
+            AffectedEntitiesComponent affectedEntitiesComponent = new AffectedEntitiesComponent(entityId);
+            DamageShieldComponent damageShieldComponent = new DamageShieldComponent(entityId, shieldOfThornsSkill.damageDie);
+            AreaOfEffectComponent areaOfEffectComponent;
+            Body sensor = BodyFactory.CreateCircle(SystemManager.physicsSystem.world, shieldOfThornsSkill.range, 1f);
+
+            sensor.UserData = entityId;
+            sensor.CollidesWith = (ushort)CollisionCategory.None;
+            sensor.BodyType = BodyType.Static;
+            areaOfEffectComponent = new AreaOfEffectComponent(entityId, sensor);
+
+            EntityManager.addComponent(entityId, trackEntityPositionComponent);
+            EntityManager.addComponent(entityId, affectedEntitiesComponent);
+            EntityManager.addComponent(entityId, damageShieldComponent);
+            EntityManager.addComponent(entityId, areaOfEffectComponent);
+
+            return entityId;
         }
     }
 }

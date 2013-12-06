@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using Microsoft.Xna.Framework;
 using Loderpit.Components;
+using Loderpit.Components.SpellEffects;
+
 
 namespace Loderpit.Managers
 {
@@ -123,9 +125,16 @@ namespace Loderpit.Managers
         public static CombatTargetComponent getCombatTargetComponent(int entityId) { return getComponent<CombatTargetComponent>(entityId, ComponentType.CombatTarget); }
         public static IncapacitatedComponent getIncapacitatedComponent(int entityId) { return getComponent<IncapacitatedComponent>(entityId, ComponentType.Incapacitated); }
         public static IsTouchingEndLevelComponent getIsTouchingEndLevelComponent(int entityId) { return getComponent<IsTouchingEndLevelComponent>(entityId, ComponentType.IsTouchingEndLevel); }
-        public static ActiveSpellEffectsComponent getSpellEffectsComponent(int entityId) { return getComponent<ActiveSpellEffectsComponent>(entityId, ComponentType.ActiveSpellEffects); }
         public static PerformingSkillsComponent getPerformingSkillsComponent(int entityId) { return getComponent<PerformingSkillsComponent>(entityId, ComponentType.PerformingSkills); }
         public static ShieldComponent getShieldComponent(int entityId) { return getComponent<ShieldComponent>(entityId, ComponentType.Shield); }
         public static ExternalMovementSpeedsComponent getExternalMovementSpeedsComponent(int entityId) { return getComponent<ExternalMovementSpeedsComponent>(entityId, ComponentType.ExternalMovementSpeeds); }
+        public static AffectedEntitiesComponent getAffectedEntitiesComponent(int entityId) { return getComponent<AffectedEntitiesComponent>(entityId, ComponentType.AffectedEntities); }
+        public static AreaOfEffectComponent getAreaOfEffectComponent(int entityId) { return getComponent<AreaOfEffectComponent>(entityId, ComponentType.AreaOfEffect); }
+        public static DamageOverTimeComponent getDamageOverTimeComponent(int entityId) { return getComponent<DamageOverTimeComponent>(entityId, ComponentType.DamageOverTime); }
+        public static DamageShieldComponent getDamageShieldComponent(int entityId) { return getComponent<DamageShieldComponent>(entityId, ComponentType.DamageShield); }
+        public static StatModifierComponent getStatModifierComponent(int entityId) { return getComponent<StatModifierComponent>(entityId, ComponentType.StatModifier); }
+        public static TimeToLiveComponent getTimeToLiveComponent(int entityId) { return getComponent<TimeToLiveComponent>(entityId, ComponentType.TimeToLive); }
+        public static TrackEntityPositionComponent getTrackEntityPositionComponent(int entityId) { return getComponent<TrackEntityPositionComponent>(entityId, ComponentType.TrackEntityPosition); }
+        public static AffectedBySpellEntitiesComponent getAffectedBySpellEntitiesComponent(int entityId) { return getComponent<AffectedBySpellEntitiesComponent>(entityId, ComponentType.AffectedBySpellEntities); }
     }
 }

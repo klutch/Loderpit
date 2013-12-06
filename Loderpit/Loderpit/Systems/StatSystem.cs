@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using Loderpit.Components;
 using Loderpit.Managers;
-using Loderpit.SpellEffects;
 
 namespace Loderpit.Systems
 {
@@ -38,17 +37,9 @@ namespace Loderpit.Systems
         public string getAttackDie(int entityId)
         {
             int attackDieModifier = 0;
-            List<SpellEffect> spellEffects = SystemManager.spellEffectSystem.getSpellEffectsAffecting(entityId);
             string attackDie = "d20";
 
-            // Accumulate spell effect modifiers
-            foreach (SpellEffect spellEffect in spellEffects)
-            {
-                if (spellEffect.type == SpellEffectType.StatBuff)
-                {
-                    attackDieModifier += (spellEffect as StatBuffSpellEffect).attackRollModifier;
-                }
-            }
+            // TODO: accumulate modifiers from spells
 
             // TODO: accumulate modifiers from equipment
             // ...

@@ -27,9 +27,16 @@ namespace Loderpit.Components
         Incapacitated,
         IsTouchingEndLevel,
         RenderHealth,
-        ActiveSpellEffects,
         ExternalMovementSpeeds,
-        Shield
+        Shield,
+        TrackEntityPosition,
+        AffectedEntities,
+        TimeToLive,
+        StatModifier,
+        DamageOverTime,
+        DamageShield,
+        AreaOfEffect,
+        AffectedBySpellEntities
     }
 
     public interface IComponent

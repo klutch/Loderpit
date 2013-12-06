@@ -87,6 +87,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CharacterClasses.cs" />
+    <Compile Include="Components\AffectedBySpellEntitiesComponent.cs" />
     <Compile Include="Components\BridgeComponent.cs" />
     <Compile Include="Components\CeilingComponent.cs" />
     <Compile Include="Components\CharacterComponent.cs" />
@@ -112,7 +113,13 @@
     <Compile Include="Components\SendActivateObstacleComponent.cs" />
     <Compile Include="Components\ShieldComponent.cs" />
     <Compile Include="Components\SkillsComponent.cs" />
-    <Compile Include="Components\ActiveSpellEffectsComponent.cs" />
+    <Compile Include="Components\SpellEffects\AffectedEntitiesComponent.cs" />
+    <Compile Include="Components\SpellEffects\AreaOfEffectComponent.cs" />
+    <Compile Include="Components\SpellEffects\DamageOverTimeComponent.cs" />
+    <Compile Include="Components\SpellEffects\DamageShieldComponent.cs" />
+    <Compile Include="Components\SpellEffects\StatModifierComponent.cs" />
+    <Compile Include="Components\SpellEffects\TimeToLiveComponent.cs" />
+    <Compile Include="Components\SpellEffects\TrackEntityPositionComponent.cs" />
     <Compile Include="Components\StatsComponent.cs" />
     <Compile Include="DebugView.cs" />
     <Compile Include="EntityFactory.cs" />
@@ -165,15 +172,6 @@
     <Compile Include="Skills\SpikedShieldSkill.cs" />
     <Compile Include="Skills\ThrowRopeSkill.cs" />
     <Compile Include="SpecialFixtureTypes.cs" />
-    <Compile Include="SpellEffects\DamageAuraSpellEffect.cs" />
-    <Compile Include="SpellEffects\DamageShieldSpellEffect.cs" />
-    <Compile Include="SpellEffects\IAoESpellEffect.cs" />
-    <Compile Include="SpellEffects\IDoTSpellEffect.cs" />
-    <Compile Include="SpellEffects\IgniteProcSpellEffect.cs" />
-    <Compile Include="SpellEffects\IgniteSpellEffect.cs" />
-    <Compile Include="SpellEffects\KnockbackProcSpellEffect.cs" />
-    <Compile Include="SpellEffects\SpellEffect.cs" />
-    <Compile Include="SpellEffects\StatBuffSpellEffect.cs" />
     <Compile Include="Systems\CameraSystem.cs" />
     <Compile Include="Systems\CharacterSystem.cs" />
     <Compile Include="Systems\CombatSystem.cs" />
@@ -186,7 +184,7 @@
     <Compile Include="Systems\PhysicsSystem.cs" />
     <Compile Include="Systems\RenderSystem.cs" />
     <Compile Include="Systems\SkillSystem.cs" />
-    <Compile Include="Systems\SpellEffectSystem.cs" />
+    <Compile Include="Systems\SpellSystem.cs" />
     <Compile Include="Systems\StatSystem.cs" />
     <Compile Include="Systems\TeamSystem.cs" />
   </ItemGroup>
