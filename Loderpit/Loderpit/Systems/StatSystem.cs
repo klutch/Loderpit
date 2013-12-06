@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Loderpit.Components;
+using Loderpit.Components.SpellEffects;
 using Loderpit.Managers;
 
 namespace Loderpit.Systems
@@ -38,8 +39,21 @@ namespace Loderpit.Systems
         {
             int attackDieModifier = 0;
             string attackDie = "d20";
+            AffectedBySpellEntitiesComponent affectedBySpellEntitiesComponent = EntityManager.getAffectedBySpellEntitiesComponent(entityId);
 
-            // TODO: accumulate modifiers from spells
+            // Accumulate modifiers from spells
+            foreach (int spellId in affectedBySpellEntitiesComponent.spellEntities)
+            {
+                StatModifierComponent statModiferComponent = EntityManager.getStatModifierComponent(spellId);
+
+                // Skip spells that don't modify stats
+                if (statModiferComponent == null)
+                {
+                    continue;
+                }
+
+                attackDieModifier += statModiferComponent.attackDieMod;
+            }
 
             // TODO: accumulate modifiers from equipment
             // ...
