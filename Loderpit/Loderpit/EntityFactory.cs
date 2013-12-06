@@ -68,7 +68,7 @@ namespace Loderpit
 
                 case CharacterClass.Defender:
                     skills.Add(new BlockSkill(entityId, 1));
-                    skills.Add(new ShieldBashSkill(entityId, 1));
+                    skills.Add(new ShieldBashSkill(entityId, 1, new Vector2(1, -0.5f)));    // TODO: find a better way of determining the normal
                     skills.Add(new SpikedShieldSkill(entityId, 1));
                     break;
 

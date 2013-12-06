@@ -59,6 +59,10 @@ namespace Loderpit.Systems
                             initializeSpikedShieldSkill(entityId, skill as SpikedShieldSkill);
                             break;
 
+                        case SkillType.ShieldBash:
+                            initializeShieldBashSkill(entityId, skill as ShieldBashSkill);
+                            break;
+
                         // Archer
                         case SkillType.Deadeye:
                             initializeDeadeyeSkill(entityId, skill as DeadeyeSkill);
@@ -275,6 +279,23 @@ namespace Loderpit.Systems
                         EntityFactory.createBurningSpell(defenderId, igniteSkill.damageDie, igniteSkill.tickDelay, igniteSkill.tickCount);
                     }
                 };
+
+            EntityFactory.createProcSpell(entityId, onHitOther);
+        }
+
+        // Initialize shield bash skill
+        private void initializeShieldBashSkill(int entityId, ShieldBashSkill shieldBashSkill)
+        {
+            Action<Skill, int, int> onHitOther = (skill, attackerId, defenderId) =>
+            {
+                // Skip if not shield bash skill
+                if (skill.type != SkillType.ShieldBash)
+                {
+                    return;
+                }
+
+                SystemManager.combatSystem.applyKnockback(attackerId, defenderId, shieldBashSkill.knockbackForce, shieldBashSkill.knockbackNormal);
+            };
 
             EntityFactory.createProcSpell(entityId, onHitOther);
         }
@@ -567,6 +588,7 @@ namespace Loderpit.Systems
             foreach (int affectedId in affectedEntities)
             {
                 SystemManager.combatSystem.attack(shieldBashSkill, entityId, affectedId, 0, shieldBashSkill.attackDie, shieldBashSkill.damageDie);
+                resetCooldown(entityId, SkillType.ShieldBash);
             }
         }
 
