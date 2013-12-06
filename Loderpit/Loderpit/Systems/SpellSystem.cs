@@ -118,15 +118,6 @@ namespace Loderpit.Systems
 
                 if (timeToLiveComponent.delay <= 0)
                 {
-                    AreaOfEffectComponent areaOfEffectComponent = EntityManager.getAreaOfEffectComponent(entityId);
-
-                    // Destroy area of effect body if it exists
-                    if (areaOfEffectComponent != null)
-                    {
-                        SystemManager.physicsSystem.world.RemoveBody(areaOfEffectComponent.sensor);
-                    }
-
-                    // Destroy entity
                     EntityManager.destroyEntity(entityId);
                 }
                 else
@@ -213,10 +204,11 @@ namespace Loderpit.Systems
                 if (damageOverTimeComponent.currentDelay == 0)
                 {
                     AffectedEntitiesComponent affectedEntitiesComponent = EntityManager.getAffectedEntitiesComponent(entityId);
+                    List<int> copyOfAffectedEntities = new List<int>(affectedEntitiesComponent.entities);   // the entities collection can be modified when an entity dies, so operate on a copy of it
 
                     damageOverTimeComponent.currentDelay = damageOverTimeComponent.baseDelay;
 
-                    foreach (int affectedId in affectedEntitiesComponent.entities)
+                    foreach (int affectedId in copyOfAffectedEntities)
                     {
                         if (EntityManager.doesEntityExist(affectedId))
                         {

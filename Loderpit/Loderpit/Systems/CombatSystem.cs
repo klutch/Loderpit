@@ -229,7 +229,7 @@ namespace Loderpit.Systems
             else
             {
                 // Kill the entity
-                killEntity(defenderId);
+                EntityManager.destroyEntity(defenderId);
             }
 
             // Find any entities engaged in active combat with the defender, and end their attacks
@@ -243,42 +243,6 @@ namespace Loderpit.Systems
                     endActiveAttack(entityId);
                 }
             }
-        }
-
-        // Handles all the logic required to remove a killed entity from the game
-        public void killEntity(int entityId)
-        {
-            GroupComponent groupComponent = SystemManager.groupSystem.getGroupComponentContaining(entityId);
-            CharacterComponent characterComponent = EntityManager.getCharacterComponent(entityId);
-            DestructibleObstacleComponent destructibleObstacleComponent = EntityManager.getDestructibleObstacleComponent(entityId);
-
-            // Remove from group
-            if (groupComponent != null)
-            {
-                groupComponent.entities.Remove(entityId);
-            }
-
-            // Handle character removal
-            if (characterComponent != null)
-            {
-                SystemManager.physicsSystem.world.RemoveBody(characterComponent.body);
-                SystemManager.physicsSystem.world.RemoveBody(characterComponent.feet);
-            }
-
-            // Handle destructible obstacle removal
-            if (destructibleObstacleComponent != null)
-            {
-                SystemManager.physicsSystem.world.RemoveBody(destructibleObstacleComponent.body);
-
-                foreach (KeyValuePair<int, SplitFormation> entityFormationPair in destructibleObstacleComponent.formationsToRemove)
-                {
-                    GroupComponent formationGroup = EntityManager.getGroupComponent(entityFormationPair.Key);
-
-                    formationGroup.removeFormation(entityFormationPair.Value);
-                }
-            }
-
-            EntityManager.destroyEntity(entityId);
         }
 
         // Handle attacks

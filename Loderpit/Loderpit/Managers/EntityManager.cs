@@ -4,7 +4,7 @@ using System.Diagnostics;
 using Microsoft.Xna.Framework;
 using Loderpit.Components;
 using Loderpit.Components.SpellEffects;
-
+using Loderpit.Formations;
 
 namespace Loderpit.Managers
 {
@@ -94,6 +94,70 @@ namespace Loderpit.Managers
         // Destroy an entity
         public static void destroyEntity(int entityId)
         {
+            GroupComponent groupComponent = SystemManager.groupSystem.getGroupComponentContaining(entityId);
+            CharacterComponent characterComponent = EntityManager.getCharacterComponent(entityId);
+            DestructibleObstacleComponent destructibleObstacleComponent = EntityManager.getDestructibleObstacleComponent(entityId);
+            AreaOfEffectComponent areaOfEffectComponent = EntityManager.getAreaOfEffectComponent(entityId);
+            AffectedBySpellEntitiesComponent affectedBySpellEntitiesComponent = EntityManager.getAffectedBySpellEntitiesComponent(entityId);
+            AffectedEntitiesComponent affectedEntitiesComponent = EntityManager.getAffectedEntitiesComponent(entityId);
+
+            // Handle removal from a group
+            if (groupComponent != null)
+            {
+                groupComponent.entities.Remove(entityId);
+            }
+
+            // Handle character removal
+            if (characterComponent != null)
+            {
+                SystemManager.physicsSystem.world.RemoveBody(characterComponent.body);
+                SystemManager.physicsSystem.world.RemoveBody(characterComponent.feet);
+            }
+
+            // Handle destructible obstacle removal
+            if (destructibleObstacleComponent != null)
+            {
+                SystemManager.physicsSystem.world.RemoveBody(destructibleObstacleComponent.body);
+
+                foreach (KeyValuePair<int, SplitFormation> entityFormationPair in destructibleObstacleComponent.formationsToRemove)
+                {
+                    GroupComponent formationGroup = EntityManager.getGroupComponent(entityFormationPair.Key);
+
+                    formationGroup.removeFormation(entityFormationPair.Value);
+                }
+            }
+
+            // Destroy area of effect body if it exists
+            if (areaOfEffectComponent != null)
+            {
+                SystemManager.physicsSystem.world.RemoveBody(areaOfEffectComponent.sensor);
+            }
+
+            // Handle spell entity references (assuming this is a character being affected by spells)
+            if (affectedBySpellEntitiesComponent != null)
+            {
+                foreach (int spellId in affectedBySpellEntitiesComponent.spellEntities)
+                {
+                    AffectedEntitiesComponent spellsAffectedEntitiesComponent = EntityManager.getAffectedEntitiesComponent(spellId);
+
+                    // Remove (character) entity being destroyed from the spell entity's list of affected entities
+                    spellsAffectedEntitiesComponent.entities.Remove(entityId);
+                }
+            }
+
+            // Handle spell entity references (assuming this is a spell affecting a character)
+            if (affectedEntitiesComponent != null)
+            {
+                foreach (int id in affectedEntitiesComponent.entities)
+                {
+                    AffectedBySpellEntitiesComponent charactersAffectedBySpellEntitiesComponent = EntityManager.getAffectedBySpellEntitiesComponent(id);
+
+                    // Remove (spell) entity being destroyed from a character's list of spell entities affecting it
+                    charactersAffectedBySpellEntitiesComponent.spellEntities.Remove(id);
+                }
+            }
+
+            // Finally, remove the entity from the dictionary
             _entities.Remove(entityId);
         }
 
