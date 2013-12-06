@@ -5,9 +5,12 @@ namespace Loderpit.Skills
 {
     public class SpikedShieldSkill : Skill
     {
+        public string damageDie { get { return calculateDamageDie(); } }
+
         public SpikedShieldSkill(int entityId, int level)
             : base(SkillType.SpikedShield, entityId, level, false)
         {
+            _range = calculateRadius();
         }
 
         private string calculateDamageDie()

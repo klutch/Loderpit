@@ -10,6 +10,7 @@ namespace Loderpit.Components.SpellEffects
 
         public int entityId { get { return _entityId; } }
         public ComponentType componentType { get { return ComponentType.TimeToLive; } }
+        public int delay { get { return _delay; } set { _delay = value; } }
 
         public TimeToLiveComponent(int entityId, int delay)
         {

@@ -10,6 +10,7 @@ namespace Loderpit.Skills
         public DeadeyeSkill(int entityId, int level)
             : base(SkillType.Deadeye, entityId, level, false)
         {
+            _range = calculateRadius();
         }
 
         private int calculateAttackRollModifier()

@@ -109,6 +109,46 @@ namespace Loderpit.Systems
             }
         }
 
+        // Handle time to live
+        private void handleTimeToLive(List<int> entities)
+        {
+            foreach (int entityId in entities)
+            {
+                TimeToLiveComponent timeToLiveComponent = EntityManager.getTimeToLiveComponent(entityId);
+
+                if (timeToLiveComponent.delay <= 0)
+                {
+                    AreaOfEffectComponent areaOfEffectComponent = EntityManager.getAreaOfEffectComponent(entityId);
+
+                    // Destroy area of effect body if it exists
+                    if (areaOfEffectComponent != null)
+                    {
+                        SystemManager.physicsSystem.world.RemoveBody(areaOfEffectComponent.sensor);
+                    }
+
+                    // Destroy entity
+                    EntityManager.destroyEntity(entityId);
+                }
+                else
+                {
+                    timeToLiveComponent.delay--;
+                }
+            }
+        }
+
+        // Track entity positions
+        private void trackEntityPositions(List<int> entities)
+        {
+            foreach (int entityId in entities)
+            {
+                TrackEntityPositionComponent trackEntityPositionComponent = EntityManager.getTrackEntityPositionComponent(entityId);
+                AreaOfEffectComponent areaOfEffectComponent = EntityManager.getAreaOfEffectComponent(entityId);
+                PositionComponent positionComponent = EntityManager.getPositionComponent(trackEntityPositionComponent.targetEntityId);
+
+                areaOfEffectComponent.sensor.Position = positionComponent.position;
+            }
+        }
+
         // Find affected entities
         private void findAffectedEntities(List<int> characterEntities)
         {
@@ -117,12 +157,14 @@ namespace Loderpit.Systems
                 PositionComponent positionComponent = EntityManager.getPositionComponent(characterId);
                 List<Fixture> fixtures = SystemManager.physicsSystem.world.TestPointAll(positionComponent.position);
                 AffectedBySpellEntitiesComponent affectedBySpellEntitiesComponent = EntityManager.getAffectedBySpellEntitiesComponent(characterId);
+                FactionComponent factionComponent = EntityManager.getFactionComponent(characterId);
 
                 foreach (Fixture fixture in fixtures)
                 {
                     int entityId;
                     AreaOfEffectComponent areaOfEffectComponent;
                     AffectedEntitiesComponent affectedEntitiesComponent;
+                    bool acceptableFaction = false;
 
                     // Skip if no userdata
                     if (fixture.Body.UserData == null)
@@ -140,9 +182,48 @@ namespace Loderpit.Systems
 
                     affectedEntitiesComponent = EntityManager.getAffectedEntitiesComponent(entityId);
 
+                    // Skip if faction is not acceptable
+                    foreach (Faction faction in affectedEntitiesComponent.factionsToAffect)
+                    {
+                        if (factionComponent.faction == faction)
+                        {
+                            acceptableFaction = true;
+                            break;
+                        }
+                    }
+                    if (!acceptableFaction)
+                    {
+                        continue;
+                    }
+
                     // Add entities to each other's affected component
                     affectedBySpellEntitiesComponent.spellEntities.Add(entityId);
                     affectedEntitiesComponent.entities.Add(characterId);
+                }
+            }
+        }
+
+        // Handle damage over time
+        private void handleDamageOverTime(List<int> entities)
+        {
+            foreach (int entityId in entities)
+            {
+                DamageOverTimeComponent damageOverTimeComponent = EntityManager.getDamageOverTimeComponent(entityId);
+
+                if (damageOverTimeComponent.currentDelay == 0)
+                {
+                    AffectedEntitiesComponent affectedEntitiesComponent = EntityManager.getAffectedEntitiesComponent(entityId);
+
+                    damageOverTimeComponent.currentDelay = damageOverTimeComponent.baseDelay;
+
+                    foreach (int affectedId in affectedEntitiesComponent.entities)
+                    {
+                        SystemManager.combatSystem.applySpellDamage(affectedId, Roller.roll(damageOverTimeComponent.damageDie));
+                    }
+                }
+                else
+                {
+                    damageOverTimeComponent.currentDelay--;
                 }
             }
         }
@@ -153,12 +234,24 @@ namespace Loderpit.Systems
             List<int> affectedEntities = EntityManager.getEntitiesPossessing(ComponentType.AffectedEntities);
             List<int> affectedBySpellEntities = EntityManager.getEntitiesPossessing(ComponentType.AffectedBySpellEntities);
             List<int> characterEntities = EntityManager.getEntitiesPossessing(ComponentType.Character);
+            List<int> trackPositionEntities = EntityManager.getEntitiesPossessing(ComponentType.TrackEntityPosition);
+            List<int> timeToLiveEntities = EntityManager.getEntitiesPossessing(ComponentType.TimeToLive);
+            List<int> damageOverTimeEntities = EntityManager.getEntitiesPossessing(ComponentType.DamageOverTime);
 
             // Clear affected entities
             clearAffectedEntities(affectedEntities, affectedBySpellEntities);
 
+            // Handle time to live
+            handleTimeToLive(timeToLiveEntities);
+
+            // Track positions
+            trackEntityPositions(trackPositionEntities);
+
             // Find affected entities
             findAffectedEntities(characterEntities);
+
+            // Handle damage over time
+            handleDamageOverTime(damageOverTimeEntities);
         }
     }
 }

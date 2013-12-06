@@ -327,6 +327,7 @@ namespace Loderpit
             EntityManager.addComponent(entityId, new RenderHealthComponent(entityId));
             EntityManager.addComponent(entityId, new PerformingSkillsComponent(entityId));
             EntityManager.addComponent(entityId, new ExternalMovementSpeedsComponent(entityId));
+            EntityManager.addComponent(entityId, new AffectedBySpellEntitiesComponent(entityId));
 
             return entityId;
         }
@@ -678,20 +679,23 @@ namespace Loderpit
         }
 
         // Deadeye spell entity
-        public static int createDeadeyeSpell(int targetEntityId, DeadeyeSkill deadeyeSkill)
+        public static int createDeadeyeSpell(int targetEntityId, int attackDieMod, float radius, List<Faction> factionsToAffect)
         {
             int entityId = EntityManager.createEntity();
             TrackEntityPositionComponent trackEntityPositionComponent = new TrackEntityPositionComponent(entityId, targetEntityId);
             AffectedEntitiesComponent affectedEntitiesComponent = new AffectedEntitiesComponent(entityId);
             StatModifierComponent statModifierComponent = new StatModifierComponent(entityId);
             AreaOfEffectComponent areaOfEffectComponent;
-            Body sensor = BodyFactory.CreateCircle(SystemManager.physicsSystem.world, deadeyeSkill.range, 1f);
+            Body sensor = BodyFactory.CreateCircle(SystemManager.physicsSystem.world, radius, 1f);
 
             sensor.UserData = entityId;
             sensor.CollidesWith = (ushort)CollisionCategory.None;
             sensor.BodyType = BodyType.Static;
             areaOfEffectComponent = new AreaOfEffectComponent(entityId, sensor);
-            statModifierComponent.attackDieMod = deadeyeSkill.attackDieMod;
+
+            statModifierComponent.attackDieMod = attackDieMod;
+
+            affectedEntitiesComponent.factionsToAffect = factionsToAffect;
 
             EntityManager.addComponent(entityId, trackEntityPositionComponent);
             EntityManager.addComponent(entityId, affectedEntitiesComponent);
@@ -701,11 +705,11 @@ namespace Loderpit
             return entityId;
         }
 
-        // Ignite spell entity
-        public static int createIgniteSpell(int targetEntityId, int tickDelay, int tickCount)
+        // Burning spell entity
+        public static int createBurningSpell(int targetEntityId, string damageDie, int tickDelay, int tickCount)
         {
             int entityId = EntityManager.createEntity();
-            DamageOverTimeComponent damageOverTimeComponent = new DamageOverTimeComponent(entityId, tickDelay);
+            DamageOverTimeComponent damageOverTimeComponent = new DamageOverTimeComponent(entityId, damageDie, tickDelay);
             TimeToLiveComponent timeToLiveComponent = new TimeToLiveComponent(entityId, tickCount * tickDelay);
             AffectedEntitiesComponent affectedEntitiesComponent = new AffectedEntitiesComponent(entityId);
 
@@ -719,23 +723,50 @@ namespace Loderpit
         }
 
         // Shield of thorns spell entity
-        public static int createShieldOfThornsSpell(int targetEntityId, ShieldOfThornsSkill shieldOfThornsSkill)
+        public static int createShieldOfThornsSpell(int targetEntityId, string damageDie, float radius, List<Faction> factionsToAffect)
         {
             int entityId = EntityManager.createEntity();
             TrackEntityPositionComponent trackEntityPositionComponent = new TrackEntityPositionComponent(entityId, targetEntityId);
             AffectedEntitiesComponent affectedEntitiesComponent = new AffectedEntitiesComponent(entityId);
-            DamageShieldComponent damageShieldComponent = new DamageShieldComponent(entityId, shieldOfThornsSkill.damageDie);
+            DamageShieldComponent damageShieldComponent = new DamageShieldComponent(entityId, damageDie);
             AreaOfEffectComponent areaOfEffectComponent;
-            Body sensor = BodyFactory.CreateCircle(SystemManager.physicsSystem.world, shieldOfThornsSkill.range, 1f);
+            Body sensor = BodyFactory.CreateCircle(SystemManager.physicsSystem.world, radius, 1f);
 
             sensor.UserData = entityId;
             sensor.CollidesWith = (ushort)CollisionCategory.None;
             sensor.BodyType = BodyType.Static;
             areaOfEffectComponent = new AreaOfEffectComponent(entityId, sensor);
 
+            affectedEntitiesComponent.factionsToAffect = factionsToAffect;
+
             EntityManager.addComponent(entityId, trackEntityPositionComponent);
             EntityManager.addComponent(entityId, affectedEntitiesComponent);
             EntityManager.addComponent(entityId, damageShieldComponent);
+            EntityManager.addComponent(entityId, areaOfEffectComponent);
+
+            return entityId;
+        }
+
+        // Spiked shield spell entity
+        public static int createSpikedShieldSpell(int targetEntityId, string damageDie, float radius, List<Faction> factionsToAffect)
+        {
+            int entityId = EntityManager.createEntity();
+            TrackEntityPositionComponent trackEntityPositionComponent = new TrackEntityPositionComponent(entityId, targetEntityId);
+            AffectedEntitiesComponent affectedEntitiesComponent = new AffectedEntitiesComponent(entityId);
+            DamageOverTimeComponent damageOverTimeComponent = new DamageOverTimeComponent(entityId, damageDie, 60);
+            AreaOfEffectComponent areaOfEffectComponent;
+            Body sensor = BodyFactory.CreateCircle(SystemManager.physicsSystem.world, radius, 1f);
+
+            sensor.UserData = entityId;
+            sensor.CollidesWith = (ushort)CollisionCategory.None;
+            sensor.BodyType = BodyType.Static;
+            areaOfEffectComponent = new AreaOfEffectComponent(entityId, sensor);
+
+            affectedEntitiesComponent.factionsToAffect = factionsToAffect;
+
+            EntityManager.addComponent(entityId, trackEntityPositionComponent);
+            EntityManager.addComponent(entityId, affectedEntitiesComponent);
+            EntityManager.addComponent(entityId, damageOverTimeComponent);
             EntityManager.addComponent(entityId, areaOfEffectComponent);
 
             return entityId;

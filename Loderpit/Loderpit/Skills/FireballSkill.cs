@@ -6,13 +6,13 @@ namespace Loderpit.Skills
 {
     public class FireballSkill : Skill
     {
-        public string igniteChanceDie { get { return calculateIgniteChanceDie(); } }
-        public string igniteDamageDie { get { return calculateIgniteDamageDie(); } }
+        public string burnChanceDie { get { return calculateBurnChanceDie(); } }
+        public string burnDamageDie { get { return calculateBurnDamageDie(); } }
         public string explosionDamageDie { get { return calculateExplosionDamageDie(); } }
         public float explosionRadius { get { return calculateExplosionRadius(); } }
         public float explosionForce { get { return calculateExplosionForce(); } }
-        public int igniteTickCount { get { return calculateTickCount(); } }
-        public int igniteTickDelay { get { return calculateTickDelay(); } }
+        public int burnTickCount { get { return calculateBurnTickCount(); } }
+        public int burnTickDelay { get { return calculateBurnTickDelay(); } }
 
         public FireballSkill(int entityId, int level)
             : base(SkillType.Fireball, entityId, level, true)
@@ -21,7 +21,7 @@ namespace Loderpit.Skills
             _range = 8f;
         }
 
-        private int calculateTickCount()
+        private int calculateBurnTickCount()
         {
             switch (_level)
             {
@@ -29,7 +29,7 @@ namespace Loderpit.Skills
             }
         }
 
-        private int calculateTickDelay()
+        private int calculateBurnTickDelay()
         {
             switch (_level)
             {
@@ -45,7 +45,7 @@ namespace Loderpit.Skills
             }
         }
 
-        private string calculateIgniteChanceDie()
+        private string calculateBurnChanceDie()
         {
             switch (_level)
             {
@@ -53,7 +53,7 @@ namespace Loderpit.Skills
             }
         }
 
-        private string calculateIgniteDamageDie()
+        private string calculateBurnDamageDie()
         {
             switch (_level)
             {

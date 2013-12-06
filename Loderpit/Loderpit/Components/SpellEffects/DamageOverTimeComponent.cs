@@ -16,9 +16,10 @@ namespace Loderpit.Components.SpellEffects
         public int baseDelay { get { return _baseDelay; } }
         public int currentDelay { get { return _currentDelay; } set { _currentDelay = value; } }
 
-        public DamageOverTimeComponent(int entityId, int baseDelay)
+        public DamageOverTimeComponent(int entityId, string damageDie, int baseDelay)
         {
             _entityId = entityId;
+            _damageDie = damageDie;
             _baseDelay = baseDelay;
             _currentDelay = baseDelay;
         }

@@ -53,6 +53,18 @@ namespace Loderpit.Systems
                         case SkillType.Block:
                             initializeBlockSkill(entityId, skill as BlockSkill);
                             break;
+
+                        case SkillType.Deadeye:
+                            initializeDeadeyeSkill(entityId, skill as DeadeyeSkill);
+                            break;
+
+                        case SkillType.ShieldOfThorns:
+                            initializeShieldOfThornsSkill(entityId, skill as ShieldOfThornsSkill);
+                            break;
+
+                        case SkillType.SpikedShield:
+                            initializeSpikedShieldSkill(entityId, skill as SpikedShieldSkill);
+                            break;
                     }
                 }
             }
@@ -183,6 +195,30 @@ namespace Loderpit.Systems
             fixture.UserData = SpecialFixtureType.Shield;
 
             EntityManager.addComponent(entityId, new ShieldComponent(entityId, shieldBody));
+        }
+
+        // Initialize deadeye skill
+        private void initializeDeadeyeSkill(int entityId, DeadeyeSkill deadeyeSkill)
+        {
+            FactionComponent factionComponent = EntityManager.getFactionComponent(entityId);
+
+            EntityFactory.createDeadeyeSpell(entityId, deadeyeSkill.attackDieMod, deadeyeSkill.range, new List<Faction>(new [] { factionComponent.faction }));
+        }
+
+        // Initialize shield of thorns skill
+        private void initializeShieldOfThornsSkill(int entityId, ShieldOfThornsSkill shieldOfThornsSkill)
+        {
+            FactionComponent factionComponent = EntityManager.getFactionComponent(entityId);
+
+            EntityFactory.createShieldOfThornsSpell(entityId, shieldOfThornsSkill.damageDie, shieldOfThornsSkill.range, new List<Faction>( new [] { factionComponent.hostileFaction }));
+        }
+
+        // Initialize spiked shield skill
+        private void initializeSpikedShieldSkill(int entityId, SpikedShieldSkill spikedShieldSkill)
+        {
+            FactionComponent factionComponent = EntityManager.getFactionComponent(entityId);
+
+            EntityFactory.createSpikedShieldSpell(entityId, spikedShieldSkill.damageDie, spikedShieldSkill.range, new List<Faction>(new [] { factionComponent.hostileFaction }));
         }
 
         #endregion
@@ -662,9 +698,9 @@ namespace Loderpit.Systems
             {
                 if (EntityManager.doesEntityExist(hitEntityId))
                 {
-                    if (Roller.roll(fireballSkill.igniteChanceDie) == 1)
+                    if (Roller.roll(fireballSkill.burnChanceDie) == 1)
                     {
-                        EntityFactory.createIgniteSpell(hitEntityId, fireballSkill.igniteTickDelay, fireballSkill.igniteTickCount);
+                        EntityFactory.createBurningSpell(hitEntityId, fireballSkill.burnDamageDie, fireballSkill.burnTickDelay, fireballSkill.burnTickCount);
                     }
                 }
             }
