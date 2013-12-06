@@ -78,9 +78,9 @@ namespace Loderpit.Systems
             Body shieldBody = BodyFactory.CreateBody(SystemManager.physicsSystem.world, characterComponentA.body.Position);
             Fixture fixture = FixtureFactory.AttachPolygon(new Vertices(new Vector2[] {
                 new Vector2(-1f, -1f),
-                new Vector2(0.75f, -1f),
-                new Vector2(1f, 1f),
-                new Vector2(0.75f, 1.5f),
+                new Vector2(0.4f, -1f),
+                new Vector2(0.6f, 1f),
+                new Vector2(0.4f, 1.5f),
                 new Vector2(-1f, 1f)
             }), 1f, shieldBody);
 
@@ -210,7 +210,7 @@ namespace Loderpit.Systems
         {
             FactionComponent factionComponent = EntityManager.getFactionComponent(entityId);
 
-            EntityFactory.createShieldOfThornsSpell(entityId, shieldOfThornsSkill.damageDie, shieldOfThornsSkill.range, new List<Faction>( new [] { factionComponent.hostileFaction }));
+            EntityFactory.createShieldOfThornsSpell(entityId, shieldOfThornsSkill.damageDie, shieldOfThornsSkill.range, new List<Faction>( new [] { factionComponent.faction }));
         }
 
         // Initialize spiked shield skill

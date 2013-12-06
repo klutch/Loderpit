@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using FarseerPhysics.Dynamics;
 using Loderpit.Components;
+using Loderpit.Components.SpellEffects;
 using Loderpit.Managers;
 using Loderpit.Skills;
 using Loderpit.Formations;
@@ -98,6 +99,8 @@ namespace Loderpit.Systems
         {
             StatsComponent attackerStats = EntityManager.getStatsComponent(attackerId);
             StatsComponent defenderStats = EntityManager.getStatsComponent(defenderId);
+            AffectedBySpellEntitiesComponent attackerSpells = EntityManager.getAffectedBySpellEntitiesComponent(attackerId);
+            AffectedBySpellEntitiesComponent defenderSpells = EntityManager.getAffectedBySpellEntitiesComponent(defenderId);
             int defenderArmorClass = SystemManager.statSystem.getArmorClass(defenderId);
             int attackRoll;
 
@@ -113,6 +116,18 @@ namespace Loderpit.Systems
 
                 defenderStats.currentHp -= damage;
                 addMessage(defenderId, "-" + damage.ToString());
+
+                // Check defender for damage shields
+                foreach (int spellId in defenderSpells.spellEntities)
+                {
+                    DamageShieldComponent damageShieldComponent = EntityManager.getDamageShieldComponent(spellId);
+
+                    if (damageShieldComponent != null)
+                    {
+                        // Apply damage shield damage
+                        applySpellDamage(attackerId, Roller.roll(damageShieldComponent.damageDie));
+                    }
+                }
 
                 // Check for zero health
                 if (defenderStats.currentHp == 0)

@@ -597,6 +597,7 @@ namespace Loderpit
                 EntityManager.addComponent(entityId, new DestructibleObstacleComponent(entityId, body));
                 EntityManager.addComponent(entityId, new StatsComponent(entityId, 10, 10, 0, 0, 0, 100));
                 EntityManager.addComponent(entityId, new FactionComponent(entityId, Faction.Neutral, Faction.None));
+                EntityManager.addComponent(entityId, new AffectedBySpellEntitiesComponent(entityId));
             }
 
             // IgnoresRopeRaycast and IgnoresBridgeRaycast components
@@ -701,6 +702,8 @@ namespace Loderpit
             EntityManager.addComponent(entityId, affectedEntitiesComponent);
             EntityManager.addComponent(entityId, statModifierComponent);
             EntityManager.addComponent(entityId, areaOfEffectComponent);
+            EntityManager.addComponent(entityId, new IgnoreBridgeRaycastComponent(entityId));
+            EntityManager.addComponent(entityId, new IgnoreRopeRaycastComponent(entityId));
 
             return entityId;
         }
@@ -743,6 +746,8 @@ namespace Loderpit
             EntityManager.addComponent(entityId, affectedEntitiesComponent);
             EntityManager.addComponent(entityId, damageShieldComponent);
             EntityManager.addComponent(entityId, areaOfEffectComponent);
+            EntityManager.addComponent(entityId, new IgnoreBridgeRaycastComponent(entityId));
+            EntityManager.addComponent(entityId, new IgnoreRopeRaycastComponent(entityId));
 
             return entityId;
         }
@@ -768,6 +773,8 @@ namespace Loderpit
             EntityManager.addComponent(entityId, affectedEntitiesComponent);
             EntityManager.addComponent(entityId, damageOverTimeComponent);
             EntityManager.addComponent(entityId, areaOfEffectComponent);
+            EntityManager.addComponent(entityId, new IgnoreBridgeRaycastComponent(entityId));
+            EntityManager.addComponent(entityId, new IgnoreRopeRaycastComponent(entityId));
 
             return entityId;
         }
