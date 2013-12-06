@@ -347,7 +347,6 @@ namespace Loderpit.Systems
                 // Heal target
                 applySpellHeal(entityId, healTargetId, Roller.roll(healSkill.healDie));
                 SystemManager.skillSystem.resetCooldown(entityId, SkillType.Heal);
-                Console.WriteLine("healing");
             }
         }
 
