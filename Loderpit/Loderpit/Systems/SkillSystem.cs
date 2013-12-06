@@ -231,8 +231,15 @@ namespace Loderpit.Systems
         // Initialize kick skill
         private void initializeKickSkill(int entityId, KickSkill kickSkill)
         {
-            Action<int, int> onHitOther = (attackerId, defenderId) =>
+            Action<Skill, int, int> onHitOther = (skill, attackerId, defenderId) =>
                 {
+                    // Skip if not kick skill
+                    if (skill.type != SkillType.Kick)
+                    {
+                        return;
+                    }
+
+                    // Check chance to proc
                     if (Roller.roll(kickSkill.chanceToKnockback) == 1)
                     {
                         PositionComponent attackerPosition = EntityManager.getPositionComponent(attackerId);
@@ -533,7 +540,7 @@ namespace Loderpit.Systems
 
             foreach (int affectedId in affectedEntities)
             {
-                SystemManager.combatSystem.attack(entityId, affectedId, 0, shieldBashSkill.attackDie, shieldBashSkill.damageDie);
+                SystemManager.combatSystem.attack(shieldBashSkill, entityId, affectedId, 0, shieldBashSkill.attackDie, shieldBashSkill.damageDie);
             }
         }
 
@@ -688,7 +695,7 @@ namespace Loderpit.Systems
 
             if (EntityManager.doesEntityExist(executePowerShotSkill.defenderId))    // defender could have died already
             {
-                SystemManager.combatSystem.attack(entityId, executePowerShotSkill.defenderId, powerShotSkill.calculateExtraDamage());
+                SystemManager.combatSystem.attack(powerShotSkill, entityId, executePowerShotSkill.defenderId, powerShotSkill.calculateExtraDamage());
             }
             SystemManager.skillSystem.resetCooldown(entityId, SkillType.PowerShot);
             EntityManager.removeComponent(entityId, ComponentType.PositionTarget);
@@ -704,7 +711,7 @@ namespace Loderpit.Systems
 
             if (EntityManager.doesEntityExist(executePowerSwingSkill.defenderId))    // defender could have died already
             {
-                SystemManager.combatSystem.attack(entityId, executePowerSwingSkill.defenderId, powerSwingSkill.calculateExtraDamage());
+                SystemManager.combatSystem.attack(powerSwingSkill, entityId, executePowerSwingSkill.defenderId, powerSwingSkill.calculateExtraDamage());
             }
             SystemManager.skillSystem.resetCooldown(entityId, SkillType.PowerSwing);
             EntityManager.removeComponent(entityId, ComponentType.PositionTarget);

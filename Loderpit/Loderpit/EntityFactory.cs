@@ -782,7 +782,7 @@ namespace Loderpit
         }
 
         // Create general proc spell
-        public static int createProcSpell(int targetEntityId, Action<int, int> onHitOther = null, Action<int, int> onHitByOther = null)
+        public static int createProcSpell(int targetEntityId, Action<Skill, int, int> onHitOther = null, Action<Skill, int, int> onHitByOther = null)
         {
             int entityId = EntityManager.createEntity();
             ProcComponent procComponent = new ProcComponent(entityId, onHitOther, onHitByOther);

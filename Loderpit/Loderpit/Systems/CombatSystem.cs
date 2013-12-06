@@ -91,6 +91,7 @@ namespace Loderpit.Systems
          * Returns true if the attack was a success, and false if it was a miss
          */
         public bool attack(
+            Skill attackSkill,
             int attackerId,
             int defenderId,
             int extraDamage = 0,    // TODO: -- this parameter could be co-opted into a damage die
@@ -126,7 +127,7 @@ namespace Loderpit.Systems
                     {
                         if (procComponent.onHitOther != null)
                         {
-                            procComponent.onHitOther(attackerId, defenderId);
+                            procComponent.onHitOther(attackSkill, attackerId, defenderId);
                         }
                     }
                 }
@@ -140,7 +141,7 @@ namespace Loderpit.Systems
                     {
                         if (procComponent.onHitByOther != null)
                         {
-                            procComponent.onHitByOther(attackerId, defenderId);
+                            procComponent.onHitByOther(attackSkill, attackerId, defenderId);
                         }
                     }
                 }
@@ -310,7 +311,7 @@ namespace Loderpit.Systems
 
                                     if (isDefenderWithinRange && isDefenderAttackable && !isDefenderIncapacitated)
                                     {
-                                        attack(attackerId, defenderId, 0, null, null);
+                                        attack(skill, attackerId, defenderId, 0, null, null);
 
                                         if (EntityManager.doesEntityExist(attackerId))  // attacker could have been killed by a damage shield
                                         {
