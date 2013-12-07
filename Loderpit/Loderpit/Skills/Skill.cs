@@ -12,6 +12,7 @@ namespace Loderpit.Skills
         // Engineer
         ThrowRope,
         BuildBridge,
+        ProximityMine,
 
         // Archer
         ShieldOfThorns,

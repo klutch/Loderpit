@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using FarseerPhysics.Dynamics;
 using Microsoft.Xna.Framework;
 using Loderpit.Components;
 using Loderpit.Components.SpellEffects;
@@ -100,6 +101,7 @@ namespace Loderpit.Managers
             AreaOfEffectComponent areaOfEffectComponent = EntityManager.getAreaOfEffectComponent(entityId);
             AffectedBySpellEntitiesComponent affectedBySpellEntitiesComponent = EntityManager.getAffectedBySpellEntitiesComponent(entityId);
             AffectedEntitiesComponent affectedEntitiesComponent = EntityManager.getAffectedEntitiesComponent(entityId);
+            PhysicsComponent physicsComponent = EntityManager.getPhysicsComponent(entityId);
 
             // Handle removal from a group
             if (groupComponent != null)
@@ -157,6 +159,15 @@ namespace Loderpit.Managers
                 }
             }
 
+            // Handle physics component
+            if (physicsComponent != null)
+            {
+                foreach (Body body in physicsComponent.bodies)
+                {
+                    SystemManager.physicsSystem.world.RemoveBody(body);
+                }
+            }
+
             // Finally, remove the entity from the dictionary
             _entities.Remove(entityId);
         }
@@ -201,5 +212,7 @@ namespace Loderpit.Managers
         public static TrackEntityPositionComponent getTrackEntityPositionComponent(int entityId) { return getComponent<TrackEntityPositionComponent>(entityId, ComponentType.TrackEntityPosition); }
         public static AffectedBySpellEntitiesComponent getAffectedBySpellEntitiesComponent(int entityId) { return getComponent<AffectedBySpellEntitiesComponent>(entityId, ComponentType.AffectedBySpellEntities); }
         public static ProcComponent getProcComponent(int entityId) { return getComponent<ProcComponent>(entityId, ComponentType.Proc); }
+        public static TimedExplosionComponent getTimedExplosionComponent(int entityId) { return getComponent<TimedExplosionComponent>(entityId, ComponentType.TimedExplosion); }
+        public static PhysicsComponent getPhysicsComponent(int entityId) { return getComponent<PhysicsComponent>(entityId, ComponentType.Physics); }
     }
 }

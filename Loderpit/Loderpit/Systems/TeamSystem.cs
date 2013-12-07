@@ -152,6 +152,9 @@ namespace Loderpit.Systems
                             case SkillType.BuildBridge:
                                 handleInitializeBuildBridge(selectedEntityId);
                                 break;
+                            case SkillType.ProximityMine:
+                                handleInitializeProximityMine(selectedEntityId);
+                                break;
 
                             // Archer
                             case SkillType.PowerShot:
@@ -278,6 +281,16 @@ namespace Loderpit.Systems
             if (Game.newMouseState.isLeftButtonPressed && !Game.oldMouseState.isLeftButtonPressed)
             {
                 SystemManager.skillSystem.performHealingBlastSkill(entityId, _initializingSkill as HealingBlastSkill, Game.worldMouse);
+                _initializingSkill = null;
+            }
+        }
+
+        // Handle initialize proximity mine skill
+        private void handleInitializeProximityMine(int entityId)
+        {
+            if (Game.newMouseState.isLeftButtonPressed && !Game.oldMouseState.isLeftButtonPressed)
+            {
+                SystemManager.skillSystem.performProximityMineSkill(entityId, _initializingSkill as ProximityMineSkill, Game.worldMouse);
                 _initializingSkill = null;
             }
         }

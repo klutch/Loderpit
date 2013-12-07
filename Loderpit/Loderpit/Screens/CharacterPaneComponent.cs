@@ -155,6 +155,10 @@ namespace Loderpit.Screens
                             drawIcon("bridge_icon");
                             break;
 
+                        case SkillType.ProximityMine:
+                            drawIcon("proximity_mine_icon");
+                            break;
+
                         // Archer
                         case SkillType.PowerShot:
                             drawIcon("power_shot_icon");

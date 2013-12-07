@@ -88,6 +88,7 @@ namespace Loderpit
                 case CharacterClass.Engineer:
                     skills.Add(new ThrowRopeSkill(entityId, 1));
                     skills.Add(new BuildBridgeSkill(entityId, 1));
+                    skills.Add(new ProximityMineSkill(entityId, 1));
                     break;
 
                 case CharacterClass.Healer:
@@ -677,6 +678,59 @@ namespace Loderpit
 
             // Player character has stopped touching the level end sensor
             EntityManager.removeComponent(entityIdB, ComponentType.IsTouchingEndLevel);
+        }
+
+        // Create proximity mine
+        public static int createProximityMine(Vector2 position, Faction hostileFaction, float radius, float force, string damageDie)
+        {
+            int entityId = EntityManager.createEntity();
+            Body body = BodyFactory.CreateCircle(SystemManager.physicsSystem.world, 3f, 1f, position);
+            TimedExplosionComponent timedExplosionComponent = new TimedExplosionComponent(entityId, 60, radius, force, damageDie);
+            PhysicsComponent physicsComponent = new PhysicsComponent(entityId);
+
+            body.UserData = entityId;
+            body.BodyType = BodyType.Static;
+            body.IsSensor = true;
+            body.CollidesWith = (ushort)CollisionCategory.Characters;
+            body.OnCollision += new OnCollisionEventHandler((fixtureA, fixtureB, contact) =>
+            {
+                int entityIdB;
+                FactionComponent factionComponentB;
+
+                // Skip fixtures without a user data
+                if (fixtureB.Body.UserData == null)
+                {
+                    return false;
+                }
+
+                entityIdB = (int)fixtureB.Body.UserData;
+
+                // Skip if no faction component
+                if ((factionComponentB = EntityManager.getFactionComponent(entityIdB)) == null)
+                {
+                    return false;
+                }
+
+                // Check faction
+                if (hostileFaction != factionComponentB.faction)
+                {
+                    return false;
+                }
+
+                // Activate timed explosion component
+                timedExplosionComponent.active = true;
+                return false;
+            });
+
+            physicsComponent.bodies.Add(body);
+
+            EntityManager.addComponent(entityId, timedExplosionComponent);
+            EntityManager.addComponent(entityId, physicsComponent);
+            EntityManager.addComponent(entityId, new PositionComponent(entityId, body));
+            EntityManager.addComponent(entityId, new IgnoreBridgeRaycastComponent(entityId));
+            EntityManager.addComponent(entityId, new IgnoreRopeRaycastComponent(entityId));
+
+            return entityId;
         }
 
         // Deadeye spell entity

@@ -151,6 +151,11 @@ namespace Loderpit.Systems
                 _actionLabel.DisplayedString = "Healing Blast";
                 drawReticle(Game.sfmlWorldMouse, Color.Green);
             }
+            else if (teamSystem.initializingSkill.type == SkillType.ProximityMine)
+            {
+                _actionLabel.DisplayedString = "Proximity Mine";
+                drawReticle(Game.sfmlWorldMouse, Color.Red);
+            }
         }
 
         public void update()

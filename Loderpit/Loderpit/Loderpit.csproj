@@ -103,8 +103,10 @@
     <Compile Include="Components\IncapacitatedComponent.cs" />
     <Compile Include="Components\IsTouchingEndLevelComponent.cs" />
     <Compile Include="Components\PerformingSkillsComponent.cs" />
+    <Compile Include="Components\PhysicsComponent.cs" />
     <Compile Include="Components\PositionComponent.cs" />
     <Compile Include="Components\PositionTargetComponent.cs" />
+    <Compile Include="Components\TimedExplosionComponent.cs" />
     <Compile Include="Components\ReceiveActivateObstacleFallComponent.cs" />
     <Compile Include="Components\RenderHealthComponent.cs" />
     <Compile Include="Components\RopeComponent.cs" />
@@ -166,6 +168,7 @@
     <Compile Include="Skills\MeleeAttackSkill.cs" />
     <Compile Include="Skills\PowerShotSkill.cs" />
     <Compile Include="Skills\PowerSwingSkill.cs" />
+    <Compile Include="Skills\ProximityMineSkill.cs" />
     <Compile Include="Skills\RangedAttackSkill.cs" />
     <Compile Include="Skills\ShieldBashSkill.cs" />
     <Compile Include="Skills\ShieldOfThornsSkill.cs" />
@@ -177,6 +180,7 @@
     <Compile Include="Systems\CharacterSystem.cs" />
     <Compile Include="Systems\CombatSystem.cs" />
     <Compile Include="Systems\EnemyAISystem.cs" />
+    <Compile Include="Systems\ExplosionSystem.cs" />
     <Compile Include="Systems\GroupSystem.cs" />
     <Compile Include="Systems\InterLevelSystem.cs" />
     <Compile Include="Systems\ISystem.cs" />
@@ -190,6 +194,9 @@
     <Compile Include="Systems\TeamSystem.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="resources\ui\action_icons\proximity_mine.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="resources\ui\reticle.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

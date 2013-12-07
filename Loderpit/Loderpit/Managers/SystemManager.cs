@@ -20,5 +20,6 @@ namespace Loderpit.Managers
         public static EnemyAISystem enemyAISystem;
         public static InterLevelSystem interLevelSystem;
         public static SpellSystem spellSystem;
+        public static ExplosionSystem explosionSystem;
     }
 }

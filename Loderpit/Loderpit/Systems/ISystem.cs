@@ -17,7 +17,8 @@ namespace Loderpit.Systems
         Level,
         EnemyAI,
         InterLevel,
-        Spell
+        Spell,
+        Explosion
     }
 
     public interface ISystem

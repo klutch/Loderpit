@@ -648,6 +648,27 @@ namespace Loderpit.Systems
             }
         }
 
+        // Perform proximity mine skill
+        public void performProximityMineSkill(int entityId, ProximityMineSkill skill, Vector2 target)
+        {
+            PerformingSkillsComponent performingSkillsComponent = EntityManager.getPerformingSkillsComponent(entityId);
+
+            // Create execute skill object
+            performingSkillsComponent.executingSkills.Add(new ExecuteProximityMineSkill(
+                skill,
+                target,
+                () =>
+                {
+                    PositionComponent positionComponent = EntityManager.getPositionComponent(entityId);
+                    PositionTargetComponent positionTargetComponent = EntityManager.getPositionTargetComponent(entityId);
+                    float distance = Math.Abs(positionTargetComponent.position - positionComponent.position.X);
+
+                    return distance <= positionTargetComponent.tolerance;
+                }));
+
+            EntityManager.addComponent(entityId, new PositionTargetComponent(entityId, target.X, skill.range));
+        }
+
         #endregion
 
         #region Cooldown methods
@@ -772,7 +793,7 @@ namespace Loderpit.Systems
         {
             PerformingSkillsComponent performingSkillsComponent = EntityManager.getPerformingSkillsComponent(entityId);
             FireballSkill fireballSkill = executeFireballSkill.skill as FireballSkill;
-            List<int> hitEntities = SystemManager.spellSystem.createExplosion(entityId, executeFireballSkill.target, fireballSkill.explosionRadius, Roller.roll(fireballSkill.explosionDamageDie), fireballSkill.explosionForce);
+            List<int> hitEntities = SystemManager.explosionSystem.createExplosion(entityId, executeFireballSkill.target, fireballSkill.explosionRadius, Roller.roll(fireballSkill.explosionDamageDie), fireballSkill.explosionForce);
 
             foreach (int hitEntityId in hitEntities)
             {
@@ -801,6 +822,52 @@ namespace Loderpit.Systems
             SystemManager.combatSystem.applySpellHeal(entityId, targetId, Roller.roll(healingBlastSkill.healDie));
             EntityManager.removeComponent(entityId, ComponentType.PositionTarget);
             removeExecutedSkill(entityId, executeHealingBlast);
+        }
+
+        // Execute proximity mine
+        private void executeProximityMine(int entityIdA, ExecuteProximityMineSkill executeSkill)
+        {
+            PositionComponent positionComponent = EntityManager.getPositionComponent(entityIdA);
+            FactionComponent factionComponent = EntityManager.getFactionComponent(entityIdA);
+            ProximityMineSkill skill = executeSkill.skill as ProximityMineSkill;
+            bool hit = false;
+            Vector2 point = Vector2.Zero;
+
+            SystemManager.physicsSystem.world.RayCast((f, p, n, fr) =>
+            {
+                int entityIdB;
+                GroundBodyComponent groundBodyComponent;
+
+                // Skip fixtures without user data
+                if (f.Body.UserData == null)
+                {
+                    return -1;
+                }
+
+                entityIdB = (int)f.Body.UserData;
+
+                // Skip if no ground component
+                if ((groundBodyComponent = EntityManager.getGroundBodyComponent(entityIdB)) == null)
+                {
+                    return -1;
+                }
+
+                // Store hit
+                hit = true;
+                point = p;
+
+                return fr;
+            },
+                positionComponent.position,
+                executeSkill.target);
+
+            if (hit)
+            {
+                EntityFactory.createProximityMine(point, factionComponent.hostileFaction, skill.explosionRadius, skill.explosionForce, skill.damageDie);
+            }
+
+            EntityManager.removeComponent(entityIdA, ComponentType.PositionTarget);
+            removeExecutedSkill(entityIdA, executeSkill);
         }
 
         #endregion
@@ -842,6 +909,9 @@ namespace Loderpit.Systems
                                 break;
                             case SkillType.ThrowRope:
                                 executeThrowRope(entityId, executeSkill as ExecuteThrowRopeSkill);
+                                break;
+                            case SkillType.ProximityMine:
+                                executeProximityMine(entityId, executeSkill as ExecuteProximityMineSkill);
                                 break;
 
                             // Archer

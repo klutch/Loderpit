@@ -80,6 +80,7 @@ namespace Loderpit
             SystemManager.enemyAISystem = new EnemyAISystem();
             SystemManager.interLevelSystem = new InterLevelSystem();
             SystemManager.spellSystem = new SpellSystem();
+            SystemManager.explosionSystem = new ExplosionSystem();
 
             // Open create team screen
             startCreateTeamState();
@@ -119,6 +120,7 @@ namespace Loderpit
             ResourceManager.addResource("fireball_icon", new Texture("resources/ui/action_icons/fireball.png"));
             ResourceManager.addResource("shield_bash_icon", new Texture("resources/ui/action_icons/bash.png"));
             ResourceManager.addResource("healing_blast_icon", new Texture("resources/ui/action_icons/healing_blast.png"));
+            ResourceManager.addResource("proximity_mine_icon", new Texture("resources/ui/action_icons/proximity_mine.png"));
             ResourceManager.addResource("reticle", new Texture("resources/ui/reticle.png"));
 
             // Debug
@@ -301,6 +303,7 @@ namespace Loderpit
                 SystemManager.skillSystem.update();
                 SystemManager.spellSystem.update();
                 SystemManager.combatSystem.update();
+                SystemManager.explosionSystem.update();
                 ScreenManager.update();
             }
 
