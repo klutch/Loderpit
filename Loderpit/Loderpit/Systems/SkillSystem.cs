@@ -833,33 +833,64 @@ namespace Loderpit.Systems
             bool hit = false;
             Vector2 point = Vector2.Zero;
 
+            // Cast upwards and check for ceiling
             SystemManager.physicsSystem.world.RayCast((f, p, n, fr) =>
+                {
+                    int entityIdB;
+                    CeilingComponent ceilingComponent;
+
+                    // Skip if fixture doesn't have userdata
+                    if (f.Body.UserData == null)
+                    {
+                        return -1;
+                    }
+
+                    entityIdB = (int)f.Body.UserData;
+
+                    // Skip entites without a ceiling component
+                    if ((ceilingComponent = EntityManager.getCeilingComponent(entityIdB)) == null)
+                    {
+                        return -1;
+                    }
+
+                    // Hit
+                    hit = true;
+                    point = p;
+                    return fr;
+                },
+                executeSkill.target + new Vector2(0f, 1000f),
+                executeSkill.target + new Vector2(0f, -5f));
+
+            if (!hit)
             {
-                int entityIdB;
-                GroundBodyComponent groundBodyComponent;
-
-                // Skip fixtures without user data
-                if (f.Body.UserData == null)
+                // Cast downwards and check for ground
+                SystemManager.physicsSystem.world.RayCast((f, p, n, fr) =>
                 {
-                    return -1;
-                }
+                    int entityIdB;
+                    GroundBodyComponent groundComponent;
 
-                entityIdB = (int)f.Body.UserData;
+                    // Skip if fixture doesn't have userdata
+                    if (f.Body.UserData == null)
+                    {
+                        return -1;
+                    }
 
-                // Skip if no ground component
-                if ((groundBodyComponent = EntityManager.getGroundBodyComponent(entityIdB)) == null)
-                {
-                    return -1;
-                }
+                    entityIdB = (int)f.Body.UserData;
 
-                // Store hit
-                hit = true;
-                point = p;
+                    // Skip entites without a ground component
+                    if ((groundComponent = EntityManager.getGroundBodyComponent(entityIdB)) == null)
+                    {
+                        return -1;
+                    }
 
-                return fr;
-            },
-                positionComponent.position,
-                executeSkill.target);
+                    // Hit
+                    hit = true;
+                    point = p;
+                    return fr;
+                },
+                executeSkill.target + new Vector2(0f, -1000f),
+                executeSkill.target + new Vector2(0f, 5f));
+            }
 
             if (hit)
             {
