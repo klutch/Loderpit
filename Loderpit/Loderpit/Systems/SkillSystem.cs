@@ -76,6 +76,9 @@ namespace Loderpit.Systems
                         case SkillType.Kick:
                             initializeKickSkill(entityId, skill as KickSkill);
                             break;
+                        case SkillType.Bloodletter:
+                            initializeBloodletterSkill(entityId, skill as BloodletterSkill);
+                            break;
 
                         // Mage
                         case SkillType.Ignite:
@@ -262,6 +265,27 @@ namespace Loderpit.Systems
             EntityFactory.createProcSpell(entityId, onHitOther);
         }
 
+        // Initialize bloodletter skill
+        private void initializeBloodletterSkill(int entityId, BloodletterSkill bloodletterSkill)
+        {
+            Action<Skill, int, int> onHitOther = (skill, attackerId, defenderId) =>
+                {
+                    // Only proc on normal attacks
+                    if (skill.type != SkillType.MeleeAttack)
+                    {
+                        return;
+                    }
+
+                    // Check chance to proc
+                    if (Roller.roll(bloodletterSkill.chanceToProc) == 1)
+                    {
+                        EntityFactory.createDoTSpell(defenderId, bloodletterSkill.bleedingDamageDie, bloodletterSkill.tickDelay, bloodletterSkill.tickCount);
+                    }
+                };
+
+            EntityFactory.createProcSpell(entityId, onHitOther);
+        }
+
         // Initialize ignite skill
         private void initializeIgniteSkill(int entityId, IgniteSkill igniteSkill)
         {
@@ -276,7 +300,7 @@ namespace Loderpit.Systems
                     // Check chance to proc
                     if (Roller.roll(igniteSkill.chanceToProc) == 1)
                     {
-                        EntityFactory.createBurningSpell(defenderId, igniteSkill.damageDie, igniteSkill.tickDelay, igniteSkill.tickCount);
+                        EntityFactory.createDoTSpell(defenderId, igniteSkill.damageDie, igniteSkill.tickDelay, igniteSkill.tickCount);
                     }
                 };
 
@@ -801,7 +825,7 @@ namespace Loderpit.Systems
                 {
                     if (Roller.roll(fireballSkill.burnChanceDie) == 1)
                     {
-                        EntityFactory.createBurningSpell(hitEntityId, fireballSkill.burnDamageDie, fireballSkill.burnTickDelay, fireballSkill.burnTickCount);
+                        EntityFactory.createDoTSpell(hitEntityId, fireballSkill.burnDamageDie, fireballSkill.burnTickDelay, fireballSkill.burnTickCount);
                     }
                 }
             }

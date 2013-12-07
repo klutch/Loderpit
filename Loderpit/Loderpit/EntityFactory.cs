@@ -64,6 +64,7 @@ namespace Loderpit
                     skills.Add(new MeleeAttackSkill(entityId, 1));
                     skills.Add(new KickSkill(entityId, 1));
                     skills.Add(new PowerSwingSkill(entityId, 1));
+                    skills.Add(new BloodletterSkill(entityId, 1));
                     break;
 
                 case CharacterClass.Defender:
@@ -762,8 +763,8 @@ namespace Loderpit
             return entityId;
         }
 
-        // Burning spell entity
-        public static int createBurningSpell(int targetEntityId, string damageDie, int tickDelay, int tickCount)
+        // Generic dot spell -- TODO: Incorporate the type of damage
+        public static int createDoTSpell(int targetEntityId, string damageDie, int tickDelay, int tickCount)
         {
             int entityId = EntityManager.createEntity();
             DamageOverTimeComponent damageOverTimeComponent = new DamageOverTimeComponent(entityId, damageDie, tickDelay);
