@@ -54,11 +54,9 @@ namespace Loderpit.Systems
                         case SkillType.Block:
                             initializeBlockSkill(entityId, skill as BlockSkill);
                             break;
-
                         case SkillType.SpikedShield:
                             initializeSpikedShieldSkill(entityId, skill as SpikedShieldSkill);
                             break;
-
                         case SkillType.ShieldBash:
                             initializeShieldBashSkill(entityId, skill as ShieldBashSkill);
                             break;
@@ -67,7 +65,6 @@ namespace Loderpit.Systems
                         case SkillType.Deadeye:
                             initializeDeadeyeSkill(entityId, skill as DeadeyeSkill);
                             break;
-
                         case SkillType.ShieldOfThorns:
                             initializeShieldOfThornsSkill(entityId, skill as ShieldOfThornsSkill);
                             break;
@@ -693,6 +690,62 @@ namespace Loderpit.Systems
             EntityManager.addComponent(entityId, new PositionTargetComponent(entityId, target.X, skill.range));
         }
 
+        // Perform fatality skill
+        public void performFatalitySkill(int entityId, FatalitySkill skill, Vector2 target)
+        {
+            FactionComponent factionComponent = EntityManager.getFactionComponent(entityId);
+            PerformingSkillsComponent performingSkillsComponent = EntityManager.getPerformingSkillsComponent(entityId);
+            ExecuteFatalitySkill executeSkill = null;
+            List<Fixture> fixtures = SystemManager.physicsSystem.world.TestPointAll(target);
+
+            foreach (Fixture fixture in fixtures)
+            {
+                int targetEntityId;
+                FactionComponent targetFactionComponent;
+
+                // Skip bodies without any userdata
+                if (fixture.Body.UserData == null)
+                {
+                    continue;
+                }
+
+                targetEntityId = (int)fixture.Body.UserData;
+
+                // Skip entities without a faction component
+                if ((targetFactionComponent = EntityManager.getFactionComponent(targetEntityId)) == null)
+                {
+                    continue;
+                }
+
+                // Skip over non-attackable entities
+                if (!SystemManager.combatSystem.isFactionAttackable(factionComponent.faction, targetFactionComponent.faction))
+                {
+                    continue;
+                }
+
+                // Create execute skill object
+                executeSkill = new ExecuteFatalitySkill(
+                    skill,
+                    targetEntityId,
+                    () =>
+                    {
+                        PositionComponent positionComponent = EntityManager.getPositionComponent(entityId);
+                        PositionTargetComponent positionTargetComponent = EntityManager.getPositionTargetComponent(entityId);
+                        float distance = Math.Abs(positionTargetComponent.position - positionComponent.position.X);
+
+                        return distance <= positionTargetComponent.tolerance;
+                    });
+
+                EntityManager.addComponent(entityId, new PositionTargetComponent(entityId, fixture.Body, skill.range));
+                break;
+            }
+
+            if (executeSkill != null)
+            {
+                performingSkillsComponent.executingSkills.Add(executeSkill);
+            }
+        }
+
         #endregion
 
         #region Cooldown methods
@@ -810,6 +863,22 @@ namespace Loderpit.Systems
             EntityManager.removeComponent(entityId, ComponentType.PositionTarget);
 
             removeExecutedSkill(entityId, executePowerSwingSkill);
+        }
+
+        // Execute fatality
+        private void executeFatality(int entityId, ExecuteFatalitySkill executeSkill)
+        {
+            PerformingSkillsComponent performingSkillsComponent = EntityManager.getPerformingSkillsComponent(entityId);
+            FatalitySkill fatalitySkill = executeSkill.skill as FatalitySkill;
+
+            if (EntityManager.doesEntityExist(executeSkill.targetEntityId))    // defender could have died already
+            {
+                SystemManager.combatSystem.attack(fatalitySkill, entityId, executeSkill.targetEntityId, 0, "d1+9998", "d1+9998");
+            }
+            SystemManager.skillSystem.resetCooldown(entityId, SkillType.PowerSwing);
+            EntityManager.removeComponent(entityId, ComponentType.PositionTarget);
+
+            removeExecutedSkill(entityId, executeSkill);
         }
 
         // Execute fireball
@@ -977,6 +1046,9 @@ namespace Loderpit.Systems
                             // Fighter
                             case SkillType.PowerSwing:
                                 executePowerSwing(entityId, executeSkill as ExecutePowerSwingSkill);
+                                break;
+                            case SkillType.Fatality:
+                                executeFatality(entityId, executeSkill as ExecuteFatalitySkill);
                                 break;
 
                             // Mage

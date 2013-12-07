@@ -23,6 +23,7 @@ namespace Loderpit.Skills
         Kick,
         PowerSwing,
         Bloodletter,
+        Fatality,
 
         // Defender
         Block,

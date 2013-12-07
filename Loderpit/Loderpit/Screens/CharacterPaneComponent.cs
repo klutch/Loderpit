@@ -168,6 +168,9 @@ namespace Loderpit.Screens
                         case SkillType.PowerSwing:
                             drawIcon("power_swing_icon");
                             break;
+                        case SkillType.Fatality:
+                            drawIcon("fatality_icon");
+                            break;
 
                         // Mage
                         case SkillType.Fireball:

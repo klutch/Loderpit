@@ -161,6 +161,7 @@
     <Compile Include="Skills\BloodletterSkill.cs" />
     <Compile Include="Skills\BuildBridgeSkill.cs" />
     <Compile Include="Skills\DeadeyeSkill.cs" />
+    <Compile Include="Skills\FatalitySkill.cs" />
     <Compile Include="Skills\FireballSkill.cs" />
     <Compile Include="Skills\HealingBlastSkill.cs" />
     <Compile Include="Skills\HealSkill.cs" />
@@ -195,6 +196,9 @@
     <Compile Include="Systems\TeamSystem.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="resources\ui\action_icons\fatality.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="resources\ui\action_icons\proximity_mine.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

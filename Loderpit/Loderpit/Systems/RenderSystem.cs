@@ -156,6 +156,11 @@ namespace Loderpit.Systems
                 _actionLabel.DisplayedString = "Proximity Mine";
                 drawReticle(Game.sfmlWorldMouse, Color.Red);
             }
+            else if (teamSystem.initializingSkill.type == SkillType.Fatality)
+            {
+                _actionLabel.DisplayedString = "Fatality";
+                drawReticle(Game.sfmlWorldMouse, Color.Red);
+            }
         }
 
         public void update()

@@ -165,6 +165,9 @@ namespace Loderpit.Systems
                             case SkillType.PowerSwing:
                                 handleInitializePowerSwing(selectedEntityId);
                                 break;
+                            case SkillType.Fatality:
+                                handleInitializeFatality(selectedEntityId);
+                                break;
 
                             // Mage
                             case SkillType.Fireball:
@@ -291,6 +294,16 @@ namespace Loderpit.Systems
             if (Game.newMouseState.isLeftButtonPressed && !Game.oldMouseState.isLeftButtonPressed)
             {
                 SystemManager.skillSystem.performProximityMineSkill(entityId, _initializingSkill as ProximityMineSkill, Game.worldMouse);
+                _initializingSkill = null;
+            }
+        }
+
+        // Handle initialize fatality skill
+        private void handleInitializeFatality(int entityId)
+        {
+            if (Game.newMouseState.isLeftButtonPressed && !Game.oldMouseState.isLeftButtonPressed)
+            {
+                SystemManager.skillSystem.performFatalitySkill(entityId, _initializingSkill as FatalitySkill, Game.worldMouse);
                 _initializingSkill = null;
             }
         }

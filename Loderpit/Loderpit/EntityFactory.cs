@@ -65,6 +65,7 @@ namespace Loderpit
                     skills.Add(new KickSkill(entityId, 1));
                     skills.Add(new PowerSwingSkill(entityId, 1));
                     skills.Add(new BloodletterSkill(entityId, 1));
+                    skills.Add(new FatalitySkill(entityId, 1));
                     break;
 
                 case CharacterClass.Defender:
