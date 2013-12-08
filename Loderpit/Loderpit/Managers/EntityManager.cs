@@ -175,7 +175,10 @@ namespace Loderpit.Managers
         // Destroy all entities
         public static void destroyAllEntities()
         {
-            _entities.Clear();
+            foreach (int entityId in _entities.Keys)
+            {
+                destroyEntity(entityId);
+            }
         }
 
         // Helper methods
