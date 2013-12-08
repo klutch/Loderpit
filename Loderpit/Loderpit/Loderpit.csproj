@@ -166,6 +166,7 @@
     <Compile Include="Skills\HealingBlastSkill.cs" />
     <Compile Include="Skills\HealSkill.cs" />
     <Compile Include="Skills\IgniteSkill.cs" />
+    <Compile Include="Skills\InfusionSkill.cs" />
     <Compile Include="Skills\KickSkill.cs" />
     <Compile Include="Skills\MeleeAttackSkill.cs" />
     <Compile Include="Skills\PowerShotSkill.cs" />
@@ -196,6 +197,9 @@
     <Compile Include="Systems\TeamSystem.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="resources\ui\action_icons\infusion.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="resources\ui\action_icons\fatality.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

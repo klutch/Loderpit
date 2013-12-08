@@ -178,6 +178,9 @@ namespace Loderpit.Systems
                             case SkillType.HealingBlast:
                                 handleInitializeHealingBlast(selectedEntityId);
                                 break;
+                            case SkillType.Infusion:
+                                handleInitializeInfusion(selectedEntityId);
+                                break;
                         }
                     }
                 }
@@ -305,6 +308,22 @@ namespace Loderpit.Systems
             {
                 SystemManager.skillSystem.performFatalitySkill(entityId, _initializingSkill as FatalitySkill, Game.worldMouse);
                 _initializingSkill = null;
+            }
+        }
+
+        // Handle initialize infusion skill
+        private void handleInitializeInfusion(int entityId)
+        {
+            if (Game.newMouseState.isLeftButtonPressed && !Game.oldMouseState.isLeftButtonPressed)
+            {
+                FactionComponent factionComponent = EntityManager.getFactionComponent(entityId);
+                int targetEntityId = Helpers.findEntityWithinRange(Game.worldMouse, 1f, factionComponent.faction);
+
+                if (targetEntityId != -1)
+                {
+                    SystemManager.skillSystem.performInfusionSkill(entityId, _initializingSkill as InfusionSkill, targetEntityId);
+                    _initializingSkill = null;
+                }
             }
         }
 

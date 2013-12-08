@@ -98,7 +98,7 @@ namespace Loderpit.Systems
             string attackDie = null,
             string hitDie = null)
         {
-            StatsComponent attackerStats = EntityManager.getStatsComponent(attackerId);
+            StatSystem statSystem = SystemManager.statSystem;
             StatsComponent defenderStats = EntityManager.getStatsComponent(defenderId);
             AffectedBySpellEntitiesComponent attackerSpells = EntityManager.getAffectedBySpellEntitiesComponent(attackerId);
             AffectedBySpellEntitiesComponent defenderSpells = EntityManager.getAffectedBySpellEntitiesComponent(defenderId);
@@ -107,7 +107,7 @@ namespace Loderpit.Systems
 
             attackDie = attackDie ?? SystemManager.statSystem.getAttackDie(attackerId);
             hitDie = hitDie ?? SystemManager.statSystem.getHitDie(attackerId);
-            attackRoll = Roller.roll(attackDie) + SystemManager.statSystem.getStatModifier(attackerStats.strength);
+            attackRoll = Roller.roll(attackDie) + statSystem.getStatModifier(statSystem.getStrength(attackerId));
 
             if (attackRoll >= defenderArmorClass)
             {
@@ -299,6 +299,7 @@ namespace Loderpit.Systems
             {
                 SkillsComponent skillsComponent = EntityManager.getSkillsComponent(entityId);
                 FactionComponent factionComponent = EntityManager.getFactionComponent(entityId);
+                PositionComponent positionComponent = EntityManager.getPositionComponent(entityId);
                 HealSkill healSkill;
                 List<int> friendlyEntities;
                 int healTargetId = 0;
@@ -324,14 +325,14 @@ namespace Loderpit.Systems
                 }
 
                 // Find target with the lowest hp
-                friendlyEntities = Helpers.findEntitiesWithinRange(entityId, healSkill.range, factionComponent.faction);
+                friendlyEntities = Helpers.findEntitiesWithinRange(positionComponent.position, healSkill.range, factionComponent.faction);
                 friendlyEntities.Add(entityId); // consider healing self
                 foreach (int friendId in friendlyEntities)
                 {
                     StatsComponent statsComponent = EntityManager.getStatsComponent(friendId);
 
                     // If entity is damaged and has less than the lowest hp
-                    if (statsComponent.currentHp < SystemManager.statSystem.getMaxHp(statsComponent) && statsComponent.currentHp < lowestHp)
+                    if (statsComponent.currentHp < SystemManager.statSystem.getMaxHp(friendId) && statsComponent.currentHp < lowestHp)
                     {
                         foundHealTarget = true;
                         healTargetId = friendId;

@@ -33,9 +33,8 @@ namespace Loderpit
         }
 
         // Find entities of a certain faction within a certain range
-        public static List<int> findEntitiesWithinRange(int entityId, float radius, Faction factionToMatch)
+        public static List<int> findEntitiesWithinRange(Vector2 position, float radius, Faction factionToMatch, int entityToSkip = -1)
         {
-            PositionComponent positionComponent = EntityManager.getPositionComponent(entityId);
             List<int> entitiesWithFaction = EntityManager.getEntitiesPossessing(ComponentType.Faction);
             List<int> results = new List<int>();
 
@@ -45,15 +44,15 @@ namespace Loderpit
                 FactionComponent targetFactionComponent;
                 Vector2 relative;
 
-                // Skip self
-                if (targetEntityId == entityId)
+                // Skip entity
+                if (entityToSkip != -1 && entityToSkip == targetEntityId)
                 {
                     continue;
                 }
 
                 targetPositionComponent = EntityManager.getPositionComponent(targetEntityId);
                 targetFactionComponent = EntityManager.getFactionComponent(targetEntityId);
-                relative = targetPositionComponent.position - positionComponent.position;
+                relative = targetPositionComponent.position - position;
 
                 // Check faction
                 if (targetFactionComponent.faction != factionToMatch)
@@ -69,6 +68,14 @@ namespace Loderpit
             }
 
             return results;
+        }
+
+        // Find entity of a certain faction within a certain range
+        public static int findEntityWithinRange(Vector2 position, float radius, Faction factionToMatch, int entityToSkip = -1)
+        {
+            List<int> results = findEntitiesWithinRange(position, radius, factionToMatch, entityToSkip);
+
+            return results.Count > 0 ? results[0] : -1;
         }
     }
 }

@@ -161,6 +161,11 @@ namespace Loderpit.Systems
                 _actionLabel.DisplayedString = "Fatality";
                 drawReticle(Game.sfmlWorldMouse, Color.Red);
             }
+            else if (teamSystem.initializingSkill.type == SkillType.Infusion)
+            {
+                _actionLabel.DisplayedString = "Cast Infusion";
+                drawReticle(Game.sfmlWorldMouse, Color.Cyan);
+            }
         }
 
         public void update()

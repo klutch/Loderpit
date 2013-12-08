@@ -604,7 +604,8 @@ namespace Loderpit.Systems
         public void performShieldBashSkill(int entityId, ShieldBashSkill shieldBashSkill)
         {
             FactionComponent factionComponent = EntityManager.getFactionComponent(entityId);
-            List<int> affectedEntities = Helpers.findEntitiesWithinRange(entityId, 3f, factionComponent.hostileFaction);
+            PositionComponent positionComponent = EntityManager.getPositionComponent(entityId);
+            List<int> affectedEntities = Helpers.findEntitiesWithinRange(positionComponent.position, 3f, factionComponent.hostileFaction, entityId);
 
             foreach (int affectedId in affectedEntities)
             {
@@ -744,6 +745,38 @@ namespace Loderpit.Systems
             {
                 performingSkillsComponent.executingSkills.Add(executeSkill);
             }
+        }
+
+        // Perform infusion skill
+        public void performInfusionSkill(int entityId, InfusionSkill infusionSkill, int targetEntityId)
+        {
+            PerformingSkillsComponent performingSkillsComponent = EntityManager.getPerformingSkillsComponent(entityId);
+            CharacterComponent characterComponent = EntityManager.getCharacterComponent(targetEntityId);
+            bool inRangeAtleastOnce = false;
+            ExecuteInfusionSkill executeSkill = new ExecuteInfusionSkill(infusionSkill, targetEntityId, () =>
+                {
+                    if (inRangeAtleastOnce)
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        PositionComponent positionComponent = EntityManager.getPositionComponent(entityId);
+                        PositionTargetComponent positionTargetComponent = EntityManager.getPositionTargetComponent(entityId);
+                        float distance = Math.Abs(positionTargetComponent.position - positionComponent.position.X);
+                        bool inRange = distance <= positionTargetComponent.tolerance;
+
+                        if (inRange)
+                        {
+                            inRangeAtleastOnce = true;
+                        }
+
+                        return inRange;
+                    }
+                });
+
+            EntityManager.addComponent(entityId, new PositionTargetComponent(entityId, characterComponent.body, infusionSkill.range - 2f));
+            performingSkillsComponent.executingSkills.Add(executeSkill);
         }
 
         #endregion
@@ -994,6 +1027,16 @@ namespace Loderpit.Systems
             removeExecutedSkill(entityIdA, executeSkill);
         }
 
+        // Execute infusion skill
+        private void executeInfusion(int entityId, ExecuteInfusionSkill executeSkill)
+        {
+            InfusionSkill skill = executeSkill.skill as InfusionSkill;
+
+            EntityFactory.createInfusionSpell(executeSkill.targetEntityId, skill.maxHpMod, skill.strengthMod, skill.armorClassMod, skill.timeToLive);
+            EntityManager.removeComponent(entityId, ComponentType.PositionTarget);
+            removeExecutedSkill(entityId, executeSkill);
+        }
+
         #endregion
 
         // Remove executed action from a PerformSkillsComponent
@@ -1059,6 +1102,9 @@ namespace Loderpit.Systems
                             // Healer
                             case SkillType.HealingBlast:
                                 executeHealingBlast(entityId, executeSkill as ExecuteHealingBlastSkill);
+                                break;
+                            case SkillType.Infusion:
+                                executeInfusion(entityId, executeSkill as ExecuteInfusionSkill);
                                 break;
                         }
                     }

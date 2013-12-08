@@ -49,8 +49,6 @@ namespace Loderpit
                     break;
             }
 
-            statsComponent.currentHp = SystemManager.statSystem.getMaxHp(statsComponent);
-
             return statsComponent;
         }
 
@@ -96,6 +94,7 @@ namespace Loderpit
                 case CharacterClass.Healer:
                     skills.Add(new HealSkill(entityId, 1));
                     skills.Add(new HealingBlastSkill(entityId, 1));
+                    skills.Add(new InfusionSkill(entityId, 1));
                     break;
             }
 
@@ -849,6 +848,30 @@ namespace Loderpit
             affectedBySpellEntitiesComponent.spellEntities.Add(entityId);
 
             EntityManager.addComponent(entityId, procComponent);
+            EntityManager.addComponent(entityId, affectedEntitiesComponent);
+
+            return entityId;
+        }
+
+        // Create infusion spell
+        public static int createInfusionSpell(int targetEntityId, int maxHpMod, int strengthMod, int armorClassMod, int timeToLive)
+        {
+            int entityId = EntityManager.createEntity();
+            TimeToLiveComponent timeToLiveComponent = new TimeToLiveComponent(entityId, timeToLive);
+            AffectedEntitiesComponent affectedEntitiesComponent = new AffectedEntitiesComponent(entityId);
+            AffectedBySpellEntitiesComponent affectedBySpellEntitiesComponent = EntityManager.getAffectedBySpellEntitiesComponent(targetEntityId);
+            StatModifierComponent statModifierComponent = new StatModifierComponent(entityId);
+
+            affectedEntitiesComponent.entities.Add(targetEntityId);
+            affectedBySpellEntitiesComponent.spellEntities.Add(entityId);
+
+            statModifierComponent.maxHpMod = maxHpMod;
+            statModifierComponent.strengthMod = strengthMod;
+            statModifierComponent.armorClassMod = armorClassMod;
+
+            EntityManager.addComponent(entityId, timeToLiveComponent);
+            EntityManager.addComponent(entityId, affectedEntitiesComponent);
+            EntityManager.addComponent(entityId, statModifierComponent);
 
             return entityId;
         }

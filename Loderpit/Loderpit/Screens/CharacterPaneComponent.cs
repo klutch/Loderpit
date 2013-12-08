@@ -136,7 +136,6 @@ namespace Loderpit.Screens
                         case SkillType.MeleeAttack: 
                             drawIcon("sword_icon");
                             break;
-
                         case SkillType.RangedAttack:
                             drawIcon((skill as RangedAttackSkill).textureResourceId);
                             break;
@@ -150,11 +149,9 @@ namespace Loderpit.Screens
                         case SkillType.ThrowRope:
                             drawIcon("rope_icon");
                             break;
-
                         case SkillType.BuildBridge:
                             drawIcon("bridge_icon");
                             break;
-
                         case SkillType.ProximityMine:
                             drawIcon("proximity_mine_icon");
                             break;
@@ -181,6 +178,10 @@ namespace Loderpit.Screens
                         case SkillType.HealingBlast:
                             drawIcon("healing_blast_icon");
                             break;
+                        case SkillType.Infusion:
+                            drawIcon("infusion_icon");
+                            break;
+
                     }
                 }
             }

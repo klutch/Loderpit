@@ -14,12 +14,91 @@ namespace Loderpit.Systems
         {
         }
 
-        public int getMaxHp(int entityId) { return getMaxHp(EntityManager.getStatsComponent(entityId)); }
-        public int getMaxHp(StatsComponent vitalsComponent)
+        // Strength
+        public int getStrength(int entityId)
         {
-            return vitalsComponent.baseHp + getStatModifier(vitalsComponent.dexterity);
+            StatsComponent statsComponent = EntityManager.getStatsComponent(entityId);
+            AffectedBySpellEntitiesComponent affectedBySpellEntities = EntityManager.getAffectedBySpellEntitiesComponent(entityId);
+            int strength = statsComponent.baseStrength;
+
+            // Accumulate strength modifiers from spells
+            foreach (int spellId in affectedBySpellEntities.spellEntities)
+            {
+                StatModifierComponent statModifierComponent = EntityManager.getStatModifierComponent(spellId);
+
+                if (statModifierComponent != null)
+                {
+                    strength += statModifierComponent.strengthMod;
+                }
+            }
+
+            return strength;
         }
 
+        // Dexterity
+        public int getDexterity(int entityId)
+        {
+            StatsComponent statsComponent = EntityManager.getStatsComponent(entityId);
+            AffectedBySpellEntitiesComponent affectedBySpellEntities = EntityManager.getAffectedBySpellEntitiesComponent(entityId);
+            int dexterity = statsComponent.baseDexterity;
+
+            // Accumulate dexterity modifiers from spells
+            foreach (int spellId in affectedBySpellEntities.spellEntities)
+            {
+                StatModifierComponent statModifierComponent = EntityManager.getStatModifierComponent(spellId);
+
+                if (statModifierComponent != null)
+                {
+                    dexterity += statModifierComponent.dexterityMod;
+                }
+            }
+
+            return dexterity;
+        }
+
+        // Intelligence
+        public int getIntelligence(int entityId)
+        {
+            StatsComponent statsComponent = EntityManager.getStatsComponent(entityId);
+            AffectedBySpellEntitiesComponent affectedBySpellEntities = EntityManager.getAffectedBySpellEntitiesComponent(entityId);
+            int intelligence = statsComponent.baseIntelligence;
+
+            // Accumulate dexterity modifiers from spells
+            foreach (int spellId in affectedBySpellEntities.spellEntities)
+            {
+                StatModifierComponent statModifierComponent = EntityManager.getStatModifierComponent(spellId);
+
+                if (statModifierComponent != null)
+                {
+                    intelligence += statModifierComponent.intelligenceMod;
+                }
+            }
+
+            return intelligence;
+        }
+
+        // Max hp
+        public int getMaxHp(int entityId)
+        {
+            StatsComponent statsComponent = EntityManager.getStatsComponent(entityId);
+            AffectedBySpellEntitiesComponent affectedBySpellEntities = EntityManager.getAffectedBySpellEntitiesComponent(entityId);
+            int maxHp = statsComponent.baseHp;
+
+            // Accumulate spell max hp modifiers
+            foreach (int spellId in affectedBySpellEntities.spellEntities)
+            {
+                StatModifierComponent statModifierComponent = EntityManager.getStatModifierComponent(spellId);
+
+                if (statModifierComponent != null)
+                {
+                    maxHp += statModifierComponent.maxHpMod;
+                }
+            }
+
+            return maxHp;
+        }
+
+        // Ability modifier
         public int getStatModifier(int value)
         {
             return (int)Math.Floor((float)(value - 10) / 2f);
@@ -29,9 +108,23 @@ namespace Loderpit.Systems
         public int getArmorClass(int entityId)
         {
             StatsComponent statsComponent = EntityManager.getStatsComponent(entityId);
+            AffectedBySpellEntitiesComponent affectedBySpellEntitiesComponent = EntityManager.getAffectedBySpellEntitiesComponent(entityId);
+            int armorClass = 10 + getStatModifier(statsComponent.baseDexterity);
 
             // TODO: Calculate armor bonus from items
-            return 10 + getStatModifier(statsComponent.dexterity);
+
+            // Accumulate armor class modifier from spells
+            foreach (int spellId in affectedBySpellEntitiesComponent.spellEntities)
+            {
+                StatModifierComponent statModifierComponent = EntityManager.getStatModifierComponent(spellId);
+
+                if (statModifierComponent != null)
+                {
+                    armorClass += statModifierComponent.armorClassMod;
+                }
+            }
+
+            return armorClass;
         }
 
         // Attack die

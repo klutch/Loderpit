@@ -122,6 +122,7 @@ namespace Loderpit
             ResourceManager.addResource("healing_blast_icon", new Texture("resources/ui/action_icons/healing_blast.png"));
             ResourceManager.addResource("proximity_mine_icon", new Texture("resources/ui/action_icons/proximity_mine.png"));
             ResourceManager.addResource("fatality_icon", new Texture("resources/ui/action_icons/fatality.png"));
+            ResourceManager.addResource("infusion_icon", new Texture("resources/ui/action_icons/infusion.png"));
             ResourceManager.addResource("reticle", new Texture("resources/ui/reticle.png"));
 
             // Debug
@@ -291,6 +292,7 @@ namespace Loderpit
                     }
                 }
 
+                ScreenManager.update();
                 SystemManager.physicsSystem.update();
                 SystemManager.levelSystem.update();
                 SystemManager.teamSystem.update();
@@ -305,7 +307,6 @@ namespace Loderpit
                 SystemManager.spellSystem.update();
                 SystemManager.combatSystem.update();
                 SystemManager.explosionSystem.update();
-                ScreenManager.update();
             }
 
             Game.singleStep = false;
