@@ -431,7 +431,7 @@ namespace Loderpit.Systems
                     PositionTargetComponent positionTargetComponent = EntityManager.getPositionTargetComponent(entityId);
                     float distance = Math.Abs(positionTargetComponent.position - futurePositionComponent.position.X);
 
-                    return distance <= positionTargetComponent.tolerance;
+                    return distance <= positionTargetComponent.tolerance + SKILL_RANGE_TOLERANCE;
                 });
 
             if (groupComponent != null)
@@ -463,7 +463,7 @@ namespace Loderpit.Systems
                     PositionTargetComponent positionTargetComponent = EntityManager.getPositionTargetComponent(entityId);
                     float distance = Math.Abs(positionTargetComponent.position - positionComponent.position.X);
 
-                    return distance <= positionTargetComponent.tolerance;
+                    return distance <= positionTargetComponent.tolerance + SKILL_RANGE_TOLERANCE;
                 });
 
             // Check for a group
@@ -522,7 +522,7 @@ namespace Loderpit.Systems
                         PositionTargetComponent positionTargetComponent = EntityManager.getPositionTargetComponent(entityId);
                         float distance = Math.Abs(positionTargetComponent.position - positionComponent.position.X);
 
-                        return distance <= positionTargetComponent.tolerance;
+                        return distance <= positionTargetComponent.tolerance + SKILL_RANGE_TOLERANCE;
                     });
 
                 EntityManager.addComponent(entityId, new PositionTargetComponent(entityId, fixture.Body, powerShotSkill.range));
@@ -578,7 +578,7 @@ namespace Loderpit.Systems
                         PositionTargetComponent positionTargetComponent = EntityManager.getPositionTargetComponent(entityId);
                         float distance = Math.Abs(positionTargetComponent.position - positionComponent.position.X);
 
-                        return distance <= positionTargetComponent.tolerance;
+                        return distance <= positionTargetComponent.tolerance + SKILL_RANGE_TOLERANCE;
                     });
 
                 EntityManager.addComponent(entityId, new PositionTargetComponent(entityId, fixture.Body, powerSwingSkill.range));
@@ -604,7 +604,7 @@ namespace Loderpit.Systems
                     PositionTargetComponent positionTargetComponent = EntityManager.getPositionTargetComponent(entityId);
                     float distance = Math.Abs(positionTargetComponent.position - positionComponent.position.X);
 
-                    return distance <= positionTargetComponent.tolerance;
+                    return distance <= positionTargetComponent.tolerance + SKILL_RANGE_TOLERANCE;
                 });
 
             performingSkillsComponent.executingSkills.Add(executeFireballSkill);
@@ -668,7 +668,7 @@ namespace Loderpit.Systems
                         PositionTargetComponent positionTargetComponent = EntityManager.getPositionTargetComponent(entityId);
                         float distance = Math.Abs(positionTargetComponent.position - positionComponent.position.X);
 
-                        return distance <= positionTargetComponent.tolerance;
+                        return distance <= positionTargetComponent.tolerance + SKILL_RANGE_TOLERANCE;
                     });
 
                 EntityManager.addComponent(entityId, new PositionTargetComponent(entityId, fixture.Body, healingBlastSkill.range));
@@ -696,7 +696,7 @@ namespace Loderpit.Systems
                     PositionTargetComponent positionTargetComponent = EntityManager.getPositionTargetComponent(entityId);
                     float distance = Math.Abs(positionTargetComponent.position - positionComponent.position.X);
 
-                    return distance <= positionTargetComponent.tolerance;
+                    return distance <= positionTargetComponent.tolerance + SKILL_RANGE_TOLERANCE;
                 }));
 
             EntityManager.addComponent(entityId, new PositionTargetComponent(entityId, target.X, skill.range));
@@ -745,7 +745,7 @@ namespace Loderpit.Systems
                         PositionTargetComponent positionTargetComponent = EntityManager.getPositionTargetComponent(entityId);
                         float distance = Math.Abs(positionTargetComponent.position - positionComponent.position.X);
 
-                        return distance <= positionTargetComponent.tolerance;
+                        return distance <= positionTargetComponent.tolerance + SKILL_RANGE_TOLERANCE;
                     });
 
                 EntityManager.addComponent(entityId, new PositionTargetComponent(entityId, fixture.Body, skill.range));
@@ -775,7 +775,7 @@ namespace Loderpit.Systems
                         PositionComponent positionComponent = EntityManager.getPositionComponent(entityId);
                         PositionTargetComponent positionTargetComponent = EntityManager.getPositionTargetComponent(entityId);
                         float distance = Math.Abs(positionTargetComponent.position - positionComponent.position.X);
-                        bool inRange = distance <= positionTargetComponent.tolerance;
+                        bool inRange = distance <= positionTargetComponent.tolerance + SKILL_RANGE_TOLERANCE;
 
                         if (inRange)
                         {
