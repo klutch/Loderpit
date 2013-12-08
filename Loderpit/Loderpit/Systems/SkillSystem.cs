@@ -876,9 +876,9 @@ namespace Loderpit.Systems
             {
                 SystemManager.combatSystem.attack(powerShotSkill, entityId, executePowerShotSkill.defenderId, powerShotSkill.calculateExtraDamage());
             }
-            SystemManager.skillSystem.resetCooldown(entityId, SkillType.PowerShot);
+            
             EntityManager.removeComponent(entityId, ComponentType.PositionTarget);
-
+            resetCooldown(entityId, SkillType.PowerShot);
             removeExecutedSkill(entityId, executePowerShotSkill);
         }
 
@@ -892,9 +892,9 @@ namespace Loderpit.Systems
             {
                 SystemManager.combatSystem.attack(powerSwingSkill, entityId, executePowerSwingSkill.defenderId, powerSwingSkill.calculateExtraDamage());
             }
-            SystemManager.skillSystem.resetCooldown(entityId, SkillType.PowerSwing);
+            
             EntityManager.removeComponent(entityId, ComponentType.PositionTarget);
-
+            resetCooldown(entityId, SkillType.PowerSwing);
             removeExecutedSkill(entityId, executePowerSwingSkill);
         }
 
@@ -908,9 +908,9 @@ namespace Loderpit.Systems
             {
                 SystemManager.combatSystem.attack(fatalitySkill, entityId, executeSkill.targetEntityId, 0, "d1+9998", "d1+9998");
             }
-            SystemManager.skillSystem.resetCooldown(entityId, SkillType.PowerSwing);
+            
             EntityManager.removeComponent(entityId, ComponentType.PositionTarget);
-
+            resetCooldown(entityId, SkillType.Fatality);
             removeExecutedSkill(entityId, executeSkill);
         }
 
@@ -932,9 +932,8 @@ namespace Loderpit.Systems
                 }
             }
 
-            SystemManager.skillSystem.resetCooldown(entityId, SkillType.Fireball);
             EntityManager.removeComponent(entityId, ComponentType.PositionTarget);
-
+            resetCooldown(entityId, SkillType.Fireball);
             removeExecutedSkill(entityId, executeFireballSkill);
         }
 
@@ -947,6 +946,7 @@ namespace Loderpit.Systems
 
             SystemManager.combatSystem.applySpellHeal(entityId, targetId, Roller.roll(healingBlastSkill.healDie));
             EntityManager.removeComponent(entityId, ComponentType.PositionTarget);
+            resetCooldown(entityId, SkillType.HealingBlast);
             removeExecutedSkill(entityId, executeHealingBlast);
         }
 
@@ -1024,6 +1024,7 @@ namespace Loderpit.Systems
             }
 
             EntityManager.removeComponent(entityIdA, ComponentType.PositionTarget);
+            resetCooldown(entityIdA, SkillType.ProximityMine);
             removeExecutedSkill(entityIdA, executeSkill);
         }
 
@@ -1034,6 +1035,7 @@ namespace Loderpit.Systems
 
             EntityFactory.createInfusionSpell(executeSkill.targetEntityId, skill.maxHpMod, skill.strengthMod, skill.armorClassMod, skill.timeToLive);
             EntityManager.removeComponent(entityId, ComponentType.PositionTarget);
+            resetCooldown(entityId, SkillType.Infusion);
             removeExecutedSkill(entityId, executeSkill);
         }
 
