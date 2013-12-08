@@ -184,6 +184,9 @@ namespace Loderpit.Screens
                         case SkillType.Infusion:
                             drawIcon("infusion_icon");
                             break;
+                        case SkillType.Dispel:
+                            drawIcon("dispel_icon");
+                            break;
 
                     }
                 }

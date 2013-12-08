@@ -124,6 +124,7 @@ namespace Loderpit
             ResourceManager.addResource("fatality_icon", new Texture("resources/ui/action_icons/fatality.png"));
             ResourceManager.addResource("infusion_icon", new Texture("resources/ui/action_icons/infusion.png"));
             ResourceManager.addResource("rain_of_fire_icon", new Texture("resources/ui/action_icons/rain_of_fire.png"));
+            ResourceManager.addResource("dispel_icon", new Texture("resources/ui/action_icons/dispel.png"));
             ResourceManager.addResource("reticle", new Texture("resources/ui/reticle.png"));
 
             // Debug

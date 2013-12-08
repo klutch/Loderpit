@@ -184,6 +184,9 @@ namespace Loderpit.Systems
                             case SkillType.Infusion:
                                 handleInitializeInfusion(selectedEntityId);
                                 break;
+                            case SkillType.Dispel:
+                                handleInitializeDispel(selectedEntityId);
+                                break;
                         }
                     }
                 }
@@ -337,6 +340,22 @@ namespace Loderpit.Systems
             {
                 SystemManager.skillSystem.performRainOfFireSkill(entityId, _initializingSkill as RainOfFireSkill, Game.worldMouse);
                 _initializingSkill = null;
+            }
+        }
+
+        // Handle initialize dispel skill
+        private void handleInitializeDispel(int entityId)
+        {
+            if (Game.newMouseState.isLeftButtonPressed && !Game.oldMouseState.isLeftButtonPressed)
+            {
+                FactionComponent factionComponent = EntityManager.getFactionComponent(entityId);
+                int targetEntityId = Helpers.findEntityWithinRange(Game.worldMouse, 1f, factionComponent.faction);
+
+                if (targetEntityId != -1)
+                {
+                    SystemManager.skillSystem.performDispelSkill(entityId, _initializingSkill as DispelSkill, targetEntityId);
+                    _initializingSkill = null;
+                }
             }
         }
 

@@ -39,7 +39,8 @@ namespace Loderpit.Components
         AffectedBySpellEntities,
         Proc,
         TimedExplosion,
-        Physics
+        Physics,
+        Dispellable
     }
 
     public interface IComponent

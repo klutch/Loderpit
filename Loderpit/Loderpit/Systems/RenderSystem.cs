@@ -171,6 +171,11 @@ namespace Loderpit.Systems
                 _actionLabel.DisplayedString = "Cast Rain of Fire";
                 drawReticle(Game.sfmlWorldMouse, Color.Red);
             }
+            else if (teamSystem.initializingSkill.type == SkillType.Dispel)
+            {
+                _actionLabel.DisplayedString = "Cast Dispel";
+                drawReticle(Game.sfmlWorldMouse, Color.Green);
+            }
         }
 
         public void update()

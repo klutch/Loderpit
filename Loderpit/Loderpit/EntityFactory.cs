@@ -97,6 +97,7 @@ namespace Loderpit
                     skills.Add(new HealSkill(entityId, 1));
                     skills.Add(new HealingBlastSkill(entityId, 1));
                     skills.Add(new InfusionSkill(entityId, 1));
+                    skills.Add(new DispelSkill(entityId, 1));
                     break;
             }
 
@@ -767,10 +768,12 @@ namespace Loderpit
         public static int createDoTSpell(int targetEntityId, string damageDie, int tickDelay, int tickCount)
         {
             int entityId = EntityManager.createEntity();
+            FactionComponent factionComponent = EntityManager.getFactionComponent(targetEntityId);
             DamageOverTimeComponent damageOverTimeComponent = new DamageOverTimeComponent(entityId, damageDie, tickDelay);
             TimeToLiveComponent timeToLiveComponent = new TimeToLiveComponent(entityId, tickCount * tickDelay);
             AffectedEntitiesComponent affectedEntitiesComponent = new AffectedEntitiesComponent(entityId);
             AffectedBySpellEntitiesComponent affectedBySpellEntitiesComponent = EntityManager.getAffectedBySpellEntitiesComponent(targetEntityId);
+            DispellableComponent dispellableComponent = new DispellableComponent(entityId, new List<Faction>(new [] { factionComponent.faction }));
 
             affectedEntitiesComponent.entities.Add(targetEntityId);
             affectedBySpellEntitiesComponent.spellEntities.Add(entityId);
@@ -778,6 +781,7 @@ namespace Loderpit
             EntityManager.addComponent(entityId, damageOverTimeComponent);
             EntityManager.addComponent(entityId, timeToLiveComponent);
             EntityManager.addComponent(entityId, affectedEntitiesComponent);
+            EntityManager.addComponent(entityId, dispellableComponent);
 
             return entityId;
         }

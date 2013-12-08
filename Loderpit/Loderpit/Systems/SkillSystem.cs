@@ -6,6 +6,7 @@ using FarseerPhysics.Dynamics.Contacts;
 using FarseerPhysics.Factories;
 using FarseerPhysics.Common;
 using Loderpit.Components;
+using Loderpit.Components.SpellEffects;
 using Loderpit.Managers;
 using Loderpit.Skills;
 using Loderpit.Formations;
@@ -814,6 +815,41 @@ namespace Loderpit.Systems
             performingSkillsComponent.executingSkills.Add(executeSkill);
         }
 
+        // Perform dispel skill
+        public void performDispelSkill(int entityId, DispelSkill skill, int targetEntityId)
+        {
+            PerformingSkillsComponent performingSkillsComponent = EntityManager.getPerformingSkillsComponent(entityId);
+            CharacterComponent characterComponent = EntityManager.getCharacterComponent(entityId);
+            bool inRangeAtleastOnce = false;
+            ExecuteDispelSkill executeSkill = new ExecuteDispelSkill(
+                skill,
+                targetEntityId,
+                () =>
+                {
+                    if (inRangeAtleastOnce)
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        PositionComponent callbackPositionComponent = EntityManager.getPositionComponent(entityId);
+                        PositionTargetComponent positionTargetComponent = EntityManager.getPositionTargetComponent(entityId);
+                        float distance = Math.Abs(positionTargetComponent.position - callbackPositionComponent.position.X);
+                        bool inRange = distance <= positionTargetComponent.tolerance + SKILL_RANGE_TOLERANCE;
+
+                        if (inRange)
+                        {
+                            inRangeAtleastOnce = true;
+                        }
+
+                        return inRange;
+                    }
+                });
+
+            EntityManager.addComponent(entityId, new PositionTargetComponent(entityId, characterComponent.body, skill.range));
+            performingSkillsComponent.executingSkills.Add(executeSkill);
+        }
+
         #endregion
 
         #region Cooldown methods
@@ -1083,6 +1119,29 @@ namespace Loderpit.Systems
             removeExecutedSkill(entityId, executeSkill);
         }
 
+        // Execute dispel skill
+        private void executeDispel(int entityId, ExecuteDispelSkill executeSkill)
+        {
+            AffectedBySpellEntitiesComponent affectedBySpellEntities = EntityManager.getAffectedBySpellEntitiesComponent(executeSkill.targetId);
+
+            foreach (int spellId in affectedBySpellEntities.spellEntities)
+            {
+                DispellableComponent dispellableComponent = EntityManager.getDispellableComponent(spellId);
+
+                // Skip if no dispellable component
+                if (dispellableComponent == null)
+                {
+                    continue;
+                }
+
+                EntityManager.destroyEntity(spellId);
+            }
+
+            EntityManager.removeComponent(entityId, ComponentType.PositionTarget);
+            resetCooldown(entityId, SkillType.Dispel);
+            removeExecutedSkill(entityId, executeSkill);
+        }
+
         #endregion
 
         // Remove executed action from a PerformSkillsComponent
@@ -1146,6 +1205,9 @@ namespace Loderpit.Systems
                                 break;
                             case SkillType.RainOfFire:
                                 executeRainOfFire(entityId, executeSkill as ExecuteRainOfFireSkill);
+                                break;
+                            case SkillType.Dispel:
+                                executeDispel(entityId, executeSkill as ExecuteDispelSkill);
                                 break;
 
                             // Healer

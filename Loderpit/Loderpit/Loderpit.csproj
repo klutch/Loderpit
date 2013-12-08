@@ -106,6 +106,7 @@
     <Compile Include="Components\PhysicsComponent.cs" />
     <Compile Include="Components\PositionComponent.cs" />
     <Compile Include="Components\PositionTargetComponent.cs" />
+    <Compile Include="Components\SpellEffects\DispellableComponent.cs" />
     <Compile Include="Components\TimedExplosionComponent.cs" />
     <Compile Include="Components\ReceiveActivateObstacleFallComponent.cs" />
     <Compile Include="Components\RenderHealthComponent.cs" />
@@ -161,6 +162,7 @@
     <Compile Include="Skills\BloodletterSkill.cs" />
     <Compile Include="Skills\BuildBridgeSkill.cs" />
     <Compile Include="Skills\DeadeyeSkill.cs" />
+    <Compile Include="Skills\DispelSkill.cs" />
     <Compile Include="Skills\FatalitySkill.cs" />
     <Compile Include="Skills\FireballSkill.cs" />
     <Compile Include="Skills\FlameAuraSkill.cs" />
@@ -199,6 +201,9 @@
     <Compile Include="Systems\TeamSystem.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="resources\ui\action_icons\dispel.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="resources\ui\action_icons\rain_of_fire.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
