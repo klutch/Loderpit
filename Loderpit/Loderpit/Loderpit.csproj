@@ -163,6 +163,7 @@
     <Compile Include="Skills\DeadeyeSkill.cs" />
     <Compile Include="Skills\FatalitySkill.cs" />
     <Compile Include="Skills\FireballSkill.cs" />
+    <Compile Include="Skills\FlameAuraSkill.cs" />
     <Compile Include="Skills\HealingBlastSkill.cs" />
     <Compile Include="Skills\HealSkill.cs" />
     <Compile Include="Skills\IgniteSkill.cs" />

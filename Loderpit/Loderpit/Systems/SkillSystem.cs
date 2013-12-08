@@ -81,6 +81,9 @@ namespace Loderpit.Systems
                         case SkillType.Ignite:
                             initializeIgniteSkill(entityId, skill as IgniteSkill);
                             break;
+                        case SkillType.FlameAura:
+                            initializeFlameAuraSkill(entityId, skill as FlameAuraSkill);
+                            break;
                     }
                 }
             }
@@ -319,6 +322,14 @@ namespace Loderpit.Systems
             };
 
             EntityFactory.createProcSpell(entityId, onHitOther);
+        }
+
+        // Initialize flame aura skill
+        private void initializeFlameAuraSkill(int entityId, FlameAuraSkill flameAuraSkill)
+        {
+            FactionComponent factionComponent = EntityManager.getFactionComponent(entityId);
+
+            EntityFactory.createFlameAuraSpell(entityId, flameAuraSkill.range, flameAuraSkill.chanceToProc, flameAuraSkill.damageDie, flameAuraSkill.tickDelay, flameAuraSkill.tickCount, new List<Faction>(new [] { factionComponent.faction }));
         }
 
         #endregion

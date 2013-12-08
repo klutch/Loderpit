@@ -83,6 +83,7 @@ namespace Loderpit
                     skills.Add(new RangedAttackSkill(entityId, 1, "wand_icon"));
                     skills.Add(new IgniteSkill(entityId, 1));
                     skills.Add(new FireballSkill(entityId, 1));
+                    skills.Add(new FlameAuraSkill(entityId, 1));
                     break;
 
                 case CharacterClass.Engineer:
@@ -872,6 +873,42 @@ namespace Loderpit
             EntityManager.addComponent(entityId, timeToLiveComponent);
             EntityManager.addComponent(entityId, affectedEntitiesComponent);
             EntityManager.addComponent(entityId, statModifierComponent);
+
+            return entityId;
+        }
+
+        // Create flame aura skill
+        public static int createFlameAuraSpell(int targetId, float radius, string chanceToProc, string damageDie, int tickDelay, int tickCount, List<Faction> factionsToAffect)
+        {
+            int entityId = EntityManager.createEntity();
+            PositionComponent positionComponent = EntityManager.getPositionComponent(targetId);
+            TrackEntityPositionComponent trackEntityPositionComponent = new TrackEntityPositionComponent(entityId, targetId);
+            AffectedEntitiesComponent affectedEntitiesComponent = new AffectedEntitiesComponent(entityId);
+            AreaOfEffectComponent areaOfEffectComponent;
+            Body sensor = BodyFactory.CreateCircle(SystemManager.physicsSystem.world, radius, 1f, positionComponent.position);
+            Action<Skill, int, int> onHitOther;
+
+            sensor.UserData = entityId;
+            sensor.BodyType = BodyType.Static;
+            sensor.CollidesWith = (ushort)CollisionCategory.None;
+            areaOfEffectComponent = new AreaOfEffectComponent(entityId, sensor);
+
+            affectedEntitiesComponent.factionsToAffect = factionsToAffect;
+
+            onHitOther = (skill, attackerId, defenderId) =>
+                {
+                    if (Roller.roll(chanceToProc) == 1)
+                    {
+                        createDoTSpell(defenderId, damageDie, tickDelay, tickCount);
+                    }
+                };
+
+            EntityManager.addComponent(entityId, trackEntityPositionComponent);
+            EntityManager.addComponent(entityId, affectedEntitiesComponent);
+            EntityManager.addComponent(entityId, areaOfEffectComponent);
+            EntityManager.addComponent(entityId, new ProcComponent(entityId, onHitOther, null));
+            EntityManager.addComponent(entityId, new IgnoreBridgeRaycastComponent(entityId));
+            EntityManager.addComponent(entityId, new IgnoreRopeRaycastComponent(entityId));
 
             return entityId;
         }

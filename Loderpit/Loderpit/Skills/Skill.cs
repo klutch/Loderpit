@@ -33,6 +33,7 @@ namespace Loderpit.Skills
         // Mage
         Ignite,
         Fireball,
+        FlameAura,
 
         // Healer
         Heal,
