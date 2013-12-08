@@ -14,11 +14,11 @@ namespace Loderpit.Components.SpellEffects
         public List<int> entities { get { return _entities; } }
         public List<Faction> factionsToAffect { get { return _factionsToAffect; } set { _factionsToAffect = value; } }
 
-        public AffectedEntitiesComponent(int entityId)
+        public AffectedEntitiesComponent(int entityId, List<Faction> factionsToAffect = null)
         {
             _entityId = entityId;
             _entities = new List<int>();
-            _factionsToAffect = new List<Faction>();
+            _factionsToAffect = factionsToAffect ?? new List<Faction>();
         }
     }
 }

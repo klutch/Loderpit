@@ -790,6 +790,30 @@ namespace Loderpit.Systems
             performingSkillsComponent.executingSkills.Add(executeSkill);
         }
 
+        // Perform rain of fire skill
+        // This skill works a little different than the others... I want it to act like a 'channelled' spell, so
+        // It's performed right away, and then execute cleans everything up
+        public void performRainOfFireSkill(int entityId, RainOfFireSkill skill, Vector2 position)
+        {
+            PositionComponent positionComponent = EntityManager.getPositionComponent(entityId);
+            PerformingSkillsComponent performingSkillsComponent = EntityManager.getPerformingSkillsComponent(entityId);
+            FactionComponent factionComponent = EntityManager.getFactionComponent(entityId);
+            ExecuteRainOfFireSkill executeSkill = new ExecuteRainOfFireSkill(
+                skill,
+                () =>
+                {
+                    PositionComponent checkPositionComponent = EntityManager.getPositionComponent(entityId);
+                    PositionTargetComponent positionTargetComponent = EntityManager.getPositionTargetComponent(entityId);
+                    float distance = Math.Abs(positionTargetComponent.position - checkPositionComponent.position.X);
+
+                    return distance <= positionTargetComponent.tolerance + SKILL_RANGE_TOLERANCE;
+                });
+
+            EntityManager.addComponent(entityId, new PositionTargetComponent(entityId, positionComponent.position.X, 1f));
+            EntityFactory.createRainOfFireSpell(position, skill.width, skill.damageDie, skill.tickDelay, skill.tickCount, new List<Faction>(new [] { factionComponent.hostileFaction }));
+            performingSkillsComponent.executingSkills.Add(executeSkill);
+        }
+
         #endregion
 
         #region Cooldown methods
@@ -1050,6 +1074,15 @@ namespace Loderpit.Systems
             removeExecutedSkill(entityId, executeSkill);
         }
 
+        // Execute rain of fire skill
+        // Since this is a 'chanelled' spell, the spell actually starts during the 'perform' stage, and is cleaned up here when done
+        private void executeRainOfFire(int entityId, ExecuteRainOfFireSkill executeSkill)
+        {
+            EntityManager.removeComponent(entityId, ComponentType.PositionTarget);
+            resetCooldown(entityId, SkillType.RainOfFire);
+            removeExecutedSkill(entityId, executeSkill);
+        }
+
         #endregion
 
         // Remove executed action from a PerformSkillsComponent
@@ -1110,6 +1143,9 @@ namespace Loderpit.Systems
                             // Mage
                             case SkillType.Fireball:
                                 executeFireball(entityId, executeSkill as ExecuteFireballSkill);
+                                break;
+                            case SkillType.RainOfFire:
+                                executeRainOfFire(entityId, executeSkill as ExecuteRainOfFireSkill);
                                 break;
 
                             // Healer

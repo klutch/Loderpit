@@ -173,6 +173,9 @@ namespace Loderpit.Systems
                             case SkillType.Fireball:
                                 handleInitializeFireball(selectedEntityId);
                                 break;
+                            case SkillType.RainOfFire:
+                                handleInitializeRainOfFire(selectedEntityId);
+                                break;
 
                             // Healer
                             case SkillType.HealingBlast:
@@ -324,6 +327,16 @@ namespace Loderpit.Systems
                     SystemManager.skillSystem.performInfusionSkill(entityId, _initializingSkill as InfusionSkill, targetEntityId);
                     _initializingSkill = null;
                 }
+            }
+        }
+
+        // Handle initialize rain of fire skill
+        private void handleInitializeRainOfFire(int entityId)
+        {
+            if (Game.newMouseState.isLeftButtonPressed && !Game.oldMouseState.isLeftButtonPressed)
+            {
+                SystemManager.skillSystem.performRainOfFireSkill(entityId, _initializingSkill as RainOfFireSkill, Game.worldMouse);
+                _initializingSkill = null;
             }
         }
 

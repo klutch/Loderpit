@@ -84,6 +84,7 @@ namespace Loderpit
                     skills.Add(new IgniteSkill(entityId, 1));
                     skills.Add(new FireballSkill(entityId, 1));
                     skills.Add(new FlameAuraSkill(entityId, 1));
+                    skills.Add(new RainOfFireSkill(entityId, 1));
                     break;
 
                 case CharacterClass.Engineer:
@@ -740,7 +741,7 @@ namespace Loderpit
         {
             int entityId = EntityManager.createEntity();
             TrackEntityPositionComponent trackEntityPositionComponent = new TrackEntityPositionComponent(entityId, targetEntityId);
-            AffectedEntitiesComponent affectedEntitiesComponent = new AffectedEntitiesComponent(entityId);
+            AffectedEntitiesComponent affectedEntitiesComponent = new AffectedEntitiesComponent(entityId, factionsToAffect);
             StatModifierComponent statModifierComponent = new StatModifierComponent(entityId);
             AreaOfEffectComponent areaOfEffectComponent;
             Body sensor = BodyFactory.CreateCircle(SystemManager.physicsSystem.world, radius, 1f);
@@ -751,8 +752,6 @@ namespace Loderpit
             areaOfEffectComponent = new AreaOfEffectComponent(entityId, sensor);
 
             statModifierComponent.attackDieMod = attackDieMod;
-
-            affectedEntitiesComponent.factionsToAffect = factionsToAffect;
 
             EntityManager.addComponent(entityId, trackEntityPositionComponent);
             EntityManager.addComponent(entityId, affectedEntitiesComponent);
@@ -788,7 +787,7 @@ namespace Loderpit
         {
             int entityId = EntityManager.createEntity();
             TrackEntityPositionComponent trackEntityPositionComponent = new TrackEntityPositionComponent(entityId, targetEntityId);
-            AffectedEntitiesComponent affectedEntitiesComponent = new AffectedEntitiesComponent(entityId);
+            AffectedEntitiesComponent affectedEntitiesComponent = new AffectedEntitiesComponent(entityId, factionsToAffect);
             DamageShieldComponent damageShieldComponent = new DamageShieldComponent(entityId, damageDie);
             AreaOfEffectComponent areaOfEffectComponent;
             Body sensor = BodyFactory.CreateCircle(SystemManager.physicsSystem.world, radius, 1f);
@@ -797,8 +796,6 @@ namespace Loderpit
             sensor.CollidesWith = (ushort)CollisionCategory.None;
             sensor.BodyType = BodyType.Static;
             areaOfEffectComponent = new AreaOfEffectComponent(entityId, sensor);
-
-            affectedEntitiesComponent.factionsToAffect = factionsToAffect;
 
             EntityManager.addComponent(entityId, trackEntityPositionComponent);
             EntityManager.addComponent(entityId, affectedEntitiesComponent);
@@ -815,7 +812,7 @@ namespace Loderpit
         {
             int entityId = EntityManager.createEntity();
             TrackEntityPositionComponent trackEntityPositionComponent = new TrackEntityPositionComponent(entityId, targetEntityId);
-            AffectedEntitiesComponent affectedEntitiesComponent = new AffectedEntitiesComponent(entityId);
+            AffectedEntitiesComponent affectedEntitiesComponent = new AffectedEntitiesComponent(entityId, factionsToAffect);
             DamageOverTimeComponent damageOverTimeComponent = new DamageOverTimeComponent(entityId, damageDie, 60);
             AreaOfEffectComponent areaOfEffectComponent;
             Body sensor = BodyFactory.CreateCircle(SystemManager.physicsSystem.world, radius, 1f);
@@ -824,8 +821,6 @@ namespace Loderpit
             sensor.CollidesWith = (ushort)CollisionCategory.None;
             sensor.BodyType = BodyType.Static;
             areaOfEffectComponent = new AreaOfEffectComponent(entityId, sensor);
-
-            affectedEntitiesComponent.factionsToAffect = factionsToAffect;
 
             EntityManager.addComponent(entityId, trackEntityPositionComponent);
             EntityManager.addComponent(entityId, affectedEntitiesComponent);
@@ -877,13 +872,13 @@ namespace Loderpit
             return entityId;
         }
 
-        // Create flame aura skill
+        // Create flame aura spell
         public static int createFlameAuraSpell(int targetId, float radius, string chanceToProc, string damageDie, int tickDelay, int tickCount, List<Faction> factionsToAffect)
         {
             int entityId = EntityManager.createEntity();
             PositionComponent positionComponent = EntityManager.getPositionComponent(targetId);
             TrackEntityPositionComponent trackEntityPositionComponent = new TrackEntityPositionComponent(entityId, targetId);
-            AffectedEntitiesComponent affectedEntitiesComponent = new AffectedEntitiesComponent(entityId);
+            AffectedEntitiesComponent affectedEntitiesComponent = new AffectedEntitiesComponent(entityId, factionsToAffect);
             AreaOfEffectComponent areaOfEffectComponent;
             Body sensor = BodyFactory.CreateCircle(SystemManager.physicsSystem.world, radius, 1f, positionComponent.position);
             Action<Skill, int, int> onHitOther;
@@ -892,8 +887,6 @@ namespace Loderpit
             sensor.BodyType = BodyType.Static;
             sensor.CollidesWith = (ushort)CollisionCategory.None;
             areaOfEffectComponent = new AreaOfEffectComponent(entityId, sensor);
-
-            affectedEntitiesComponent.factionsToAffect = factionsToAffect;
 
             onHitOther = (skill, attackerId, defenderId) =>
                 {
@@ -907,6 +900,30 @@ namespace Loderpit
             EntityManager.addComponent(entityId, affectedEntitiesComponent);
             EntityManager.addComponent(entityId, areaOfEffectComponent);
             EntityManager.addComponent(entityId, new ProcComponent(entityId, onHitOther, null));
+            EntityManager.addComponent(entityId, new IgnoreBridgeRaycastComponent(entityId));
+            EntityManager.addComponent(entityId, new IgnoreRopeRaycastComponent(entityId));
+
+            return entityId;
+        }
+
+        // Create rain of fire spell
+        public static int createRainOfFireSpell(Vector2 position, float width, string damageDie, int tickDelay, int tickCount, List<Faction> factionsToAffect)
+        {
+            int entityId = EntityManager.createEntity();
+            DamageOverTimeComponent damageOverTimeComponent = new DamageOverTimeComponent(entityId, damageDie, tickDelay);
+            TimeToLiveComponent timeToLiveComponent = new TimeToLiveComponent(entityId, tickDelay * tickCount);
+            AffectedEntitiesComponent affectedEntitiesComponent = new AffectedEntitiesComponent(entityId, factionsToAffect);
+            Body sensor = BodyFactory.CreateRectangle(SystemManager.physicsSystem.world, width, 100f, 1f, position);
+            AreaOfEffectComponent areaOfEffectComponent = new AreaOfEffectComponent(entityId, sensor);
+
+            sensor.UserData = entityId;
+            sensor.BodyType = BodyType.Static;
+            sensor.CollidesWith = (ushort)CollisionCategory.None;
+
+            EntityManager.addComponent(entityId, damageOverTimeComponent);
+            EntityManager.addComponent(entityId, timeToLiveComponent);
+            EntityManager.addComponent(entityId, affectedEntitiesComponent);
+            EntityManager.addComponent(entityId, areaOfEffectComponent);
             EntityManager.addComponent(entityId, new IgnoreBridgeRaycastComponent(entityId));
             EntityManager.addComponent(entityId, new IgnoreRopeRaycastComponent(entityId));
 
