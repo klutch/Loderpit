@@ -10,6 +10,7 @@ using SFML.Window;
 using Loderpit.Formations;
 using Loderpit.Managers;
 using Loderpit.Components;
+using Loderpit.Components.SpellEffects;
 using Loderpit.Skills;
 
 namespace Loderpit.Systems
@@ -24,13 +25,18 @@ namespace Loderpit.Systems
         // General skill variables
         private Skill _initializingSkill;
 
-        // CreateRope skill variables
+        // ThrowRope skill variables
         private Vector2 _createRopeAnchor;
 
-        // CreateBridge skill variables
+        // BuildBridge skill variables
         private Vector2 _createBridgeAnchorA;
         private Vector2 _createBridgeAnchorB;
         private bool _firstBridgeAnchorSet = false;
+
+        // ArrowTime skill variables
+        private bool _initializingArrowTime = false;
+        private List<int> _arrowTimeTargets;
+        private int _slowMotionEntityId;
 
         public SystemType systemType { get { return SystemType.Team; } }
         public int selectedTeammate { get { return _selectedTeammate; } }
@@ -42,6 +48,7 @@ namespace Loderpit.Systems
 
         public TeamSystem()
         {
+            _arrowTimeTargets = new List<int>();
         }
 
         // Select next teammate
@@ -80,13 +87,6 @@ namespace Loderpit.Systems
                 int minNum = (int)Key.Num1;
                 int maxNum = (int)Key.Num8;
                 int count = 0;
-
-                // TEMPORARY
-                if (Game.newKeyState.isPressed(Key.F5) && Game.oldKeyState.isReleased(Key.F5))
-                {
-                    int id = SystemManager.teamSystem.getTeammateEntityId(_selectedTeammate);
-                    EntityManager.addComponent(id, new Components.SpellEffects.SlowMotionComponent(id));
-                }
 
                 // Read key states
                 if (Game.newKeyState.isPressed(Key.A) && Game.oldKeyState.isReleased(Key.A))
@@ -166,6 +166,9 @@ namespace Loderpit.Systems
                             // Archer
                             case SkillType.PowerShot:
                                 handleInitializePowerShot(selectedEntityId);
+                                break;
+                            case SkillType.ArrowTime:
+                                handleInitializeArrowTime(selectedEntityId);
                                 break;
 
                             // Fighter
@@ -362,6 +365,45 @@ namespace Loderpit.Systems
                 {
                     SystemManager.skillSystem.performDispelSkill(entityId, _initializingSkill as DispelSkill, targetEntityId);
                     _initializingSkill = null;
+                }
+            }
+        }
+
+        // Handle initialize arrow time skill
+        private void handleInitializeArrowTime(int entityId)
+        {
+            ArrowTimeSkill arrowTimeSkill = _initializingSkill as ArrowTimeSkill;
+
+            // Handle setup
+            if (!_initializingArrowTime)
+            {
+                _slowMotionEntityId = EntityFactory.createSlowMotionSpell(arrowTimeSkill.timeToLive);
+                _initializingArrowTime = true;
+            }
+
+            // Check for end of setup
+            if (!EntityManager.doesEntityExist(_slowMotionEntityId))
+            {
+                if (_arrowTimeTargets.Count > 0)
+                {
+                    SystemManager.skillSystem.performArrowTimeSkill(entityId, arrowTimeSkill, new List<int>(_arrowTimeTargets));
+                }
+
+                _slowMotionEntityId = -1;
+                _initializingArrowTime = false;
+                _initializingSkill = null;
+                _arrowTimeTargets.Clear();
+                return;
+            }
+
+            // Accumulate targets
+            if (Game.newMouseState.isLeftButtonPressed && !Game.oldMouseState.isLeftButtonPressed)
+            {
+                int targetEntityId = Helpers.findEntityWithinRange(Game.worldMouse, 1f, Faction.Enemy, entityId);
+
+                if (targetEntityId != -1 && !_arrowTimeTargets.Contains(targetEntityId))
+                {
+                    _arrowTimeTargets.Add(targetEntityId);
                 }
             }
         }

@@ -176,6 +176,11 @@ namespace Loderpit.Systems
                 _actionLabel.DisplayedString = "Cast Dispel";
                 drawReticle(Game.sfmlWorldMouse, Color.Green);
             }
+            else if (teamSystem.initializingSkill.type == SkillType.ArrowTime)
+            {
+                _actionLabel.DisplayedString = "Arrow Time";
+                drawReticle(Game.sfmlWorldMouse, Color.Red);
+            }
         }
 
         public void update()

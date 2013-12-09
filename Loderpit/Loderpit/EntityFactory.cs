@@ -77,6 +77,7 @@ namespace Loderpit
                     skills.Add(new ShieldOfThornsSkill(entityId, 1));
                     skills.Add(new PowerShotSkill(entityId, 1));
                     skills.Add(new DeadeyeSkill(entityId, 1));
+                    skills.Add(new ArrowTimeSkill(entityId, 1));
                     break;
 
                 case CharacterClass.Mage:
@@ -930,6 +931,17 @@ namespace Loderpit
             EntityManager.addComponent(entityId, areaOfEffectComponent);
             EntityManager.addComponent(entityId, new IgnoreBridgeRaycastComponent(entityId));
             EntityManager.addComponent(entityId, new IgnoreRopeRaycastComponent(entityId));
+
+            return entityId;
+        }
+
+        // Create slow motion spell
+        public static int createSlowMotionSpell(int timeToLive)
+        {
+            int entityId = EntityManager.createEntity();
+
+            EntityManager.addComponent(entityId, new TimeToLiveComponent(entityId, timeToLive));
+            EntityManager.addComponent(entityId, new SlowMotionComponent(entityId));
 
             return entityId;
         }

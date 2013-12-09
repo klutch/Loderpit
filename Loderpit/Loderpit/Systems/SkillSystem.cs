@@ -850,6 +850,18 @@ namespace Loderpit.Systems
             performingSkillsComponent.executingSkills.Add(executeSkill);
         }
 
+        // Perform arrow time skill
+        public void performArrowTimeSkill(int entityId, ArrowTimeSkill arrowTimeSkill, List<int> targetIds)
+        {
+            foreach (int targetId in targetIds)
+            {
+                if (EntityManager.doesEntityExist(targetId))
+                {
+                    SystemManager.combatSystem.attack(arrowTimeSkill, entityId, targetId, 0, arrowTimeSkill.attackDie, arrowTimeSkill.damageDie);
+                }
+            }
+        }
+
         #endregion
 
         #region Cooldown methods
