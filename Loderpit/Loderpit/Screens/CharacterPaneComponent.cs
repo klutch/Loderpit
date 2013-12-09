@@ -163,6 +163,9 @@ namespace Loderpit.Screens
                         case SkillType.ArrowTime:
                             drawIcon("arrow_time_icon");
                             break;
+                        case SkillType.Volley:
+                            drawIcon("volley_icon");
+                            break;
 
                         // Fighter
                         case SkillType.PowerSwing:

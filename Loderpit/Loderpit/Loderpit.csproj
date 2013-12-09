@@ -186,6 +186,7 @@
     <Compile Include="Skills\Skill.cs" />
     <Compile Include="Skills\SpikedShieldSkill.cs" />
     <Compile Include="Skills\ThrowRopeSkill.cs" />
+    <Compile Include="Skills\VolleySkill.cs" />
     <Compile Include="SpecialFixtureTypes.cs" />
     <Compile Include="Systems\CameraSystem.cs" />
     <Compile Include="Systems\CharacterSystem.cs" />
@@ -205,6 +206,9 @@
     <Compile Include="Systems\TeamSystem.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="resources\ui\action_icons\volley.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="resources\ui\action_icons\arrow_time.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

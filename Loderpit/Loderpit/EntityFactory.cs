@@ -79,6 +79,7 @@ namespace Loderpit
                     skills.Add(new PowerShotSkill(entityId, 1));
                     skills.Add(new DeadeyeSkill(entityId, 1));
                     skills.Add(new ArrowTimeSkill(entityId, 1));
+                    skills.Add(new VolleySkill(entityId, 1));
                     break;
 
                 case CharacterClass.Mage:
@@ -962,6 +963,30 @@ namespace Loderpit
             EntityManager.addComponent(entityId, new AreaOfEffectComponent(entityId, sensor));
             EntityManager.addComponent(entityId, new AffectedEntitiesComponent(entityId, factionsToAffect));
             EntityManager.addComponent(entityId, new TrackEntityPositionComponent(entityId, targetId));
+
+            return entityId;
+        }
+
+        // Create volley spell
+        public static int createVolleySpell(Vector2 position, float width, string damageDie, int tickDelay, int tickCount, List<Faction> factionsToAffect)
+        {
+            int entityId = EntityManager.createEntity();
+            DamageOverTimeComponent damageOverTimeComponent = new DamageOverTimeComponent(entityId, damageDie, tickDelay);
+            TimeToLiveComponent timeToLiveComponent = new TimeToLiveComponent(entityId, tickDelay * tickCount);
+            AffectedEntitiesComponent affectedEntitiesComponent = new AffectedEntitiesComponent(entityId, factionsToAffect);
+            Body sensor = BodyFactory.CreateRectangle(SystemManager.physicsSystem.world, width, 100f, 1f, position);
+            AreaOfEffectComponent areaOfEffectComponent = new AreaOfEffectComponent(entityId, sensor);
+
+            sensor.UserData = entityId;
+            sensor.BodyType = BodyType.Static;
+            sensor.CollidesWith = (ushort)CollisionCategory.None;
+
+            EntityManager.addComponent(entityId, damageOverTimeComponent);
+            EntityManager.addComponent(entityId, timeToLiveComponent);
+            EntityManager.addComponent(entityId, affectedEntitiesComponent);
+            EntityManager.addComponent(entityId, areaOfEffectComponent);
+            EntityManager.addComponent(entityId, new IgnoreBridgeRaycastComponent(entityId));
+            EntityManager.addComponent(entityId, new IgnoreRopeRaycastComponent(entityId));
 
             return entityId;
         }

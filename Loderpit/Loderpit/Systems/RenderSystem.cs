@@ -181,6 +181,11 @@ namespace Loderpit.Systems
                 _actionLabel.DisplayedString = "Arrow Time";
                 drawReticle(Game.sfmlWorldMouse, Color.Red);
             }
+            else if (teamSystem.initializingSkill.type == SkillType.Volley)
+            {
+                _actionLabel.DisplayedString = "Volley";
+                drawReticle(Game.sfmlWorldMouse, Color.Red);
+            }
         }
 
         public void update()

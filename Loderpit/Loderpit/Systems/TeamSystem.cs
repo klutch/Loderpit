@@ -170,6 +170,9 @@ namespace Loderpit.Systems
                             case SkillType.ArrowTime:
                                 handleInitializeArrowTime(selectedEntityId);
                                 break;
+                            case SkillType.Volley:
+                                handleInitializeVolley(selectedEntityId);
+                                break;
 
                             // Fighter
                             case SkillType.PowerSwing:
@@ -405,6 +408,16 @@ namespace Loderpit.Systems
                 {
                     _arrowTimeTargets.Add(targetEntityId);
                 }
+            }
+        }
+
+        // Handle initialize volley skill
+        private void handleInitializeVolley(int entityId)
+        {
+            if (Game.newMouseState.isLeftButtonPressed && !Game.oldMouseState.isLeftButtonPressed)
+            {
+                SystemManager.skillSystem.performVolleySkill(entityId, _initializingSkill as VolleySkill, Game.worldMouse);
+                _initializingSkill = null;
             }
         }
 

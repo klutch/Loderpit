@@ -821,7 +821,7 @@ namespace Loderpit.Systems
         }
 
         // Perform rain of fire skill
-        // This skill works a little different than the others... I want it to act like a 'channelled' spell, so
+        // Note: This skill works a little different than the others... I want it to act like a 'channelled' spell, so
         // It's performed right away, and then execute cleans everything up
         public void performRainOfFireSkill(int entityId, RainOfFireSkill skill, Vector2 position)
         {
@@ -889,6 +889,30 @@ namespace Loderpit.Systems
                     SystemManager.combatSystem.attack(arrowTimeSkill, entityId, targetId, 0, arrowTimeSkill.attackDie, arrowTimeSkill.damageDie);
                 }
             }
+            resetCooldown(entityId, SkillType.ArrowTime);
+        }
+
+        // Perform volley skill
+        // Note: This is another channelled spell. See Rain of Fire's comment above.
+        public void performVolleySkill(int entityId, VolleySkill skill, Vector2 position)
+        {
+            PositionComponent positionComponent = EntityManager.getPositionComponent(entityId);
+            PerformingSkillsComponent performingSkillsComponent = EntityManager.getPerformingSkillsComponent(entityId);
+            FactionComponent factionComponent = EntityManager.getFactionComponent(entityId);
+            ExecuteVolleySkill executeSkill = new ExecuteVolleySkill(
+                skill,
+                () =>
+                {
+                    PositionComponent checkPositionComponent = EntityManager.getPositionComponent(entityId);
+                    PositionTargetComponent positionTargetComponent = EntityManager.getPositionTargetComponent(entityId);
+                    float distance = Math.Abs(positionTargetComponent.position - checkPositionComponent.position.X);
+
+                    return distance <= positionTargetComponent.tolerance + SKILL_RANGE_TOLERANCE;
+                });
+
+            EntityManager.addComponent(entityId, new PositionTargetComponent(entityId, positionComponent.position.X, 1f));
+            EntityFactory.createVolleySpell(position, skill.width, skill.damageDie, skill.tickDelay, skill.tickCount, new List<Faction>(new[] { factionComponent.hostileFaction }));
+            performingSkillsComponent.executingSkills.Add(executeSkill);
         }
 
         #endregion
@@ -1158,11 +1182,20 @@ namespace Loderpit.Systems
         }
 
         // Execute rain of fire skill
-        // Since this is a 'chanelled' spell, the spell actually starts during the 'perform' stage, and is cleaned up here when done
+        // Note: Since this is a 'channelled' spell, the spell actually starts during the 'perform' stage, and is cleaned up here when done
         private void executeRainOfFire(int entityId, ExecuteRainOfFireSkill executeSkill)
         {
             EntityManager.removeComponent(entityId, ComponentType.PositionTarget);
             resetCooldown(entityId, SkillType.RainOfFire);
+            removeExecutedSkill(entityId, executeSkill);
+        }
+
+        // Execute volley skill
+        // Note: This is also a channelled spell. See rain of fire's comment above.
+        private void executeVolley(int entityId, ExecuteVolleySkill executeSkill)
+        {
+            EntityManager.removeComponent(entityId, ComponentType.PositionTarget);
+            resetCooldown(entityId, SkillType.Volley);
             removeExecutedSkill(entityId, executeSkill);
         }
 
@@ -1236,6 +1269,9 @@ namespace Loderpit.Systems
                             // Archer
                             case SkillType.PowerShot:
                                 executePowerShot(entityId, executeSkill as ExecutePowerShotSkill);
+                                break;
+                            case SkillType.Volley:
+                                executeVolley(entityId, executeSkill as ExecuteVolleySkill);
                                 break;
 
                             // Fighter

@@ -19,6 +19,7 @@ namespace Loderpit.Skills
         PowerShot,
         Deadeye,
         ArrowTime,
+        Volley,
 
         // Fighter
         Kick,
