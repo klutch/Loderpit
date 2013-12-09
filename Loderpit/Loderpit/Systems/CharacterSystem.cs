@@ -77,9 +77,10 @@ namespace Loderpit.Systems
             int newIndex;
             float fraction;
             float segmentLength = 1.2f;
+            float progress = SystemManager.physicsSystem.isSlowMotion ? 0.025f : 0.05f;
 
             SystemManager.physicsSystem.world.RemoveJoint(ropeGrabComponent.joint);
-            ropeGrabComponent.progress += 0.05f;
+            ropeGrabComponent.progress += progress;
             newIndex = (int)Math.Floor(ropeGrabComponent.progress);
 
             if (newIndex < 0 || newIndex > ropeGrabComponent.ropeComponent.bodies.Count - 1)
