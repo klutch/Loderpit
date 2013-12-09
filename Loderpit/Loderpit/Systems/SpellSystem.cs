@@ -148,6 +148,12 @@ namespace Loderpit.Systems
         // Handle damage over time
         private void handleDamageOverTime(List<int> entities)
         {
+            // Prevent damage over time from being applied too quickly
+            if (SystemManager.physicsSystem.isSlowMotion && !SystemManager.physicsSystem.isReadyForSlowMotionTick)
+            {
+                return;
+            }
+
             foreach (int entityId in entities)
             {
                 DamageOverTimeComponent damageOverTimeComponent = EntityManager.getDamageOverTimeComponent(entityId);
