@@ -99,7 +99,7 @@ namespace Loderpit.Systems
         public void advanceGroupFormations(List<int> groupEntities)
         {
             // Prevent from advancing too much if the physics engine is running at slow motion
-            if (SystemManager.physicsSystem.isSlowMotion && SystemManager.physicsSystem.slowMotionDelay != 0)
+            if (SystemManager.physicsSystem.isSlowMotion && !SystemManager.physicsSystem.isReadyForSlowMotionTick)
             {
                 return;
             }

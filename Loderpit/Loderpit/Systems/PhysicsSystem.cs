@@ -18,12 +18,12 @@ namespace Loderpit.Systems
         private const int MAX_DELAY = 1;
 
         private World _world;
-        private int _delay;
+        private int _slowMotionDelay;
         private bool _isSlowMotion;
 
         public World world { get { return _world; } }
         public SystemType systemType { get { return SystemType.Physics; } }
-        public int slowMotionDelay { get { return _delay; } }
+        public bool isReadyForSlowMotionTick { get { return _slowMotionDelay == 0; } }
         public bool isSlowMotion { get { return _isSlowMotion; } }
 
         public PhysicsSystem()
@@ -87,13 +87,13 @@ namespace Loderpit.Systems
         {
             if (_isSlowMotion)
             {
-                if (_delay == 0)
+                if (_slowMotionDelay == 0)
                 {
-                    _delay = MAX_DELAY;
+                    _slowMotionDelay = MAX_DELAY;
                 }
                 else
                 {
-                    _delay--;
+                    _slowMotionDelay--;
                 }
             }
         }

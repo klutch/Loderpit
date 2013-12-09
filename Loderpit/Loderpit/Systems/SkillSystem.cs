@@ -877,6 +877,12 @@ namespace Loderpit.Systems
         // Decrement skill cooldowns
         private void decrementSkillCooldowns(List<int> entities)
         {
+            // Prevent decrementing skill cooldowns too much during slow motion
+            if (SystemManager.physicsSystem.isSlowMotion && !SystemManager.physicsSystem.isReadyForSlowMotionTick)
+            {
+                return;
+            }
+
             foreach (int entityId in entities)
             {
                 StatsComponent statsComponent = EntityManager.getStatsComponent(entityId);
