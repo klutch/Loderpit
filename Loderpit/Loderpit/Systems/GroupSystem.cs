@@ -98,6 +98,12 @@ namespace Loderpit.Systems
         // Moves the formations forward based on the formation's movement speed
         public void advanceGroupFormations(List<int> groupEntities)
         {
+            // Prevent from advancing too much if the physics engine is running at slow motion
+            if (SystemManager.physicsSystem.isSlowMotion && SystemManager.physicsSystem.slowMotionDelay != 0)
+            {
+                return;
+            }
+
             foreach (int entityId in groupEntities)
             {
                 GroupComponent groupComponent = EntityManager.getGroupComponent(entityId);

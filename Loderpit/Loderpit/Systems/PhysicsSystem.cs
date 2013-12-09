@@ -12,11 +12,19 @@ namespace Loderpit.Systems
 {
     public class PhysicsSystem : ISystem
     {
+        public const float SLOW_DT = 1f / 120f;
+        public const float NORMAL_DT = 1f / 60f;
         private const float WALK_STRENGTH = 10f;
+        private const int MAX_DELAY = 1;
+
         private World _world;
+        private int _delay;
+        private bool _isSlowMotion;
 
         public World world { get { return _world; } }
         public SystemType systemType { get { return SystemType.Physics; } }
+        public int slowMotionDelay { get { return _delay; } }
+        public bool isSlowMotion { get { return _isSlowMotion; } }
 
         public PhysicsSystem()
         {
@@ -73,10 +81,33 @@ namespace Loderpit.Systems
                 }
             }
         }
+        
+        // Handle slow motion delay
+        private void handleSlowMotionDelay()
+        {
+            if (_isSlowMotion)
+            {
+                if (_delay == 0)
+                {
+                    _delay = MAX_DELAY;
+                }
+                else
+                {
+                    _delay--;
+                }
+            }
+        }
 
+        // Update
         public void update()
         {
             List<int> characterEntities = EntityManager.getEntitiesPossessing(ComponentType.Character);
+
+            // Determine slow-motion status
+            _isSlowMotion = EntityManager.getEntitiesPossessing(ComponentType.SlowMotion).Count > 0;
+
+            // Handle slow motion delay
+            handleSlowMotionDelay();
 
             // Move characters
             moveCharacters(characterEntities);
@@ -85,7 +116,7 @@ namespace Loderpit.Systems
             correctCharactersFeet(characterEntities);
 
             // Step physics simulation
-            _world.Step(Game.DT);
+            _world.Step(_isSlowMotion ? SLOW_DT : NORMAL_DT);
         }
     }
 }

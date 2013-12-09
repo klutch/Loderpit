@@ -33,7 +33,6 @@ namespace Loderpit
 
     public class Game : IDisposable
     {
-        public const float DT = 1f / 60f;
         private static RenderWindow _window;
         public static bool inFocus = true;
         public static KeyboardState newKeyState;

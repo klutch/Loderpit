@@ -107,6 +107,7 @@
     <Compile Include="Components\PositionComponent.cs" />
     <Compile Include="Components\PositionTargetComponent.cs" />
     <Compile Include="Components\SpellEffects\DispellableComponent.cs" />
+    <Compile Include="Components\SpellEffects\SlowMotionComponent.cs" />
     <Compile Include="Components\TimedExplosionComponent.cs" />
     <Compile Include="Components\ReceiveActivateObstacleFallComponent.cs" />
     <Compile Include="Components\RenderHealthComponent.cs" />

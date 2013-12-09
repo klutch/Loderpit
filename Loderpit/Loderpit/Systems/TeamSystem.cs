@@ -81,6 +81,13 @@ namespace Loderpit.Systems
                 int maxNum = (int)Key.Num8;
                 int count = 0;
 
+                // TEMPORARY
+                if (Game.newKeyState.isPressed(Key.F5) && Game.oldKeyState.isReleased(Key.F5))
+                {
+                    int id = SystemManager.teamSystem.getTeammateEntityId(_selectedTeammate);
+                    EntityManager.addComponent(id, new Components.SpellEffects.SlowMotionComponent(id));
+                }
+
                 // Read key states
                 if (Game.newKeyState.isPressed(Key.A) && Game.oldKeyState.isReleased(Key.A))
                 {

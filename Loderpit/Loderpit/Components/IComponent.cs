@@ -40,7 +40,8 @@ namespace Loderpit.Components
         Proc,
         TimedExplosion,
         Physics,
-        Dispellable
+        Dispellable,
+        SlowMotion
     }
 
     public interface IComponent
