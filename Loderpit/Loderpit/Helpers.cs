@@ -35,6 +35,11 @@ namespace Loderpit
         // Find entities of a certain faction within a certain range
         public static List<int> findEntitiesWithinRange(Vector2 position, float radius, Faction factionToMatch, int entityToSkip = -1)
         {
+            return findEntitiesWithinRange(position, radius, new List<Faction>(new[] { factionToMatch }), entityToSkip);
+        }
+
+        public static List<int> findEntitiesWithinRange(Vector2 position, float radius, List<Faction> factionsToMatch, int entityToSkip = -1)
+        {
             List<int> entitiesWithFaction = EntityManager.getEntitiesPossessing(ComponentType.Faction);
             List<int> results = new List<int>();
 
@@ -43,6 +48,7 @@ namespace Loderpit
                 PositionComponent targetPositionComponent;
                 FactionComponent targetFactionComponent;
                 Vector2 relative;
+                bool foundMatchingFaction = false;
 
                 // Skip entity
                 if (entityToSkip != -1 && entityToSkip == targetEntityId)
@@ -54,8 +60,18 @@ namespace Loderpit
                 targetFactionComponent = EntityManager.getFactionComponent(targetEntityId);
                 relative = targetPositionComponent.position - position;
 
-                // Check faction
-                if (targetFactionComponent.faction != factionToMatch)
+                // Check factions
+                foreach (Faction factionToMatch in factionsToMatch)
+                {
+                    if (targetFactionComponent.faction == factionToMatch)
+                    {
+                        foundMatchingFaction = true;
+                        break;
+                    }
+                }
+
+                // Skip target entity id if no matching factions found
+                if (!foundMatchingFaction)
                 {
                     continue;
                 }
@@ -73,7 +89,12 @@ namespace Loderpit
         // Find entity of a certain faction within a certain range
         public static int findEntityWithinRange(Vector2 position, float radius, Faction factionToMatch, int entityToSkip = -1)
         {
-            List<int> results = findEntitiesWithinRange(position, radius, factionToMatch, entityToSkip);
+            return findEntityWithinRange(position, radius, new List<Faction>(new[] { factionToMatch }), entityToSkip);
+        }
+
+        public static int findEntityWithinRange(Vector2 position, float radius, List<Faction> factionsToMatch, int entityToSkip = -1)
+        {
+            List<int> results = findEntitiesWithinRange(position, radius, factionsToMatch, entityToSkip);
 
             return results.Count > 0 ? results[0] : -1;
         }

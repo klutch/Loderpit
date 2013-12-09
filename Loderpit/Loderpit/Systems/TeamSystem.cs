@@ -399,7 +399,7 @@ namespace Loderpit.Systems
             // Accumulate targets
             if (Game.newMouseState.isLeftButtonPressed && !Game.oldMouseState.isLeftButtonPressed)
             {
-                int targetEntityId = Helpers.findEntityWithinRange(Game.worldMouse, 1f, Faction.Enemy, entityId);
+                int targetEntityId = Helpers.findEntityWithinRange(Game.worldMouse, 1f, new List<Faction>(new [] { Faction.Enemy, Faction.Neutral }), entityId);
 
                 if (targetEntityId != -1 && !_arrowTimeTargets.Contains(targetEntityId))
                 {
