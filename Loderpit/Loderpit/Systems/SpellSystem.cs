@@ -57,6 +57,12 @@ namespace Loderpit.Systems
         // Handle time to live
         private void handleTimeToLive(List<int> entities)
         {
+            // Prevent time to live from counting down too quickly
+            if (SystemManager.physicsSystem.isSlowMotion && !SystemManager.physicsSystem.isReadyForSlowMotionTick)
+            {
+                return;
+            }
+
             foreach (int entityId in entities)
             {
                 TimeToLiveComponent timeToLiveComponent = EntityManager.getTimeToLiveComponent(entityId);
