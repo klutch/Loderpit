@@ -106,6 +106,7 @@
     <Compile Include="Components\PhysicsComponent.cs" />
     <Compile Include="Components\PositionComponent.cs" />
     <Compile Include="Components\PositionTargetComponent.cs" />
+    <Compile Include="Components\SpellEffects\DamageTransferComponent.cs" />
     <Compile Include="Components\SpellEffects\DispellableComponent.cs" />
     <Compile Include="Components\SpellEffects\SlowMotionComponent.cs" />
     <Compile Include="Components\TimedExplosionComponent.cs" />
@@ -168,6 +169,7 @@
     <Compile Include="Skills\FatalitySkill.cs" />
     <Compile Include="Skills\FireballSkill.cs" />
     <Compile Include="Skills\FlameAuraSkill.cs" />
+    <Compile Include="Skills\GuardianSkill.cs" />
     <Compile Include="Skills\HealingBlastSkill.cs" />
     <Compile Include="Skills\HealSkill.cs" />
     <Compile Include="Skills\IgniteSkill.cs" />

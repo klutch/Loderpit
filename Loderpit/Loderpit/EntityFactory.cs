@@ -70,6 +70,7 @@ namespace Loderpit
                     skills.Add(new BlockSkill(entityId, 1));
                     skills.Add(new ShieldBashSkill(entityId, 1, new Vector2(1, -0.5f)));    // TODO: find a better way of determining the normal
                     skills.Add(new SpikedShieldSkill(entityId, 1));
+                    skills.Add(new GuardianSkill(entityId, 1));
                     break;
 
                 case CharacterClass.Archer:
@@ -942,6 +943,25 @@ namespace Loderpit
 
             EntityManager.addComponent(entityId, new TimeToLiveComponent(entityId, timeToLive));
             EntityManager.addComponent(entityId, new SlowMotionComponent(entityId));
+
+            return entityId;
+        }
+
+        // Create guardian spell
+        public static int createGuardianSpell(int targetId, float radius, float transferPercentage, List<Faction> factionsToAffect)
+        {
+            int entityId = EntityManager.createEntity();
+            CharacterComponent characterComponent = EntityManager.getCharacterComponent(targetId);
+            Body sensor = BodyFactory.CreateCircle(SystemManager.physicsSystem.world, radius, 1f, characterComponent.body.Position);
+
+            sensor.UserData = entityId;
+            sensor.CollidesWith = (ushort)CollisionCategory.None;
+            sensor.BodyType = BodyType.Static;
+
+            EntityManager.addComponent(entityId, new DamageTransferComponent(entityId, transferPercentage));
+            EntityManager.addComponent(entityId, new AreaOfEffectComponent(entityId, sensor));
+            EntityManager.addComponent(entityId, new AffectedEntitiesComponent(entityId, factionsToAffect));
+            EntityManager.addComponent(entityId, new TrackEntityPositionComponent(entityId, targetId));
 
             return entityId;
         }

@@ -61,6 +61,9 @@ namespace Loderpit.Systems
                         case SkillType.ShieldBash:
                             initializeShieldBashSkill(entityId, skill as ShieldBashSkill);
                             break;
+                        case SkillType.Guardian:
+                            initializeGuardianSkill(entityId, skill as GuardianSkill);
+                            break;
 
                         // Archer
                         case SkillType.Deadeye:
@@ -331,6 +334,14 @@ namespace Loderpit.Systems
             FactionComponent factionComponent = EntityManager.getFactionComponent(entityId);
 
             EntityFactory.createFlameAuraSpell(entityId, flameAuraSkill.range, flameAuraSkill.chanceToProc, flameAuraSkill.damageDie, flameAuraSkill.tickDelay, flameAuraSkill.tickCount, new List<Faction>(new [] { factionComponent.faction }));
+        }
+
+        // Initialize guardian skill
+        private void initializeGuardianSkill(int entityId, GuardianSkill guardianSkill)
+        {
+            FactionComponent factionComponent = EntityManager.getFactionComponent(entityId);
+
+            EntityFactory.createGuardianSpell(entityId, guardianSkill.range, guardianSkill.transferPercentage, new List<Faction>( new [] { factionComponent.faction }));
         }
 
         #endregion
