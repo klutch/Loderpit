@@ -218,5 +218,6 @@ namespace Loderpit.Managers
         public static TimedExplosionComponent getTimedExplosionComponent(int entityId) { return getComponent<TimedExplosionComponent>(entityId, ComponentType.TimedExplosion); }
         public static PhysicsComponent getPhysicsComponent(int entityId) { return getComponent<PhysicsComponent>(entityId, ComponentType.Physics); }
         public static DispellableComponent getDispellableComponent(int entityId) { return getComponent<DispellableComponent>(entityId, ComponentType.Dispellable); }
+        public static DamageTransferComponent getDamageTransferComponent(int entityId) { return getComponent<DamageTransferComponent>(entityId, ComponentType.DamageTransfer); }
     }
 }

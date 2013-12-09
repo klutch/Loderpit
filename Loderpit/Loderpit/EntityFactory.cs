@@ -958,7 +958,7 @@ namespace Loderpit
             sensor.CollidesWith = (ushort)CollisionCategory.None;
             sensor.BodyType = BodyType.Static;
 
-            EntityManager.addComponent(entityId, new DamageTransferComponent(entityId, transferPercentage));
+            EntityManager.addComponent(entityId, new DamageTransferComponent(entityId, targetId, transferPercentage));
             EntityManager.addComponent(entityId, new AreaOfEffectComponent(entityId, sensor));
             EntityManager.addComponent(entityId, new AffectedEntitiesComponent(entityId, factionsToAffect));
             EntityManager.addComponent(entityId, new TrackEntityPositionComponent(entityId, targetId));

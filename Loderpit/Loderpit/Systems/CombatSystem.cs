@@ -40,11 +40,9 @@ namespace Loderpit.Systems
         }
 
         // A temporary function to add text to the screen
-        private void addMessage(int entityId, string value)
+        private void addMessage(Vector2 position, string value)
         {
-            PositionComponent positionComponent = EntityManager.getPositionComponent(entityId);
-
-            ScreenManager.levelScreen.addTemporaryWorldText(value, positionComponent.position);
+            ScreenManager.levelScreen.addTemporaryWorldText(value, position);
         }
 
         // Start an active attack
@@ -78,6 +76,45 @@ namespace Loderpit.Systems
             EntityManager.removeComponent(attackerId, ComponentType.CombatTarget);
         }
 
+        // Apply damage to an entity
+        public void applyDamage(int attackerId, int defenderId, int damage)
+        {
+            StatsComponent defenderStats = EntityManager.getStatsComponent(defenderId);
+            AffectedBySpellEntitiesComponent defenderSpells = EntityManager.getAffectedBySpellEntitiesComponent(defenderId);
+            DamageTransferComponent damageTransferComponent = null;
+
+            // Search for damage transfer spell components
+            // TODO: Take into account more than a single damage transfer component?
+            foreach (int spellId in defenderSpells.spellEntities)
+            {
+                if ((damageTransferComponent = EntityManager.getDamageTransferComponent(spellId)) != null)
+                {
+                    break;
+                }
+            }
+
+            // Apply damage
+            if (damageTransferComponent == null)
+            {
+                defenderStats.currentHp -= damage;
+            }
+            else
+            {
+                StatsComponent guardianStats = EntityManager.getStatsComponent(damageTransferComponent.transferToEntityId);
+                int transferedDamage = (int)Math.Ceiling((float)damage * damageTransferComponent.transferPercentage);
+                int remainingDamage = (int)Math.Floor((float)damage - transferedDamage);
+
+                guardianStats.currentHp -= transferedDamage;
+                defenderStats.currentHp -= remainingDamage;
+            }
+
+            // Check for zero health
+            if (defenderStats.currentHp == 0)
+            {
+                handleZeroHealth(defenderId);
+            }
+        }
+
         /* Attack an entity
          *   The attacking entity makes an attack roll.
          *   If the attack roll equals or beats the defenders armor class, the attacker makes a hit roll.
@@ -102,6 +139,7 @@ namespace Loderpit.Systems
             StatsComponent defenderStats = EntityManager.getStatsComponent(defenderId);
             AffectedBySpellEntitiesComponent attackerSpells = EntityManager.getAffectedBySpellEntitiesComponent(attackerId);
             AffectedBySpellEntitiesComponent defenderSpells = EntityManager.getAffectedBySpellEntitiesComponent(defenderId);
+            PositionComponent defenderPositionComponent = EntityManager.getPositionComponent(defenderId);
             int defenderArmorClass = SystemManager.statSystem.getArmorClass(defenderId);
             int attackRoll;
 
@@ -111,12 +149,13 @@ namespace Loderpit.Systems
 
             if (attackRoll >= defenderArmorClass)
             {
-                // Hit
+                // Roll damage
                 int hitRoll = Roller.roll(hitDie);
                 int damage = hitRoll + extraDamage;
 
-                defenderStats.currentHp -= damage;
-                addMessage(defenderId, "-" + damage.ToString());
+                // Apply damage
+                applyDamage(attackerId, defenderId, damage);
+                addMessage(defenderPositionComponent.position, "-" + damage.ToString());
 
                 // Check for attacker procs
                 foreach (int spellId in attackerSpells.spellEntities)
@@ -158,18 +197,12 @@ namespace Loderpit.Systems
                     }
                 }
 
-                // Check for zero health
-                if (defenderStats.currentHp == 0)
-                {
-                    handleZeroHealth(defenderId);
-                }
-
                 return true;
             }
             else
             {
                 // Miss
-                addMessage(defenderId, "Miss");
+                addMessage(defenderPositionComponent.position, "Miss");
 
                 return false;
             }
@@ -179,10 +212,11 @@ namespace Loderpit.Systems
         public void applySpellDamage(int defenderId, int damage)
         {
             StatsComponent defenderStatsComponent = EntityManager.getStatsComponent(defenderId);
+            PositionComponent defenderPositionComponent = EntityManager.getPositionComponent(defenderId);
 
             // Apply damage
             defenderStatsComponent.currentHp -= damage;
-            addMessage(defenderId, "Spell: -" + damage.ToString());
+            addMessage(defenderPositionComponent.position, "Spell: -" + damage.ToString());
 
             // Check for zero health
             if (defenderStatsComponent.currentHp == 0)
@@ -195,9 +229,10 @@ namespace Loderpit.Systems
         public void applySpellHeal(int healerId, int targetId, int amount)
         {
             StatsComponent targetStats = EntityManager.getStatsComponent(targetId);
+            PositionComponent targetPositionComponent = EntityManager.getPositionComponent(targetId);
 
             targetStats.currentHp += amount;
-            addMessage(targetId, "Heal: " + amount.ToString());
+            addMessage(targetPositionComponent.position, "Heal: " + amount.ToString());
         }
 
         // Apply knockback

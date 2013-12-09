@@ -255,6 +255,12 @@ namespace Loderpit.Systems
                         return;
                     }
 
+                    // Skip if defender's dead
+                    if (!EntityManager.doesEntityExist(defenderId))
+                    {
+                        return;
+                    }
+
                     // Check chance to proc
                     if (Roller.roll(kickSkill.chanceToKnockback) == 1)
                     {
@@ -280,6 +286,12 @@ namespace Loderpit.Systems
                         return;
                     }
 
+                    // Skip if defender's dead
+                    if (!EntityManager.doesEntityExist(defenderId))
+                    {
+                        return;
+                    }
+
                     // Check chance to proc
                     if (Roller.roll(bloodletterSkill.chanceToProc) == 1)
                     {
@@ -297,6 +309,12 @@ namespace Loderpit.Systems
                 {
                     // Skip if not ignite skill
                     if (skill.type != SkillType.RangedAttack)
+                    {
+                        return;
+                    }
+
+                    // Skip if defender's dead
+                    if (!EntityManager.doesEntityExist(defenderId))
                     {
                         return;
                     }
@@ -1006,7 +1024,7 @@ namespace Loderpit.Systems
 
             if (EntityManager.doesEntityExist(executeSkill.targetEntityId))    // defender could have died already
             {
-                SystemManager.combatSystem.attack(fatalitySkill, entityId, executeSkill.targetEntityId, 0, "d1+9998", "d1+9998");
+                SystemManager.combatSystem.attack(fatalitySkill, entityId, executeSkill.targetEntityId, 0, "9999", "9999");
             }
             
             EntityManager.removeComponent(entityId, ComponentType.PositionTarget);
