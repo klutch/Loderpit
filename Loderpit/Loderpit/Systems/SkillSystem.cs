@@ -924,6 +924,13 @@ namespace Loderpit.Systems
             performingSkillsComponent.executingSkills.Add(executeSkill);
         }
 
+        // Perform riposte skill
+        public void performRiposteSkill(int entityId, RiposteSkill skill)
+        {
+            EntityFactory.createRiposteSpell(entityId, skill.timeToLive, skill.chanceToRiposte);
+            resetCooldown(entityId, SkillType.Riposte);
+        }
+
         #endregion
 
         #region Cooldown methods

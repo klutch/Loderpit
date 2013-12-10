@@ -71,6 +71,7 @@ namespace Loderpit
                     skills.Add(new ShieldBashSkill(entityId, 1, new Vector2(1, -0.5f)));    // TODO: find a better way of determining the normal
                     skills.Add(new SpikedShieldSkill(entityId, 1));
                     skills.Add(new GuardianSkill(entityId, 1));
+                    skills.Add(new RiposteSkill(entityId, 1));
                     break;
 
                 case CharacterClass.Archer:
@@ -1029,6 +1030,23 @@ namespace Loderpit
 
             EntityManager.addComponent(entityId, new ProcComponent(entityId, onHitOther, null));
             EntityManager.addComponent(entityId, affectedEntitiesComponent);
+
+            return entityId;
+        }
+
+        // Create riposte spell
+        public static int createRiposteSpell(int ownerId, int timeToLive, string chanceToRiposte)
+        {
+            int entityId = EntityManager.createEntity();
+            AffectedBySpellEntitiesComponent affectedBySpellEntitiesComponent = EntityManager.getAffectedBySpellEntitiesComponent(ownerId);
+            AffectedEntitiesComponent affectedEntitiesComponent = new AffectedEntitiesComponent(entityId);
+
+            affectedEntitiesComponent.entities.Add(ownerId);
+            affectedBySpellEntitiesComponent.spellEntities.Add(entityId);
+
+            EntityManager.addComponent(entityId, affectedEntitiesComponent);
+            EntityManager.addComponent(entityId, new RiposteComponent(entityId, chanceToRiposte));
+            EntityManager.addComponent(entityId, new TimeToLiveComponent(entityId, timeToLive));
 
             return entityId;
         }

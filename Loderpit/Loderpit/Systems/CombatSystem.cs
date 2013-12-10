@@ -140,6 +140,7 @@ namespace Loderpit.Systems
             AffectedBySpellEntitiesComponent attackerSpells = EntityManager.getAffectedBySpellEntitiesComponent(attackerId);
             AffectedBySpellEntitiesComponent defenderSpells = EntityManager.getAffectedBySpellEntitiesComponent(defenderId);
             PositionComponent defenderPositionComponent = EntityManager.getPositionComponent(defenderId);
+            RiposteComponent defenderRiposteComponent = null;
             int defenderArmorClass = SystemManager.statSystem.getArmorClass(defenderId);
             int attackRoll;
 
@@ -147,6 +148,33 @@ namespace Loderpit.Systems
             hitDie = hitDie ?? SystemManager.statSystem.getHitDie(attackerId);
             attackRoll = Roller.roll(attackDie) + statSystem.getStatModifier(statSystem.getStrength(attackerId));
 
+            // Check defender for riposte spell effect unless attacking skill is a riposte skill (to prevent a possible endless loop)
+            if (attackSkill.type != SkillType.Riposte)
+            {
+                foreach (int spellId in defenderSpells.spellEntities)
+                {
+                    if ((defenderRiposteComponent = EntityManager.getRiposteComponent(spellId)) != null)
+                    {
+                        break;
+                    }
+                }
+            }
+
+            // Handle riposte
+            if (defenderRiposteComponent != null)
+            {
+                SkillsComponent defenderSkillsComponent = EntityManager.getSkillsComponent(defenderId);
+                RiposteSkill riposteSkill = defenderSkillsComponent.getSkill(SkillType.Riposte) as RiposteSkill;
+
+                if (Roller.roll(defenderRiposteComponent.chanceToRiposte) == 1)
+                {
+                    attack(riposteSkill, defenderId, attackerId);
+                    addMessage(defenderPositionComponent.position, "Riposte");
+                    return false;
+                }
+            }
+
+            // Proceed with normal attack process
             if (attackRoll >= defenderArmorClass)
             {
                 // Roll damage

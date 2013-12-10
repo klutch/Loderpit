@@ -55,12 +55,14 @@ namespace Loderpit.Systems
         public void selectNextTeammate()
         {
             _selectedTeammate = _selectedTeammate + 1 > _playerGroup.entities.Count - 1 ? 0 : _selectedTeammate + 1;
+            _initializingSkill = null;
         }
 
         // Select previous teammate
         public void selectPreviousTeammate()
         {
             _selectedTeammate = _selectedTeammate - 1 < 0 ? _playerGroup.entities.Count - 1 : _selectedTeammate - 1;
+            _initializingSkill = null;
         }
 
         // Get entities in the player's team
@@ -150,6 +152,9 @@ namespace Loderpit.Systems
                             // Defender
                             case SkillType.ShieldBash:
                                 handleInitializeShieldBash(selectedEntityId);
+                                break;
+                            case SkillType.Riposte:
+                                handleInitializeRiposte(selectedEntityId);
                                 break;
 
                             // Engineer
@@ -419,6 +424,13 @@ namespace Loderpit.Systems
                 SystemManager.skillSystem.performVolleySkill(entityId, _initializingSkill as VolleySkill, Game.worldMouse);
                 _initializingSkill = null;
             }
+        }
+
+        // Handle initialize riposte skill
+        private void handleInitializeRiposte(int entityId)
+        {
+            SystemManager.skillSystem.performRiposteSkill(entityId, _initializingSkill as RiposteSkill);
+            _initializingSkill = null;
         }
 
         public void update()

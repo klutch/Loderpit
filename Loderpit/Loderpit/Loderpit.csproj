@@ -108,6 +108,7 @@
     <Compile Include="Components\PositionTargetComponent.cs" />
     <Compile Include="Components\SpellEffects\DamageTransferComponent.cs" />
     <Compile Include="Components\SpellEffects\DispellableComponent.cs" />
+    <Compile Include="Components\SpellEffects\RiposteComponent.cs" />
     <Compile Include="Components\SpellEffects\SlowMotionComponent.cs" />
     <Compile Include="Components\TimedExplosionComponent.cs" />
     <Compile Include="Components\ReceiveActivateObstacleFallComponent.cs" />
@@ -182,6 +183,7 @@
     <Compile Include="Skills\ProximityMineSkill.cs" />
     <Compile Include="Skills\RainOfFireSkill.cs" />
     <Compile Include="Skills\RangedAttackSkill.cs" />
+    <Compile Include="Skills\RiposteSkill.cs" />
     <Compile Include="Skills\ShieldBashSkill.cs" />
     <Compile Include="Skills\ShieldOfThornsSkill.cs" />
     <Compile Include="Skills\Skill.cs" />
@@ -207,6 +209,9 @@
     <Compile Include="Systems\TeamSystem.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="resources\ui\action_icons\riposte.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="resources\ui\action_icons\volley.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

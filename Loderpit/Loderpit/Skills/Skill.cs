@@ -33,6 +33,7 @@ namespace Loderpit.Skills
         ShieldBash,
         SpikedShield,
         Guardian,
+        Riposte,
 
         // Mage
         Ignite,

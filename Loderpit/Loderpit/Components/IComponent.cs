@@ -42,7 +42,8 @@ namespace Loderpit.Components
         Physics,
         Dispellable,
         SlowMotion,
-        DamageTransfer
+        DamageTransfer,
+        Riposte
     }
 
     public interface IComponent

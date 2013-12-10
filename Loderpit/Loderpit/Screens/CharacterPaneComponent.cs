@@ -144,6 +144,9 @@ namespace Loderpit.Screens
                         case SkillType.ShieldBash:
                             drawIcon("shield_bash_icon");
                             break;
+                        case SkillType.Riposte:
+                            drawIcon("riposte_icon");
+                            break;
 
                         // Engineer
                         case SkillType.ThrowRope:
