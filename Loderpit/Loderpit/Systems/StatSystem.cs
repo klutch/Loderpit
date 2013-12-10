@@ -127,6 +127,30 @@ namespace Loderpit.Systems
             return armorClass;
         }
 
+        // Get attack delay
+        public int getAttackDelay(int entityId)
+        {
+            StatsComponent statsComponent = EntityManager.getStatsComponent(entityId);
+            AffectedBySpellEntitiesComponent affectedBySpellEntitiesComponent = EntityManager.getAffectedBySpellEntitiesComponent(entityId);
+            int totalAttackDelay = statsComponent.baseAttackDelay;
+
+            // Accumulate changes from spells
+            foreach (int spellId in affectedBySpellEntitiesComponent.spellEntities)
+            {
+                StatModifierComponent statModifierComponent = EntityManager.getStatModifierComponent(spellId);
+
+                if (statModifierComponent != null)
+                {
+                    totalAttackDelay += statModifierComponent.attackDelayMod;
+                }
+            }
+
+            // TODO: Accumulate changes from items
+            // ...
+
+            return Math.Max(0, totalAttackDelay);
+        }
+
         // Attack die
         public string getAttackDie(int entityId)
         {
@@ -160,13 +184,31 @@ namespace Loderpit.Systems
             return attackDie;
         }
 
-        // Hit die
-        public string getHitDie(int entityId)
+        // Damage die
+        public string getDamageDie(int entityId)
         {
             StatsComponent statsComponent = EntityManager.getStatsComponent(entityId);
+            string damageDie = statsComponent.unarmedHitDie; // TODO: Get hit die from weapon
+            AffectedBySpellEntitiesComponent affectedBySpellEntitiesComponent = EntityManager.getAffectedBySpellEntitiesComponent(entityId);
+            int damageDieModifier = 0;
 
-            // TODO: Get hit die from weapons
-            return statsComponent.unarmedHitDie;
+            foreach (int spellId in affectedBySpellEntitiesComponent.spellEntities)
+            {
+                StatModifierComponent statModifierComponent = EntityManager.getStatModifierComponent(spellId);
+
+                if (statModifierComponent != null)
+                {
+                    damageDieModifier += statModifierComponent.damageDieMod;
+                }
+            }
+
+            // Modify damage die
+            if (damageDieModifier != 0)
+            {
+                damageDie += (damageDieModifier > 0 ? "+" : "-") + damageDieModifier.ToString();
+            }
+
+            return damageDie;
         }
 
         public void update()

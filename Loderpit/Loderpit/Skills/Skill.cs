@@ -27,6 +27,7 @@ namespace Loderpit.Skills
         PowerSwing,
         Bloodletter,
         Fatality,
+        BattleCry,
 
         // Defender
         Block,

@@ -83,6 +83,9 @@ namespace Loderpit.Systems
                         case SkillType.Bloodletter:
                             initializeBloodletterSkill(entityId, skill as BloodletterSkill);
                             break;
+                        case SkillType.BattleCry:
+                            initializeBattleCrySkill(entityId, skill as BattleCrySkill);
+                            break;
 
                         // Mage
                         case SkillType.Ignite:
@@ -369,6 +372,14 @@ namespace Loderpit.Systems
         private void initializePiercingSkill(int entityId, PiercingSkill piercingSkill)
         {
             EntityFactory.createPiercingSpell(entityId);
+        }
+
+        // Initialize battle cry skill
+        private void initializeBattleCrySkill(int entityId, BattleCrySkill battleCrySkill)
+        {
+            FactionComponent factionComponent = EntityManager.getFactionComponent(entityId);
+
+            EntityFactory.createBattleCrySpell(entityId, battleCrySkill.range, battleCrySkill.attackDelayBonus, battleCrySkill.damageBonus, new List<Faction>(new[] { factionComponent.faction }));
         }
 
         #endregion
@@ -972,7 +983,6 @@ namespace Loderpit.Systems
         public void resetCooldown(int entityId, SkillType skillType)
         {
             SkillsComponent skillsComponent = EntityManager.getSkillsComponent(entityId);
-            StatsComponent statsComponent = EntityManager.getStatsComponent(entityId);
             Skill skill = skillsComponent.getSkill(skillType);
 
             switch (skill.type)
@@ -980,7 +990,7 @@ namespace Loderpit.Systems
                 case SkillType.MeleeAttack:
                 case SkillType.RangedAttack:
                 case SkillType.Piercing:
-                    skill.setCooldown(statsComponent.attackDelay);
+                    skill.setCooldown(SystemManager.statSystem.getAttackDelay(entityId));
                     break;
 
                 default:

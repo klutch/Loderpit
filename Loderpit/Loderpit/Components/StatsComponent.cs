@@ -12,7 +12,7 @@ namespace Loderpit.Components
         private int _baseDexterity;
         private int _baseStrength;
         private int _baseIntelligence;
-        private int _attackDelay;
+        private int _baseAttackDelay;
         private string _unarmedHitDie;
 
         public int entityId { get { return _entityId; } }
@@ -22,7 +22,7 @@ namespace Loderpit.Components
         public int baseDexterity { get { return _baseDexterity; } set { _baseDexterity = value; } }
         public int baseStrength { get { return _baseStrength; } set { _baseStrength = value; } }
         public int baseIntelligence { get { return _baseIntelligence; } set { _baseIntelligence = value; } }
-        public int attackDelay { get { return _attackDelay; } set { _attackDelay = value; } }
+        public int baseAttackDelay { get { return _baseAttackDelay; } set { _baseAttackDelay = value; } }
         public string unarmedHitDie { get { return _unarmedHitDie; } set { _unarmedHitDie = value; } }
 
         public StatsComponent(int entityId, int baseHp, int currentHp, int baseDexterity, int baseStrength, int baseIntelligence, int attackDelay, string unarmedHitDie = "d6")
@@ -33,7 +33,7 @@ namespace Loderpit.Components
             _baseDexterity = baseDexterity;
             _baseStrength = baseStrength;
             _baseIntelligence = baseIntelligence;
-            _attackDelay = attackDelay;
+            _baseAttackDelay = attackDelay;
             _unarmedHitDie = unarmedHitDie;
         }
     }

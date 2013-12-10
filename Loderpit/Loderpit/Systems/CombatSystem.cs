@@ -158,7 +158,7 @@ namespace Loderpit.Systems
             int attackRoll;
 
             attackDie = attackDie ?? SystemManager.statSystem.getAttackDie(attackerId);
-            hitDie = hitDie ?? SystemManager.statSystem.getHitDie(attackerId);
+            hitDie = hitDie ?? SystemManager.statSystem.getDamageDie(attackerId);
             attackRoll = Roller.roll(attackDie) + statSystem.getStatModifier(statSystem.getStrength(attackerId));
 
             // Check defender for riposte spell effect unless attacking skill is a riposte skill (to prevent a possible endless loop)

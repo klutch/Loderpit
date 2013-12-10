@@ -27,7 +27,7 @@ namespace Loderpit
             switch (characterClass)
             {
                 case CharacterClass.Archer:
-                    statsComponent.attackDelay = 100;
+                    statsComponent.baseAttackDelay = 100;
                     break;
 
                 case CharacterClass.Engineer:
@@ -35,7 +35,7 @@ namespace Loderpit
 
                 case CharacterClass.Defender:
                     statsComponent.baseHp = 20;
-                    statsComponent.attackDelay = 80;
+                    statsComponent.baseAttackDelay = 80;
                     break;
 
                 case CharacterClass.Fighter:
@@ -64,6 +64,7 @@ namespace Loderpit
                     skills.Add(new PowerSwingSkill(entityId, 1));
                     skills.Add(new BloodletterSkill(entityId, 1));
                     skills.Add(new FatalitySkill(entityId, 1));
+                    skills.Add(new BattleCrySkill(entityId, 1));
                     break;
 
                 case CharacterClass.Defender:
@@ -900,6 +901,12 @@ namespace Loderpit
 
             onHitOther = (skill, attackerId, defenderId) =>
                 {
+                    // Skip if defender doesn't exist
+                    if (!EntityManager.doesEntityExist(defenderId))
+                    {
+                        return;
+                    }
+
                     if (Roller.roll(chanceToProc) == 1)
                     {
                         createDoTSpell(defenderId, damageDie, tickDelay, tickCount);
@@ -1065,6 +1072,28 @@ namespace Loderpit
             EntityManager.addComponent(entityId, affectedEntitiesComponent);
             EntityManager.addComponent(entityId, new DamageMitigationComponent(entityId, mitigationPercentage));
             EntityManager.addComponent(entityId, new SpellTypeComponent(entityId, SpellType.GolemStance));
+
+            return entityId;
+        }
+
+        // Create battle cry spell
+        public static int createBattleCrySpell(int ownerId, float radius, int attackDelayBonus, int damageBonus, List<Faction> factionsToAffect)
+        {
+            int entityId = EntityManager.createEntity();
+            Body sensor = BodyFactory.CreateCircle(SystemManager.physicsSystem.world, radius, 1f);
+            StatModifierComponent statModifierComponent = new StatModifierComponent(entityId);
+
+            sensor.UserData = entityId;
+            sensor.CollidesWith = (ushort)CollisionCategory.None;
+            sensor.BodyType = BodyType.Static;
+
+            statModifierComponent.attackDelayMod = -attackDelayBonus;
+            statModifierComponent.damageDieMod = damageBonus;
+
+            EntityManager.addComponent(entityId, new TrackEntityPositionComponent(entityId, ownerId));
+            EntityManager.addComponent(entityId, new AreaOfEffectComponent(entityId, sensor));
+            EntityManager.addComponent(entityId, new AffectedEntitiesComponent(entityId, factionsToAffect));
+            EntityManager.addComponent(entityId, statModifierComponent);
 
             return entityId;
         }
