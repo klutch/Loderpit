@@ -64,6 +64,11 @@ namespace Loderpit.Screens
                     _enabled = true;
                     _text.DisplayedString = "Power Swing";
                 }
+                else if (performingSkillsComponent.isPerformingSkill(SkillType.Frenzy))
+                {
+                    _enabled = true;
+                    _text.DisplayedString = "Frenzy";
+                }
                 else
                 {
                     _enabled = false;

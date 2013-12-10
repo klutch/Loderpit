@@ -340,6 +340,7 @@ namespace Loderpit
             EntityManager.addComponent(entityId, new PerformingSkillsComponent(entityId));
             EntityManager.addComponent(entityId, new ExternalMovementSpeedsComponent(entityId));
             EntityManager.addComponent(entityId, new AffectedBySpellEntitiesComponent(entityId));
+            EntityManager.addComponent(entityId, new AIComponent(entityId, AIType.BasicEnemy));
 
             return entityId;
         }

@@ -86,8 +86,10 @@
     <Reference Include="System.Net" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AITypes.cs" />
     <Compile Include="CharacterClasses.cs" />
     <Compile Include="Components\AffectedBySpellEntitiesComponent.cs" />
+    <Compile Include="Components\AIComponent.cs" />
     <Compile Include="Components\BridgeComponent.cs" />
     <Compile Include="Components\CeilingComponent.cs" />
     <Compile Include="Components\CharacterComponent.cs" />
@@ -173,6 +175,7 @@
     <Compile Include="Skills\FatalitySkill.cs" />
     <Compile Include="Skills\FireballSkill.cs" />
     <Compile Include="Skills\FlameAuraSkill.cs" />
+    <Compile Include="Skills\FrenzySkill.cs" />
     <Compile Include="Skills\GolemStanceSkill.cs" />
     <Compile Include="Skills\GuardianSkill.cs" />
     <Compile Include="Skills\HealingBlastSkill.cs" />
@@ -199,7 +202,7 @@
     <Compile Include="Systems\CameraSystem.cs" />
     <Compile Include="Systems\CharacterSystem.cs" />
     <Compile Include="Systems\CombatSystem.cs" />
-    <Compile Include="Systems\EnemyAISystem.cs" />
+    <Compile Include="Systems\AISystem.cs" />
     <Compile Include="Systems\ExplosionSystem.cs" />
     <Compile Include="Systems\GroupSystem.cs" />
     <Compile Include="Systems\InterLevelSystem.cs" />
@@ -214,6 +217,9 @@
     <Compile Include="Systems\TeamSystem.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="resources\ui\action_icons\frenzy.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="resources\ui\action_icons\golem_stance.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

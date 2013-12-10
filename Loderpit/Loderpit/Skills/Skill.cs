@@ -28,6 +28,7 @@ namespace Loderpit.Skills
         Bloodletter,
         Fatality,
         BattleCry,
+        Frenzy,
 
         // Defender
         Block,

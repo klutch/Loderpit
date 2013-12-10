@@ -15,7 +15,7 @@ namespace Loderpit.Systems
         Skill,
         Combat,
         Level,
-        EnemyAI,
+        AI,
         InterLevel,
         Spell,
         Explosion

@@ -17,7 +17,7 @@ namespace Loderpit.Managers
         public static SkillSystem skillSystem;
         public static CombatSystem combatSystem;
         public static LevelSystem levelSystem;
-        public static EnemyAISystem enemyAISystem;
+        public static AISystem aiSystem;
         public static InterLevelSystem interLevelSystem;
         public static SpellSystem spellSystem;
         public static ExplosionSystem explosionSystem;

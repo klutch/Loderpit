@@ -45,7 +45,8 @@ namespace Loderpit.Components
         DamageTransfer,
         Riposte,
         SpellType,
-        DamageMitigation
+        DamageMitigation,
+        AI
     }
 
     public interface IComponent

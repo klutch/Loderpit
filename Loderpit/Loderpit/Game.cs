@@ -76,7 +76,7 @@ namespace Loderpit
             SystemManager.groupSystem = new GroupSystem();
             SystemManager.skillSystem = new SkillSystem();
             SystemManager.combatSystem = new CombatSystem();
-            SystemManager.enemyAISystem = new EnemyAISystem();
+            SystemManager.aiSystem = new AISystem();
             SystemManager.interLevelSystem = new InterLevelSystem();
             SystemManager.spellSystem = new SpellSystem();
             SystemManager.explosionSystem = new ExplosionSystem();
@@ -128,6 +128,7 @@ namespace Loderpit
             ResourceManager.addResource("volley_icon", new Texture("resources/ui/action_icons/volley.png"));
             ResourceManager.addResource("riposte_icon", new Texture("resources/ui/action_icons/riposte.png"));
             ResourceManager.addResource("golem_stance_icon", new Texture("resources/ui/action_icons/golem_stance.png"));
+            ResourceManager.addResource("frenzy_icon", new Texture("resources/ui/action_icons/frenzy.png"));
             ResourceManager.addResource("reticle", new Texture("resources/ui/reticle.png"));
 
             // Debug
@@ -304,7 +305,7 @@ namespace Loderpit
                 SystemManager.groupSystem.update();
                 SystemManager.obstacleSystem.update();
                 SystemManager.cameraSystem.update();
-                SystemManager.enemyAISystem.update();
+                SystemManager.aiSystem.update();
                 SystemManager.characterSystem.update();
                 SystemManager.statSystem.update();
                 SystemManager.renderSystem.update();

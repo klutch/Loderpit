@@ -140,7 +140,15 @@ namespace Loderpit.Managers
             {
                 foreach (int spellId in affectedBySpellEntitiesComponent.spellEntities)
                 {
-                    AffectedEntitiesComponent spellsAffectedEntitiesComponent = EntityManager.getAffectedEntitiesComponent(spellId);
+                    AffectedEntitiesComponent spellsAffectedEntitiesComponent;
+
+                    // Skip if spell is dead
+                    if (!EntityManager.doesEntityExist(spellId))
+                    {
+                        continue;
+                    }
+
+                    spellsAffectedEntitiesComponent = EntityManager.getAffectedEntitiesComponent(spellId);
 
                     // Remove (character) entity being destroyed from the spell entity's list of affected entities
                     spellsAffectedEntitiesComponent.entities.Remove(entityId);
@@ -152,7 +160,15 @@ namespace Loderpit.Managers
             {
                 foreach (int id in affectedEntitiesComponent.entities)
                 {
-                    AffectedBySpellEntitiesComponent charactersAffectedBySpellEntitiesComponent = EntityManager.getAffectedBySpellEntitiesComponent(id);
+                    AffectedBySpellEntitiesComponent charactersAffectedBySpellEntitiesComponent;
+
+                    // Skip if entity is dead
+                    if (!EntityManager.doesEntityExist(id))
+                    {
+                        continue;
+                    }
+
+                    charactersAffectedBySpellEntitiesComponent = EntityManager.getAffectedBySpellEntitiesComponent(id);
 
                     // Remove (spell) entity being destroyed from a character's list of spell entities affecting it
                     charactersAffectedBySpellEntitiesComponent.spellEntities.Remove(id);
@@ -222,5 +238,6 @@ namespace Loderpit.Managers
         public static RiposteComponent getRiposteComponent(int entityId) { return getComponent<RiposteComponent>(entityId, ComponentType.Riposte); }
         public static SpellTypeComponent getSpellTypeComponent(int entityId) { return getComponent<SpellTypeComponent>(entityId, ComponentType.SpellType); }
         public static DamageMitigationComponent getDamageMitigationComponent(int entityId) { return getComponent<DamageMitigationComponent>(entityId, ComponentType.DamageMitigation); }
+        public static AIComponent getAiComponent(int entityId) { return getComponent<AIComponent>(entityId, ComponentType.AI); }
     }
 }
