@@ -72,6 +72,7 @@ namespace Loderpit
                     skills.Add(new SpikedShieldSkill(entityId, 1));
                     skills.Add(new GuardianSkill(entityId, 1));
                     skills.Add(new RiposteSkill(entityId, 1));
+                    skills.Add(new GolemStanceSkill(entityId, 1));
                     break;
 
                 case CharacterClass.Archer:
@@ -1047,6 +1048,23 @@ namespace Loderpit
             EntityManager.addComponent(entityId, affectedEntitiesComponent);
             EntityManager.addComponent(entityId, new RiposteComponent(entityId, chanceToRiposte));
             EntityManager.addComponent(entityId, new TimeToLiveComponent(entityId, timeToLive));
+
+            return entityId;
+        }
+
+        // Create golem stance spell
+        public static int createGolemStanceSpell(int ownerId, float mitigationPercentage)
+        {
+            int entityId = EntityManager.createEntity();
+            AffectedBySpellEntitiesComponent affectedBySpellEntitiesComponent = EntityManager.getAffectedBySpellEntitiesComponent(ownerId);
+            AffectedEntitiesComponent affectedEntitiesComponent = new AffectedEntitiesComponent(entityId);
+
+            affectedEntitiesComponent.entities.Add(ownerId);
+            affectedBySpellEntitiesComponent.spellEntities.Add(entityId);
+
+            EntityManager.addComponent(entityId, affectedEntitiesComponent);
+            EntityManager.addComponent(entityId, new DamageMitigationComponent(entityId, mitigationPercentage));
+            EntityManager.addComponent(entityId, new SpellTypeComponent(entityId, SpellType.GolemStance));
 
             return entityId;
         }

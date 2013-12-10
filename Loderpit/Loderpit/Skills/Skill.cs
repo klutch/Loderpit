@@ -34,6 +34,7 @@ namespace Loderpit.Skills
         SpikedShield,
         Guardian,
         Riposte,
+        GolemStance,
 
         // Mage
         Ignite,

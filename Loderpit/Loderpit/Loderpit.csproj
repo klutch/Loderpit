@@ -106,10 +106,12 @@
     <Compile Include="Components\PhysicsComponent.cs" />
     <Compile Include="Components\PositionComponent.cs" />
     <Compile Include="Components\PositionTargetComponent.cs" />
+    <Compile Include="Components\SpellEffects\DamageMitigationComponent.cs" />
     <Compile Include="Components\SpellEffects\DamageTransferComponent.cs" />
     <Compile Include="Components\SpellEffects\DispellableComponent.cs" />
     <Compile Include="Components\SpellEffects\RiposteComponent.cs" />
     <Compile Include="Components\SpellEffects\SlowMotionComponent.cs" />
+    <Compile Include="Components\SpellEffects\SpellTypeComponent.cs" />
     <Compile Include="Components\TimedExplosionComponent.cs" />
     <Compile Include="Components\ReceiveActivateObstacleFallComponent.cs" />
     <Compile Include="Components\RenderHealthComponent.cs" />
@@ -170,6 +172,7 @@
     <Compile Include="Skills\FatalitySkill.cs" />
     <Compile Include="Skills\FireballSkill.cs" />
     <Compile Include="Skills\FlameAuraSkill.cs" />
+    <Compile Include="Skills\GolemStanceSkill.cs" />
     <Compile Include="Skills\GuardianSkill.cs" />
     <Compile Include="Skills\HealingBlastSkill.cs" />
     <Compile Include="Skills\HealSkill.cs" />
@@ -191,6 +194,7 @@
     <Compile Include="Skills\ThrowRopeSkill.cs" />
     <Compile Include="Skills\VolleySkill.cs" />
     <Compile Include="SpecialFixtureTypes.cs" />
+    <Compile Include="SpellTypes.cs" />
     <Compile Include="Systems\CameraSystem.cs" />
     <Compile Include="Systems\CharacterSystem.cs" />
     <Compile Include="Systems\CombatSystem.cs" />
@@ -209,6 +213,9 @@
     <Compile Include="Systems\TeamSystem.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="resources\ui\action_icons\golem_stance.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="resources\ui\action_icons\riposte.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

@@ -79,30 +79,43 @@ namespace Loderpit.Systems
         // Apply damage to an entity
         public void applyDamage(int attackerId, int defenderId, int damage)
         {
+            int modifiedDamage = damage;
             StatsComponent defenderStats = EntityManager.getStatsComponent(defenderId);
             AffectedBySpellEntitiesComponent defenderSpells = EntityManager.getAffectedBySpellEntitiesComponent(defenderId);
             DamageTransferComponent damageTransferComponent = null;
+            DamageMitigationComponent damageMitigationComponent = null;
 
             // Search for damage transfer spell components
             // TODO: Take into account more than a single damage transfer component?
             foreach (int spellId in defenderSpells.spellEntities)
             {
-                if ((damageTransferComponent = EntityManager.getDamageTransferComponent(spellId)) != null)
-                {
-                    break;
-                }
+                damageTransferComponent = damageTransferComponent ?? EntityManager.getDamageTransferComponent(spellId);
+                damageMitigationComponent = damageMitigationComponent ?? EntityManager.getDamageMitigationComponent(spellId);
             }
 
-            // Apply damage
+            // Apply damage mitigation
+            if (damageMitigationComponent != null)
+            {
+                modifiedDamage = Math.Max(0, damage - (int)Math.Ceiling((float)damage * damageMitigationComponent.mitigationPercentage));
+            }
+
+            // Early exit check
+            if (modifiedDamage == 0)
+            {
+                return;
+            }
+
             if (damageTransferComponent == null)
             {
-                defenderStats.currentHp -= damage;
+                // Apply damage normally
+                defenderStats.currentHp -= modifiedDamage;
             }
             else
             {
+                // Apply damage, transfering some
                 StatsComponent guardianStats = EntityManager.getStatsComponent(damageTransferComponent.transferToEntityId);
-                int transferedDamage = (int)Math.Ceiling((float)damage * damageTransferComponent.transferPercentage);
-                int remainingDamage = (int)Math.Floor((float)damage - transferedDamage);
+                int transferedDamage = (int)Math.Ceiling((float)modifiedDamage * damageTransferComponent.transferPercentage);
+                int remainingDamage = (int)Math.Floor((float)modifiedDamage - transferedDamage);
 
                 guardianStats.currentHp -= transferedDamage;
                 defenderStats.currentHp -= remainingDamage;

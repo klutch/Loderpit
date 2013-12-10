@@ -147,6 +147,9 @@ namespace Loderpit.Screens
                         case SkillType.Riposte:
                             drawIcon("riposte_icon");
                             break;
+                        case SkillType.GolemStance:
+                            drawIcon("golem_stance_icon");
+                            break;
 
                         // Engineer
                         case SkillType.ThrowRope:

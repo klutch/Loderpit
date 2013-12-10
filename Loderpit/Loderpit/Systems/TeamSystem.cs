@@ -156,6 +156,9 @@ namespace Loderpit.Systems
                             case SkillType.Riposte:
                                 handleInitializeRiposte(selectedEntityId);
                                 break;
+                            case SkillType.GolemStance:
+                                handleInitializeGolemStance(selectedEntityId);
+                                break;
 
                             // Engineer
                             case SkillType.ThrowRope:
@@ -431,6 +434,38 @@ namespace Loderpit.Systems
         {
             SystemManager.skillSystem.performRiposteSkill(entityId, _initializingSkill as RiposteSkill);
             _initializingSkill = null;
+        }
+
+        // Handle initialize golem stance
+        private void handleInitializeGolemStance(int entityId)
+        {
+            bool isSkillAlreadyActive = false;
+            AffectedBySpellEntitiesComponent affectedBySpellEntitiesComponent = EntityManager.getAffectedBySpellEntitiesComponent(entityId);
+
+            // Check if golem stance is already active
+            foreach (int spellId in affectedBySpellEntitiesComponent.spellEntities)
+            {
+                SpellTypeComponent spellTypeComponent = EntityManager.getSpellTypeComponent(spellId);
+
+                if (spellTypeComponent != null && spellTypeComponent.spellType == SpellType.GolemStance)
+                {
+                    isSkillAlreadyActive = true;
+                    break;
+                }
+            }
+
+            if (isSkillAlreadyActive)
+            {
+                // Disable skill
+                SystemManager.skillSystem.disableGolemStance(entityId);
+                _initializingSkill = null;
+            }
+            else if (Game.newMouseState.isLeftButtonPressed && !Game.oldMouseState.isLeftButtonPressed)
+            {
+                // Enable skill
+                SystemManager.skillSystem.enableGolemStance(entityId, _initializingSkill as GolemStanceSkill, Game.worldMouse);
+                _initializingSkill = null;
+            }
         }
 
         public void update()

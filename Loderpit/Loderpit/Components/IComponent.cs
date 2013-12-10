@@ -43,7 +43,9 @@ namespace Loderpit.Components
         Dispellable,
         SlowMotion,
         DamageTransfer,
-        Riposte
+        Riposte,
+        SpellType,
+        DamageMitigation
     }
 
     public interface IComponent

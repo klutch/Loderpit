@@ -220,5 +220,7 @@ namespace Loderpit.Managers
         public static DispellableComponent getDispellableComponent(int entityId) { return getComponent<DispellableComponent>(entityId, ComponentType.Dispellable); }
         public static DamageTransferComponent getDamageTransferComponent(int entityId) { return getComponent<DamageTransferComponent>(entityId, ComponentType.DamageTransfer); }
         public static RiposteComponent getRiposteComponent(int entityId) { return getComponent<RiposteComponent>(entityId, ComponentType.Riposte); }
+        public static SpellTypeComponent getSpellTypeComponent(int entityId) { return getComponent<SpellTypeComponent>(entityId, ComponentType.SpellType); }
+        public static DamageMitigationComponent getDamageMitigationComponent(int entityId) { return getComponent<DamageMitigationComponent>(entityId, ComponentType.DamageMitigation); }
     }
 }

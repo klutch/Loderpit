@@ -186,6 +186,11 @@ namespace Loderpit.Systems
                 _actionLabel.DisplayedString = "Volley";
                 drawReticle(Game.sfmlWorldMouse, Color.Red);
             }
+            else if (teamSystem.initializingSkill.type == SkillType.GolemStance)
+            {
+                _actionLabel.DisplayedString = "Golem Stance";
+                drawReticle(Game.sfmlWorldMouse, Color.Yellow);
+            }
         }
 
         public void update()

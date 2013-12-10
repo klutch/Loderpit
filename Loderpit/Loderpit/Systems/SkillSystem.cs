@@ -373,6 +373,39 @@ namespace Loderpit.Systems
 
         #endregion
 
+        #region Toggleable skill methods
+
+        // Enable golem stance
+        public void enableGolemStance(int entityId, GolemStanceSkill skill, Vector2 position)
+        {
+            EntityFactory.createGolemStanceSpell(entityId, skill.damageMitigationPercentage);
+            EntityManager.addComponent(entityId, new PositionTargetComponent(entityId, position.X, 0.25f));
+        }
+
+        // Disable golem stance
+        public void disableGolemStance(int entityId)
+        {
+            AffectedBySpellEntitiesComponent affectedBySpellEntitiesComponent = EntityManager.getAffectedBySpellEntitiesComponent(entityId);
+            int golemStanceSpellId = -1;
+
+            // Find golem stance spell
+            foreach (int spellId in affectedBySpellEntitiesComponent.spellEntities)
+            {
+                SpellTypeComponent spellTypeComponent = EntityManager.getSpellTypeComponent(spellId);
+
+                if (spellTypeComponent != null && spellTypeComponent.spellType == SpellType.GolemStance)
+                {
+                    golemStanceSpellId = spellId;
+                    break;
+                }
+            }
+
+            EntityManager.destroyEntity(golemStanceSpellId);
+            EntityManager.removeComponent(entityId, ComponentType.PositionTarget);
+            resetCooldown(entityId, SkillType.GolemStance);
+        }
+
+        #endregion
 
         #region Perform skill methods
 
