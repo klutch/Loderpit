@@ -295,6 +295,12 @@ namespace Loderpit.Systems
                         PositionComponent attackerPositionComponent = EntityManager.getPositionComponent(attackerId);
                         FactionComponent attackerFactionComponent = EntityManager.getFactionComponent(attackerId);
 
+                        // Skip ranged attacks if the entity has a piercing skill
+                        if (skill.type == SkillType.RangedAttack && attackerSkills.getSkill(SkillType.Piercing) != null)
+                        {
+                            continue;
+                        }
+
                         if (skill.cooldown == 0)   // ready to attack
                         {
                             foreach (int defenderId in defenderEntities)
@@ -310,7 +316,21 @@ namespace Loderpit.Systems
 
                                     if (isDefenderWithinRange && isDefenderAttackable && !isDefenderIncapacitated)
                                     {
-                                        attack(skill, attackerId, defenderId, 0, null, null);
+                                        // Attack differently based on the skill
+                                        if (skill.type == SkillType.Piercing)
+                                        {
+                                            Vector2 normal = Vector2.Normalize(relative);
+                                            List<int> targetIds = Helpers.findEntitiesAlongRay(attackerPositionComponent.position, normal, 100f, attackerFactionComponent.attackableFactions, attackerId);
+
+                                            foreach (int targetId in targetIds)
+                                            {
+                                                attack(skill, attackerId, targetId, 0, null, null);
+                                            }
+                                        }
+                                        else
+                                        {
+                                            attack(skill, attackerId, defenderId, 0, null, null);
+                                        }
 
                                         if (EntityManager.doesEntityExist(attackerId))  // attacker could have been killed by a damage shield
                                         {

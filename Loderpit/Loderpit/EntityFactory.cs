@@ -80,6 +80,7 @@ namespace Loderpit
                     skills.Add(new DeadeyeSkill(entityId, 1));
                     skills.Add(new ArrowTimeSkill(entityId, 1));
                     skills.Add(new VolleySkill(entityId, 1));
+                    skills.Add(new PiercingSkill(entityId, 1));
                     break;
 
                 case CharacterClass.Mage:

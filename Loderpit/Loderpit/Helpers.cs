@@ -98,5 +98,73 @@ namespace Loderpit
 
             return results.Count > 0 ? results[0] : -1;
         }
+
+        // Find entities of a certain faction along a ray
+        public static List<int> findEntitiesAlongRay(Vector2 start, Vector2 normal, float length, Faction factionToMatch, int entityToSkip = -1)
+        {
+            return findEntitiesAlongRay(start, normal, length, new List<Faction>(new[] { factionToMatch }), entityToSkip);
+        }
+
+        public static List<int> findEntitiesAlongRay(Vector2 start, Vector2 normal, float length, List<Faction> factionsToMatch, int entityToSkip = -1)
+        {
+            List<int> results = new List<int>();
+
+            SystemManager.physicsSystem.world.RayCast((f, p, n, fr) =>
+                {
+                    FactionComponent targetFactionComponent;
+                    bool foundMatchingFaction = false;
+                    int entityId;
+
+                    // Skip if fixture body has no userdata
+                    if (f.Body.UserData == null)
+                    {
+                        return -1;
+                    }
+
+                    entityId = (int)f.Body.UserData;
+
+                    // Skip entity if entityToSkip was supplied and matched
+                    if (entityToSkip != -1 && entityToSkip == entityId)
+                    {
+                        return -1;
+                    }
+
+                    // Skip if already in results list
+                    if (results.Contains(entityId))
+                    {
+                        return -1;
+                    }
+
+                    // Skip if entity doesn't have a faction component
+                    if ((targetFactionComponent = EntityManager.getFactionComponent(entityId)) == null)
+                    {
+                        return -1;
+                    }
+
+                    // Check factions
+                    foreach (Faction factionToMatch in factionsToMatch)
+                    {
+                        if (targetFactionComponent.faction == factionToMatch)
+                        {
+                            foundMatchingFaction = true;
+                            break;
+                        }
+                    }
+
+                    // Skip target entity id if no matching factions found
+                    if (!foundMatchingFaction)
+                    {
+                        return -1;
+                    }
+
+                    // Store entity id
+                    results.Add(entityId);
+                    return fr;
+                },
+                start,
+                normal * length + start);
+
+            return results;
+        }
     }
 }

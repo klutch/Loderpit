@@ -20,6 +20,7 @@ namespace Loderpit.Skills
         Deadeye,
         ArrowTime,
         Volley,
+        Piercing,
 
         // Fighter
         Kick,

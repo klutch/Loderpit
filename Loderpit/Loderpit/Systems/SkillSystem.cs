@@ -930,6 +930,7 @@ namespace Loderpit.Systems
             {
                 case SkillType.MeleeAttack:
                 case SkillType.RangedAttack:
+                case SkillType.Piercing:
                     skill.setCooldown(statsComponent.attackDelay);
                     break;
 

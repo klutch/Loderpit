@@ -176,6 +176,7 @@
     <Compile Include="Skills\InfusionSkill.cs" />
     <Compile Include="Skills\KickSkill.cs" />
     <Compile Include="Skills\MeleeAttackSkill.cs" />
+    <Compile Include="Skills\PiercingSkill.cs" />
     <Compile Include="Skills\PowerShotSkill.cs" />
     <Compile Include="Skills\PowerSwingSkill.cs" />
     <Compile Include="Skills\ProximityMineSkill.cs" />
