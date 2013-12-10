@@ -991,5 +991,46 @@ namespace Loderpit
 
             return entityId;
         }
+
+        // Create piercing spell
+        public static int createPiercingSpell(int ownerId)
+        {
+            int entityId = EntityManager.createEntity();
+            FactionComponent ownerFactionComponent = EntityManager.getFactionComponent(ownerId);
+            AffectedEntitiesComponent affectedEntitiesComponent = new AffectedEntitiesComponent(entityId, new List<Faction>(new[] { ownerFactionComponent.faction }));
+            AffectedBySpellEntitiesComponent affectedBySpellEntitiesComponent = EntityManager.getAffectedBySpellEntitiesComponent(ownerId);
+            Action<Skill, int, int> onHitOther = (skill, attackerId, defenderId) =>
+                {
+                    PiercingSkill piercingSkill;
+
+                    // Skip if not the piercing skill
+                    if (skill.type != SkillType.Piercing)
+                    {
+                        return;
+                    }
+
+                    piercingSkill = skill as PiercingSkill;
+
+                    // Skip if defender is dead
+                    if (!EntityManager.doesEntityExist(defenderId))
+                    {
+                        return;
+                    }
+
+                    // Roll chance to proc
+                    if (Roller.roll(piercingSkill.bleedingChanceToProc) == 1)
+                    {
+                        EntityFactory.createDoTSpell(defenderId, piercingSkill.bleedingDamageDie, piercingSkill.bleedingTickDelay, piercingSkill.bleedingTickCount);
+                    }
+                };
+
+            affectedEntitiesComponent.entities.Add(ownerId);
+            affectedBySpellEntitiesComponent.spellEntities.Add(entityId);
+
+            EntityManager.addComponent(entityId, new ProcComponent(entityId, onHitOther, null));
+            EntityManager.addComponent(entityId, affectedEntitiesComponent);
+
+            return entityId;
+        }
     }
 }

@@ -72,6 +72,9 @@ namespace Loderpit.Systems
                         case SkillType.ShieldOfThorns:
                             initializeShieldOfThornsSkill(entityId, skill as ShieldOfThornsSkill);
                             break;
+                        case SkillType.Piercing:
+                            initializePiercingSkill(entityId, skill as PiercingSkill);
+                            break;
 
                         // Fighter
                         case SkillType.Kick:
@@ -360,6 +363,12 @@ namespace Loderpit.Systems
             FactionComponent factionComponent = EntityManager.getFactionComponent(entityId);
 
             EntityFactory.createGuardianSpell(entityId, guardianSkill.range, guardianSkill.transferPercentage, new List<Faction>( new [] { factionComponent.faction }));
+        }
+
+        // Initialize piercing skill
+        private void initializePiercingSkill(int entityId, PiercingSkill piercingSkill)
+        {
+            EntityFactory.createPiercingSpell(entityId);
         }
 
         #endregion
