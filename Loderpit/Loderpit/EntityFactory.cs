@@ -93,6 +93,7 @@ namespace Loderpit
                     skills.Add(new FireballSkill(entityId, 1));
                     skills.Add(new FlameAuraSkill(entityId, 1));
                     skills.Add(new RainOfFireSkill(entityId, 1));
+                    skills.Add(new GaleForceSkill(entityId, 1));
                     break;
 
                 case CharacterClass.Engineer:
@@ -774,11 +775,11 @@ namespace Loderpit
         }
 
         // Generic dot spell -- TODO: Incorporate the type of damage
-        public static int createDoTSpell(int targetEntityId, string damageDie, int tickDelay, int tickCount)
+        public static int createDoTSpell(int targetEntityId, DamageType damageType, string damageDie, int tickDelay, int tickCount)
         {
             int entityId = EntityManager.createEntity();
             FactionComponent factionComponent = EntityManager.getFactionComponent(targetEntityId);
-            DamageOverTimeComponent damageOverTimeComponent = new DamageOverTimeComponent(entityId, damageDie, tickDelay);
+            DamageOverTimeComponent damageOverTimeComponent = new DamageOverTimeComponent(entityId, damageType, damageDie, tickDelay);
             TimeToLiveComponent timeToLiveComponent = new TimeToLiveComponent(entityId, tickCount * tickDelay);
             AffectedEntitiesComponent affectedEntitiesComponent = new AffectedEntitiesComponent(entityId);
             AffectedBySpellEntitiesComponent affectedBySpellEntitiesComponent = EntityManager.getAffectedBySpellEntitiesComponent(targetEntityId);
@@ -826,7 +827,7 @@ namespace Loderpit
             int entityId = EntityManager.createEntity();
             TrackEntityPositionComponent trackEntityPositionComponent = new TrackEntityPositionComponent(entityId, targetEntityId);
             AffectedEntitiesComponent affectedEntitiesComponent = new AffectedEntitiesComponent(entityId, factionsToAffect);
-            DamageOverTimeComponent damageOverTimeComponent = new DamageOverTimeComponent(entityId, damageDie, 60);
+            DamageOverTimeComponent damageOverTimeComponent = new DamageOverTimeComponent(entityId, DamageType.Physical, damageDie, 60);
             AreaOfEffectComponent areaOfEffectComponent;
             Body sensor = BodyFactory.CreateCircle(SystemManager.physicsSystem.world, radius, 1f);
 
@@ -911,7 +912,7 @@ namespace Loderpit
 
                     if (Roller.roll(chanceToProc) == 1)
                     {
-                        createDoTSpell(defenderId, damageDie, tickDelay, tickCount);
+                        createDoTSpell(defenderId, DamageType.Fire, damageDie, tickDelay, tickCount);
                     }
                 };
 
@@ -929,7 +930,7 @@ namespace Loderpit
         public static int createRainOfFireSpell(Vector2 position, float width, string damageDie, int tickDelay, int tickCount, List<Faction> factionsToAffect)
         {
             int entityId = EntityManager.createEntity();
-            DamageOverTimeComponent damageOverTimeComponent = new DamageOverTimeComponent(entityId, damageDie, tickDelay);
+            DamageOverTimeComponent damageOverTimeComponent = new DamageOverTimeComponent(entityId, DamageType.Fire, damageDie, tickDelay);
             TimeToLiveComponent timeToLiveComponent = new TimeToLiveComponent(entityId, tickDelay * tickCount);
             AffectedEntitiesComponent affectedEntitiesComponent = new AffectedEntitiesComponent(entityId, factionsToAffect);
             Body sensor = BodyFactory.CreateRectangle(SystemManager.physicsSystem.world, width, 100f, 1f, position);
@@ -983,7 +984,7 @@ namespace Loderpit
         public static int createVolleySpell(Vector2 position, float width, string damageDie, int tickDelay, int tickCount, List<Faction> factionsToAffect)
         {
             int entityId = EntityManager.createEntity();
-            DamageOverTimeComponent damageOverTimeComponent = new DamageOverTimeComponent(entityId, damageDie, tickDelay);
+            DamageOverTimeComponent damageOverTimeComponent = new DamageOverTimeComponent(entityId, DamageType.Physical, damageDie, tickDelay);
             TimeToLiveComponent timeToLiveComponent = new TimeToLiveComponent(entityId, tickDelay * tickCount);
             AffectedEntitiesComponent affectedEntitiesComponent = new AffectedEntitiesComponent(entityId, factionsToAffect);
             Body sensor = BodyFactory.CreateRectangle(SystemManager.physicsSystem.world, width, 100f, 1f, position);
@@ -1031,7 +1032,7 @@ namespace Loderpit
                     // Roll chance to proc
                     if (Roller.roll(piercingSkill.bleedingChanceToProc) == 1)
                     {
-                        EntityFactory.createDoTSpell(defenderId, piercingSkill.bleedingDamageDie, piercingSkill.bleedingTickDelay, piercingSkill.bleedingTickCount);
+                        EntityFactory.createDoTSpell(defenderId, DamageType.Physical, piercingSkill.bleedingDamageDie, piercingSkill.bleedingTickDelay, piercingSkill.bleedingTickCount);
                     }
                 };
 
@@ -1116,6 +1117,25 @@ namespace Loderpit
 
             EntityManager.addComponent(entityId, affectedEntitiesComponent);
             EntityManager.addComponent(entityId, statModifierComponent);
+            EntityManager.addComponent(entityId, new TimeToLiveComponent(entityId, timeToLive));
+
+            return entityId;
+        }
+
+        // Create gale force spell
+        public static int createGaleForceSpell(int ownerId, int damageBonus, int timeToLive, List<Faction> factionsToAffect)
+        {
+            int entityId = EntityManager.createEntity();
+            Body sensor = BodyFactory.CreateRectangle(SystemManager.physicsSystem.world, 100f, 75f, 1f);
+
+            sensor.UserData = entityId;
+            sensor.CollidesWith = (ushort)CollisionCategory.None;
+            sensor.BodyType = BodyType.Static;
+
+            EntityManager.addComponent(entityId, new DotDamageModifierComponent(entityId, DamageType.Fire, damageBonus));
+            EntityManager.addComponent(entityId, new AreaOfEffectComponent(entityId, sensor));
+            EntityManager.addComponent(entityId, new AffectedEntitiesComponent(entityId, factionsToAffect));
+            EntityManager.addComponent(entityId, new TrackEntityPositionComponent(entityId, ownerId));
             EntityManager.addComponent(entityId, new TimeToLiveComponent(entityId, timeToLive));
 
             return entityId;

@@ -301,7 +301,7 @@ namespace Loderpit.Systems
                     // Check chance to proc
                     if (Roller.roll(bloodletterSkill.chanceToProc) == 1)
                     {
-                        EntityFactory.createDoTSpell(defenderId, bloodletterSkill.bleedingDamageDie, bloodletterSkill.tickDelay, bloodletterSkill.tickCount);
+                        EntityFactory.createDoTSpell(defenderId, DamageType.Physical, bloodletterSkill.bleedingDamageDie, bloodletterSkill.tickDelay, bloodletterSkill.tickCount);
                     }
                 };
 
@@ -328,7 +328,7 @@ namespace Loderpit.Systems
                     // Check chance to proc
                     if (Roller.roll(igniteSkill.chanceToProc) == 1)
                     {
-                        EntityFactory.createDoTSpell(defenderId, igniteSkill.damageDie, igniteSkill.tickDelay, igniteSkill.tickCount);
+                        EntityFactory.createDoTSpell(defenderId, DamageType.Fire, igniteSkill.damageDie, igniteSkill.tickDelay, igniteSkill.tickCount);
                     }
                 };
 
@@ -987,6 +987,15 @@ namespace Loderpit.Systems
             performingSkillsComponent.executingSkills.Add(executeFrenzySkill);
         }
 
+        // Perform gale force skill
+        public void performGaleForceSkill(int entityId, GaleForceSkill skill)
+        {
+            FactionComponent factionComponent = EntityManager.getFactionComponent(entityId);
+
+            EntityFactory.createGaleForceSpell(entityId, skill.damageBonus, skill.duration, factionComponent.attackableFactions);
+            resetCooldown(entityId, SkillType.GaleForce);
+        }
+
         #endregion
 
         #region Cooldown methods
@@ -1141,7 +1150,7 @@ namespace Loderpit.Systems
                 {
                     if (Roller.roll(fireballSkill.burnChanceDie) == 1)
                     {
-                        EntityFactory.createDoTSpell(hitEntityId, fireballSkill.burnDamageDie, fireballSkill.burnTickDelay, fireballSkill.burnTickCount);
+                        EntityFactory.createDoTSpell(hitEntityId, DamageType.Fire, fireballSkill.burnDamageDie, fireballSkill.burnTickDelay, fireballSkill.burnTickCount);
                     }
                 }
             }

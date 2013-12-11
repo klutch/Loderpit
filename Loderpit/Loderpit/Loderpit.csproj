@@ -111,6 +111,7 @@
     <Compile Include="Components\SpellEffects\DamageMitigationComponent.cs" />
     <Compile Include="Components\SpellEffects\DamageTransferComponent.cs" />
     <Compile Include="Components\SpellEffects\DispellableComponent.cs" />
+    <Compile Include="Components\SpellEffects\DotDamageModifierComponent.cs" />
     <Compile Include="Components\SpellEffects\RiposteComponent.cs" />
     <Compile Include="Components\SpellEffects\SlowMotionComponent.cs" />
     <Compile Include="Components\SpellEffects\SpellTypeComponent.cs" />
@@ -133,6 +134,7 @@
     <Compile Include="Components\SpellEffects\TrackEntityPositionComponent.cs" />
     <Compile Include="Components\StatsComponent.cs" />
     <Compile Include="Components\UncontrollableComponent.cs" />
+    <Compile Include="DamageTypes.cs" />
     <Compile Include="DebugView.cs" />
     <Compile Include="EntityFactory.cs" />
     <Compile Include="Factions.cs" />
@@ -177,6 +179,7 @@
     <Compile Include="Skills\FireballSkill.cs" />
     <Compile Include="Skills\FlameAuraSkill.cs" />
     <Compile Include="Skills\FrenzySkill.cs" />
+    <Compile Include="Skills\GaleForceSkill.cs" />
     <Compile Include="Skills\GolemStanceSkill.cs" />
     <Compile Include="Skills\GuardianSkill.cs" />
     <Compile Include="Skills\HealingBlastSkill.cs" />
@@ -218,6 +221,9 @@
     <Compile Include="Systems\TeamSystem.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="resources\ui\action_icons\gale_force.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="resources\ui\action_icons\frenzy.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

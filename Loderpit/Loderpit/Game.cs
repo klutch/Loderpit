@@ -129,6 +129,7 @@ namespace Loderpit
             ResourceManager.addResource("riposte_icon", new Texture("resources/ui/action_icons/riposte.png"));
             ResourceManager.addResource("golem_stance_icon", new Texture("resources/ui/action_icons/golem_stance.png"));
             ResourceManager.addResource("frenzy_icon", new Texture("resources/ui/action_icons/frenzy.png"));
+            ResourceManager.addResource("gale_force_icon", new Texture("resources/ui/action_icons/gale_force.png"));
             ResourceManager.addResource("reticle", new Texture("resources/ui/reticle.png"));
 
             // Debug

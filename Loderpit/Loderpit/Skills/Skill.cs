@@ -43,6 +43,7 @@ namespace Loderpit.Skills
         Fireball,
         FlameAura,
         RainOfFire,
+        GaleForce,
 
         // Healer
         Heal,

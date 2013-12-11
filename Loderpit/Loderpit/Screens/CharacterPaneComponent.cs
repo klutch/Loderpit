@@ -191,6 +191,9 @@ namespace Loderpit.Screens
                         case SkillType.RainOfFire:
                             drawIcon("rain_of_fire_icon");
                             break;
+                        case SkillType.GaleForce:
+                            drawIcon("gale_force_icon");
+                            break;
 
                         // Healer
                         case SkillType.HealingBlast:

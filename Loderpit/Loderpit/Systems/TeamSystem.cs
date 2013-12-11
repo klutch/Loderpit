@@ -200,6 +200,9 @@ namespace Loderpit.Systems
                             case SkillType.RainOfFire:
                                 handleInitializeRainOfFire(selectedEntityId);
                                 break;
+                            case SkillType.GaleForce:
+                                handleInitializeGaleForce(selectedEntityId);
+                                break;
 
                             // Healer
                             case SkillType.HealingBlast:
@@ -475,6 +478,13 @@ namespace Loderpit.Systems
         private void handleInitializeFrenzy(int entityId)
         {
             SystemManager.skillSystem.performFrenzySkill(entityId, _initializingSkill as FrenzySkill);
+            _initializingSkill = null;
+        }
+
+        // Handle initialize gale force skill
+        private void handleInitializeGaleForce(int entityId)
+        {
+            SystemManager.skillSystem.performGaleForceSkill(entityId, _initializingSkill as GaleForceSkill);
             _initializingSkill = null;
         }
 
