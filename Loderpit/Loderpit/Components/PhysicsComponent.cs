@@ -13,10 +13,10 @@ namespace Loderpit.Components
         public ComponentType componentType { get { return ComponentType.Physics; } }
         public List<Body> bodies { get { return _bodies; } }
 
-        public PhysicsComponent(int entityId)
+        public PhysicsComponent(int entityId, List<Body> bodies = null)
         {
             _entityId = entityId;
-            _bodies = new List<Body>();
+            _bodies = bodies ?? new List<Body>();
         }
     }
 }

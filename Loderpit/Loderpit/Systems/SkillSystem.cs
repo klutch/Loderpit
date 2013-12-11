@@ -992,7 +992,7 @@ namespace Loderpit.Systems
         {
             FactionComponent factionComponent = EntityManager.getFactionComponent(entityId);
 
-            EntityFactory.createGaleForceSpell(entityId, skill.damageBonus, skill.duration, factionComponent.attackableFactions);
+            EntityFactory.createGaleForceSpell(entityId, skill.damageBonus, skill.duration, skill.windForce, factionComponent.attackableFactions);
             resetCooldown(entityId, SkillType.GaleForce);
         }
 

@@ -203,6 +203,35 @@ namespace Loderpit.Systems
             }
         }
 
+        // Handle external forces
+        private void handleExternalForces(List<int> entities)
+        {
+            foreach (int spellId in entities)
+            {
+                ExternalForceComponent externalForceComponent;
+                AffectedEntitiesComponent affectedEntitiesComponent;
+
+                // Skip over spells without an external force component
+                if ((externalForceComponent = EntityManager.getExternalForceComponent(spellId)) == null)
+                {
+                    continue;
+                }
+
+                affectedEntitiesComponent = EntityManager.getAffectedEntitiesComponent(spellId);
+
+                // Apply forces
+                foreach (int entityId in affectedEntitiesComponent.entities)
+                {
+                    PhysicsComponent physicsComponent = EntityManager.getPhysicsComponent(entityId);
+
+                    foreach (Body body in physicsComponent.bodies)
+                    {
+                        body.ApplyForce(externalForceComponent.force);
+                    }
+                }
+            }
+        }
+
         // Update
         public void update()
         {
@@ -220,6 +249,9 @@ namespace Loderpit.Systems
 
             // Handle damage over time
             handleDamageOverTime(EntityManager.getEntitiesPossessing(ComponentType.DamageOverTime));
+
+            // Handle external forces
+            handleExternalForces(EntityManager.getEntitiesPossessing(ComponentType.ExternalForce));
         }
     }
 }

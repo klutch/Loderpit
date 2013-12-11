@@ -93,7 +93,7 @@ namespace Loderpit
                     skills.Add(new FireballSkill(entityId, 1));
                     skills.Add(new FlameAuraSkill(entityId, 1));
                     skills.Add(new RainOfFireSkill(entityId, 1));
-                    skills.Add(new GaleForceSkill(entityId, 1));
+                    skills.Add(new GaleForceSkill(entityId, 1, new Vector2(1.5f, -1f)));
                     break;
 
                 case CharacterClass.Engineer:
@@ -182,6 +182,7 @@ namespace Loderpit
             EntityManager.addComponent(entityId, new PerformingSkillsComponent(entityId));
             EntityManager.addComponent(entityId, new ExternalMovementSpeedsComponent(entityId));
             EntityManager.addComponent(entityId, new AffectedBySpellEntitiesComponent(entityId));
+            EntityManager.addComponent(entityId, new PhysicsComponent(entityId, new List<Body>( new [] { body, feet })));
 
             return entityId;
         }
@@ -343,6 +344,7 @@ namespace Loderpit
             EntityManager.addComponent(entityId, new ExternalMovementSpeedsComponent(entityId));
             EntityManager.addComponent(entityId, new AffectedBySpellEntitiesComponent(entityId));
             EntityManager.addComponent(entityId, new BasicCombatAIComponent(entityId));
+            EntityManager.addComponent(entityId, new PhysicsComponent(entityId, new List<Body>(new[] { body, feet })));
 
             return entityId;
         }
@@ -1123,7 +1125,7 @@ namespace Loderpit
         }
 
         // Create gale force spell
-        public static int createGaleForceSpell(int ownerId, int damageBonus, int timeToLive, List<Faction> factionsToAffect)
+        public static int createGaleForceSpell(int ownerId, int damageBonus, int timeToLive, Vector2 windForce, List<Faction> factionsToAffect)
         {
             int entityId = EntityManager.createEntity();
             Body sensor = BodyFactory.CreateRectangle(SystemManager.physicsSystem.world, 100f, 75f, 1f);
@@ -1132,6 +1134,7 @@ namespace Loderpit
             sensor.CollidesWith = (ushort)CollisionCategory.None;
             sensor.BodyType = BodyType.Static;
 
+            EntityManager.addComponent(entityId, new ExternalForceComponent(entityId, windForce));
             EntityManager.addComponent(entityId, new DotDamageModifierComponent(entityId, DamageType.Fire, damageBonus));
             EntityManager.addComponent(entityId, new AreaOfEffectComponent(entityId, sensor));
             EntityManager.addComponent(entityId, new AffectedEntitiesComponent(entityId, factionsToAffect));

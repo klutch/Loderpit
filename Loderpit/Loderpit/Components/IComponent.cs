@@ -49,7 +49,8 @@ namespace Loderpit.Components
         BasicCombatAI,
         Uncontrollable,
         FrenzyAI,
-        DotDamageModifier
+        DotDamageModifier,
+        ExternalForce
     }
 
     public interface IComponent

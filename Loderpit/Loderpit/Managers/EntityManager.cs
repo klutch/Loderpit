@@ -96,7 +96,6 @@ namespace Loderpit.Managers
         public static void destroyEntity(int entityId)
         {
             GroupComponent groupComponent = SystemManager.groupSystem.getGroupComponentContaining(entityId);
-            CharacterComponent characterComponent = EntityManager.getCharacterComponent(entityId);
             DestructibleObstacleComponent destructibleObstacleComponent = EntityManager.getDestructibleObstacleComponent(entityId);
             AreaOfEffectComponent areaOfEffectComponent = EntityManager.getAreaOfEffectComponent(entityId);
             AffectedBySpellEntitiesComponent affectedBySpellEntitiesComponent = EntityManager.getAffectedBySpellEntitiesComponent(entityId);
@@ -107,13 +106,6 @@ namespace Loderpit.Managers
             if (groupComponent != null)
             {
                 groupComponent.entities.Remove(entityId);
-            }
-
-            // Handle character removal
-            if (characterComponent != null)
-            {
-                SystemManager.physicsSystem.world.RemoveBody(characterComponent.body);
-                SystemManager.physicsSystem.world.RemoveBody(characterComponent.feet);
             }
 
             // Handle destructible obstacle removal
@@ -241,5 +233,6 @@ namespace Loderpit.Managers
         public static BasicCombatAIComponent getBasicCombatAiComponent(int entityId) { return getComponent<BasicCombatAIComponent>(entityId, ComponentType.BasicCombatAI); }
         public static FrenzyAIComponent getFrenzyAiComponent(int entityId) { return getComponent<FrenzyAIComponent>(entityId, ComponentType.FrenzyAI); }
         public static DotDamageModifierComponent getDotDamageModifierComponent(int entityId) { return getComponent<DotDamageModifierComponent>(entityId, ComponentType.DotDamageModifier); }
+        public static ExternalForceComponent getExternalForceComponent(int entityId) { return getComponent<ExternalForceComponent>(entityId, ComponentType.ExternalForce); }
     }
 }
