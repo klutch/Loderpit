@@ -981,6 +981,7 @@ namespace Loderpit.Systems
             PerformingSkillsComponent performingSkillsComponent = EntityManager.getPerformingSkillsComponent(entityId);
             ExecuteFrenzySkill executeFrenzySkill = new ExecuteFrenzySkill(skill, null);
 
+            EntityFactory.createFrenzySpell(entityId, skill.damageBonus, skill.attackDelayBonus, executeFrenzySkill.delay);
             EntityManager.addComponent(entityId, new FrenzyAIComponent(entityId));
             EntityManager.addComponent(entityId, new UncontrollableComponent(entityId));
             performingSkillsComponent.executingSkills.Add(executeFrenzySkill);

@@ -1099,5 +1099,26 @@ namespace Loderpit
 
             return entityId;
         }
+
+        // Create frenzy spell
+        public static int createFrenzySpell(int ownerId, int damageBonus, int attackDelayBonus, int timeToLive)
+        {
+            int entityId = EntityManager.createEntity();
+            AffectedBySpellEntitiesComponent affectedBySpellEntitiesComponent = EntityManager.getAffectedBySpellEntitiesComponent(ownerId);
+            AffectedEntitiesComponent affectedEntitiesComponent = new AffectedEntitiesComponent(entityId);
+            StatModifierComponent statModifierComponent = new StatModifierComponent(entityId);
+
+            affectedEntitiesComponent.entities.Add(ownerId);
+            affectedBySpellEntitiesComponent.spellEntities.Add(entityId);
+
+            statModifierComponent.attackDelayMod = -attackDelayBonus;
+            statModifierComponent.damageDieMod = damageBonus;
+
+            EntityManager.addComponent(entityId, affectedEntitiesComponent);
+            EntityManager.addComponent(entityId, statModifierComponent);
+            EntityManager.addComponent(entityId, new TimeToLiveComponent(entityId, timeToLive));
+
+            return entityId;
+        }
     }
 }
