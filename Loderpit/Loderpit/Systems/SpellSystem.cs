@@ -169,7 +169,30 @@ namespace Loderpit.Systems
                     {
                         if (EntityManager.doesEntityExist(affectedId))
                         {
-                            SystemManager.combatSystem.applySpellDamage(affectedId, Roller.roll(damageOverTimeComponent.damageDie));
+                            int dotDamageModifier = 0;
+                            AffectedBySpellEntitiesComponent affectedBySpellEntitiesComponent = EntityManager.getAffectedBySpellEntitiesComponent(affectedId);
+
+                            // Look for dot modifiers affecting this entity
+                            foreach (int spellId in affectedBySpellEntitiesComponent.spellEntities)
+                            {
+                                DotDamageModifierComponent dotDamageModifierComponent;
+
+                                // Skip spell entities without a dot modifier
+                                if ((dotDamageModifierComponent = EntityManager.getDotDamageModifierComponent(spellId)) == null)
+                                {
+                                    continue;
+                                }
+
+                                // Skip if the damage types don't match up
+                                if (dotDamageModifierComponent.damageTypeToModifier != damageOverTimeComponent.damageType)
+                                {
+                                    continue;
+                                }
+
+                                dotDamageModifier += dotDamageModifierComponent.amount;
+                            }
+
+                            SystemManager.combatSystem.applySpellDamage(affectedId, Roller.roll(damageOverTimeComponent.damageDie) + dotDamageModifier);
                         }
                     }
                 }

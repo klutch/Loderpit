@@ -240,5 +240,6 @@ namespace Loderpit.Managers
         public static DamageMitigationComponent getDamageMitigationComponent(int entityId) { return getComponent<DamageMitigationComponent>(entityId, ComponentType.DamageMitigation); }
         public static BasicCombatAIComponent getBasicCombatAiComponent(int entityId) { return getComponent<BasicCombatAIComponent>(entityId, ComponentType.BasicCombatAI); }
         public static FrenzyAIComponent getFrenzyAiComponent(int entityId) { return getComponent<FrenzyAIComponent>(entityId, ComponentType.FrenzyAI); }
+        public static DotDamageModifierComponent getDotDamageModifierComponent(int entityId) { return getComponent<DotDamageModifierComponent>(entityId, ComponentType.DotDamageModifier); }
     }
 }
