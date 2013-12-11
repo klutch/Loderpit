@@ -86,10 +86,9 @@
     <Reference Include="System.Net" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AITypes.cs" />
     <Compile Include="CharacterClasses.cs" />
     <Compile Include="Components\AffectedBySpellEntitiesComponent.cs" />
-    <Compile Include="Components\AIComponent.cs" />
+    <Compile Include="Components\BasicCombatAIComponent.cs" />
     <Compile Include="Components\BridgeComponent.cs" />
     <Compile Include="Components\CeilingComponent.cs" />
     <Compile Include="Components\CharacterComponent.cs" />
@@ -97,6 +96,7 @@
     <Compile Include="Components\DestructibleObstacleComponent.cs" />
     <Compile Include="Components\ExternalMovementSpeedsComponent.cs" />
     <Compile Include="Components\FactionComponent.cs" />
+    <Compile Include="Components\FrenzyAIComponent.cs" />
     <Compile Include="Components\GroundBodyComponent.cs" />
     <Compile Include="Components\GroupComponent.cs" />
     <Compile Include="Components\IComponent.cs" />
@@ -132,6 +132,7 @@
     <Compile Include="Components\SpellEffects\TimeToLiveComponent.cs" />
     <Compile Include="Components\SpellEffects\TrackEntityPositionComponent.cs" />
     <Compile Include="Components\StatsComponent.cs" />
+    <Compile Include="Components\UncontrollableComponent.cs" />
     <Compile Include="DebugView.cs" />
     <Compile Include="EntityFactory.cs" />
     <Compile Include="Factions.cs" />

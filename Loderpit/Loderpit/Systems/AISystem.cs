@@ -9,77 +9,51 @@ namespace Loderpit.Systems
 {
     public class AISystem : ISystem
     {
-        private const float ENGAGE_PLAYER_DISTANCE = 10f;
+        private const float ENGAGEMENT_DISTANCE = 10f;
         public SystemType systemType { get { return SystemType.AI; } }
 
         public AISystem()
         {
         }
 
-        // Handle AI
-        private void handleAi(List<int> entities)
+        // Handle basic combat AI
+        private void handleBasicCombatAi(List<int> entities)
         {
             foreach (int entityId in entities)
             {
-                AIComponent aiComponent = EntityManager.getAiComponent(entityId);
+                FactionComponent factionComponent = EntityManager.getFactionComponent(entityId);
+                PositionComponent positionComponent = EntityManager.getPositionComponent(entityId);
+                SkillsComponent skillsComponent = EntityManager.getSkillsComponent(entityId);
+                List<int> attackableEntities;
 
-                switch (aiComponent.aiType)
+                // Skip if has target
+                if (EntityManager.getCombatTargetComponent(entityId) != null)
                 {
-                    case AIType.BasicEnemy:
-                        handleBasicEnemyAI(entityId);
-                        break;
-                }
-            }
-        }
-
-        // Handle basic enemy AI
-        private void handleBasicEnemyAI(int entityId)
-        {
-            List<int> playerEntities = SystemManager.teamSystem.getTeamEntities();
-            FactionComponent factionComponent = EntityManager.getFactionComponent(entityId);
-            PositionComponent enemyPositionComponent = EntityManager.getPositionComponent(entityId);
-            SkillsComponent skillsComponent = EntityManager.getSkillsComponent(entityId);
-            MeleeAttackSkill meleeAttackSkill;
-
-            // Skip if not enemy
-            if (factionComponent.faction != Faction.Enemy)
-            {
-                return;
-            }
-
-            // Skip if has group
-            if (SystemManager.groupSystem.getGroupComponentContaining(entityId) != null)
-            {
-                return;
-            }
-
-            // Skip if has target
-            if (EntityManager.getCombatTargetComponent(entityId) != null)
-            {
-                return;
-            }
-
-            // Skip if doesn't have melee attack skill
-            if ((meleeAttackSkill = skillsComponent.getSkill(SkillType.MeleeAttack) as MeleeAttackSkill) == null)
-            {
-                return;
-            }
-
-            foreach (int playerId in playerEntities)
-            {
-                PositionComponent playerPositionComponent = EntityManager.getPositionComponent(playerId);
-                IncapacitatedComponent playerIncapacitatedComponent = EntityManager.getIncapacitatedComponent(playerId);
-                Vector2 relative = playerPositionComponent.position - enemyPositionComponent.position;
-
-                // Skip if player's incapacitated
-                if (playerIncapacitatedComponent != null)
-                {
-                    continue;
+                    return;
                 }
 
-                if (relative.Length() <= ENGAGE_PLAYER_DISTANCE)
+                // Skip if doesn't have any attack skills
+                if (skillsComponent.attackSkills.Count == 0)
                 {
-                    SystemManager.combatSystem.startActiveAttack(entityId, playerId, meleeAttackSkill.range);
+                    return;
+                }
+
+                // Find hostile entities within the engagement distance
+                attackableEntities = Helpers.findEntitiesWithinRange(positionComponent.position, ENGAGEMENT_DISTANCE, factionComponent.hostileFaction);
+
+                foreach (int targetId in attackableEntities)
+                {
+                    PositionComponent targetPositionComponent = EntityManager.getPositionComponent(targetId);
+                    IncapacitatedComponent targetIncapacitatedComponent = EntityManager.getIncapacitatedComponent(targetId);
+                    Vector2 relative = targetPositionComponent.position - positionComponent.position;
+
+                    // Skip if player's incapacitated
+                    if (targetIncapacitatedComponent != null)
+                    {
+                        continue;
+                    }
+
+                    SystemManager.combatSystem.startActiveAttack(entityId, targetId, skillsComponent.attackSkills[0].range);
                     break;
                 }
             }
@@ -87,10 +61,14 @@ namespace Loderpit.Systems
 
         public void update()
         {
-            List<int> aiEntities = EntityManager.getEntitiesPossessing(ComponentType.AI);
+            List<int> basicCombatAiEntities = EntityManager.getEntitiesPossessing(ComponentType.BasicCombatAI);
+            List<int> frenzyAiEntities = EntityManager.getEntitiesPossessing(ComponentType.FrenzyAI);
 
-            // Handle ungrouped targets
-            handleAi(aiEntities);
+            // Handle basic combat ai
+            handleBasicCombatAi(basicCombatAiEntities);
+
+            // Handle frenzy ai
+            handleBasicCombatAi(frenzyAiEntities);
         }
     }
 }

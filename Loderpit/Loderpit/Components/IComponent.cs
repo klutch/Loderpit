@@ -46,7 +46,9 @@ namespace Loderpit.Components
         Riposte,
         SpellType,
         DamageMitigation,
-        AI
+        BasicCombatAI,
+        Uncontrollable,
+        FrenzyAI
     }
 
     public interface IComponent

@@ -65,6 +65,7 @@ namespace Loderpit
                     skills.Add(new BloodletterSkill(entityId, 1));
                     skills.Add(new FatalitySkill(entityId, 1));
                     skills.Add(new BattleCrySkill(entityId, 1));
+                    skills.Add(new FrenzySkill(entityId, 1));
                     break;
 
                 case CharacterClass.Defender:
@@ -340,7 +341,7 @@ namespace Loderpit
             EntityManager.addComponent(entityId, new PerformingSkillsComponent(entityId));
             EntityManager.addComponent(entityId, new ExternalMovementSpeedsComponent(entityId));
             EntityManager.addComponent(entityId, new AffectedBySpellEntitiesComponent(entityId));
-            EntityManager.addComponent(entityId, new AIComponent(entityId, AIType.BasicEnemy));
+            EntityManager.addComponent(entityId, new BasicCombatAIComponent(entityId));
 
             return entityId;
         }

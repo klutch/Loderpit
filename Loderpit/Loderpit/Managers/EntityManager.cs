@@ -238,6 +238,7 @@ namespace Loderpit.Managers
         public static RiposteComponent getRiposteComponent(int entityId) { return getComponent<RiposteComponent>(entityId, ComponentType.Riposte); }
         public static SpellTypeComponent getSpellTypeComponent(int entityId) { return getComponent<SpellTypeComponent>(entityId, ComponentType.SpellType); }
         public static DamageMitigationComponent getDamageMitigationComponent(int entityId) { return getComponent<DamageMitigationComponent>(entityId, ComponentType.DamageMitigation); }
-        public static AIComponent getAiComponent(int entityId) { return getComponent<AIComponent>(entityId, ComponentType.AI); }
+        public static BasicCombatAIComponent getBasicCombatAiComponent(int entityId) { return getComponent<BasicCombatAIComponent>(entityId, ComponentType.BasicCombatAI); }
+        public static FrenzyAIComponent getFrenzyAiComponent(int entityId) { return getComponent<FrenzyAIComponent>(entityId, ComponentType.FrenzyAI); }
     }
 }

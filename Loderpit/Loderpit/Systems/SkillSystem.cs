@@ -975,6 +975,17 @@ namespace Loderpit.Systems
             resetCooldown(entityId, SkillType.Riposte);
         }
 
+        // Perform frenzy skill
+        public void performFrenzySkill(int entityId, FrenzySkill skill)
+        {
+            PerformingSkillsComponent performingSkillsComponent = EntityManager.getPerformingSkillsComponent(entityId);
+            ExecuteFrenzySkill executeFrenzySkill = new ExecuteFrenzySkill(skill, null);
+
+            EntityManager.addComponent(entityId, new FrenzyAIComponent(entityId));
+            EntityManager.addComponent(entityId, new UncontrollableComponent(entityId));
+            performingSkillsComponent.executingSkills.Add(executeFrenzySkill);
+        }
+
         #endregion
 
         #region Cooldown methods
@@ -1282,6 +1293,15 @@ namespace Loderpit.Systems
             removeExecutedSkill(entityId, executeSkill);
         }
 
+        // Execute frenzy skill
+        private void executeFrenzy(int entityId, ExecuteFrenzySkill executeSkill)
+        {
+            EntityManager.removeComponent(entityId, ComponentType.FrenzyAI);
+            EntityManager.removeComponent(entityId, ComponentType.Uncontrollable);
+            removeExecutedSkill(entityId, executeSkill);
+            resetCooldown(entityId, SkillType.Frenzy);
+        }
+
         #endregion
 
         // Remove executed action from a PerformSkillsComponent
@@ -1340,6 +1360,9 @@ namespace Loderpit.Systems
                                 break;
                             case SkillType.Fatality:
                                 executeFatality(entityId, executeSkill as ExecuteFatalitySkill);
+                                break;
+                            case SkillType.Frenzy:
+                                executeFrenzy(entityId, executeSkill as ExecuteFrenzySkill);
                                 break;
 
                             // Mage

@@ -189,6 +189,9 @@ namespace Loderpit.Systems
                             case SkillType.Fatality:
                                 handleInitializeFatality(selectedEntityId);
                                 break;
+                            case SkillType.Frenzy:
+                                handleInitializeFrenzy(selectedEntityId);
+                                break;
 
                             // Mage
                             case SkillType.Fireball:
@@ -466,6 +469,13 @@ namespace Loderpit.Systems
                 SystemManager.skillSystem.enableGolemStance(entityId, _initializingSkill as GolemStanceSkill, Game.worldMouse);
                 _initializingSkill = null;
             }
+        }
+
+        // Handle initialize frenzy skill
+        private void handleInitializeFrenzy(int entityId)
+        {
+            SystemManager.skillSystem.performFrenzySkill(entityId, _initializingSkill as FrenzySkill);
+            _initializingSkill = null;
         }
 
         public void update()
