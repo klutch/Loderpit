@@ -5,7 +5,8 @@ namespace Loderpit.Components
 {
     public enum ExternalMovementSpeedType
     {
-        ShieldBlock
+        ShieldBlock,
+        GaleForce
     }
 
     public class ExternalMovementSpeedsComponent : IComponent

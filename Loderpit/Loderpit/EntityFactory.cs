@@ -1131,8 +1131,67 @@ namespace Loderpit
             Body sensor = BodyFactory.CreateRectangle(SystemManager.physicsSystem.world, 100f, 75f, 1f);
 
             sensor.UserData = entityId;
-            sensor.CollidesWith = (ushort)CollisionCategory.None;
+            sensor.CollidesWith = (ushort)CollisionCategory.Characters;
             sensor.BodyType = BodyType.Static;
+
+            sensor.OnCollision += new OnCollisionEventHandler((fixtureA, fixtureB, contact) =>
+                {
+                    int entityIdB;
+                    CharacterComponent characterComponentB;
+                    ExternalMovementSpeedsComponent externalSpeedsB;
+
+                    // Skip if fixture body's userdata doesn't exist
+                    if (fixtureB.Body.UserData == null)
+                    {
+                        return false;
+                    }
+
+                    entityIdB = (int)fixtureB.Body.UserData;
+
+                    // Skip if character component doesn't exist
+                    if ((characterComponentB = EntityManager.getCharacterComponent(entityIdB)) == null)
+                    {
+                        return false;
+                    }
+
+                    // Skip if external speeds component doesn't exist
+                    if ((externalSpeedsB = EntityManager.getExternalMovementSpeedsComponent(entityIdB)) == null)
+                    {
+                        return false;
+                    }
+
+                    externalSpeedsB.addExternalMovementSpeed(ExternalMovementSpeedType.GaleForce, 1);
+
+                    return false;
+                });
+            sensor.OnSeparation += new OnSeparationEventHandler((fixtureA, fixtureB) =>
+                {
+                    int entityIdB;
+                    CharacterComponent characterComponentB;
+                    ExternalMovementSpeedsComponent externalSpeedsB;
+
+                    // Skip if fixture body's userdata doesn't exist
+                    if (fixtureB.Body.UserData == null)
+                    {
+                        return;
+                    }
+
+                    entityIdB = (int)fixtureB.Body.UserData;
+
+                    // Skip if character component doesn't exist
+                    if ((characterComponentB = EntityManager.getCharacterComponent(entityIdB)) == null)
+                    {
+                        return;
+                    }
+
+                    // Skip if external speeds component doesn't exist
+                    if ((externalSpeedsB = EntityManager.getExternalMovementSpeedsComponent(entityIdB)) == null)
+                    {
+                        return;
+                    }
+
+                    externalSpeedsB.removeExternalMovementSpeed(ExternalMovementSpeedType.GaleForce);
+                });
 
             EntityManager.addComponent(entityId, new ExternalForceComponent(entityId, windForce));
             EntityManager.addComponent(entityId, new DotDamageModifierComponent(entityId, DamageType.Fire, damageBonus));
