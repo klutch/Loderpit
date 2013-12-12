@@ -412,21 +412,27 @@ namespace Loderpit.Systems
             int spellId;
             Action<Skill, int, int> onHitOther = (skill, attackerId, defenderId) =>
                 {
-                    RangedAttackSkill rangedSkill;
                     PositionComponent positionComponent;
 
-                    // Skip if not ranged attack skill
-                    if (skill.type != SkillType.RangedAttack)
+                    // Skip checking ranged attacks if the skill using this callback is the explosivity skill itself 
+                    // (possible, because that's the skill fed in from the rain of fire special case in SpellSystem.handleDamageOverTime)
+                    if (skill.type != SkillType.Explosivity)
                     {
-                        return;
-                    }
+                        RangedAttackSkill rangedSkill;
 
-                    rangedSkill = skill as RangedAttackSkill;
+                        // Skip if not ranged attack skill
+                        if (skill.type != SkillType.RangedAttack)
+                        {
+                            return;
+                        }
 
-                    // Skip if ranged skill's damage type isn't fire
-                    if (rangedSkill.damageType != DamageType.Fire)
-                    {
-                        return;
+                        rangedSkill = skill as RangedAttackSkill;
+
+                        // Skip if ranged skill's damage type isn't fire
+                        if (rangedSkill.damageType != DamageType.Fire)
+                        {
+                            return;
+                        }
                     }
 
                     // Skip if defender's dead
@@ -461,8 +467,8 @@ namespace Loderpit.Systems
             // Create proc for ranged attacks
             spellId = EntityFactory.createProcSpell(entityId, onHitOther);
 
-            // Add a spell type so other spells can use the proc
-            EntityManager.addComponent(spellId, new SpellTypeComponent(spellId, SpellType.ExplosivityProc));
+            // Give the skill a reference to its spell
+            explosivitySkill.explosivitySpellId = spellId;
         }
 
         #endregion
@@ -976,7 +982,7 @@ namespace Loderpit.Systems
                 });
 
             EntityManager.addComponent(entityId, new PositionTargetComponent(entityId, positionComponent.position.X, 1f));
-            EntityFactory.createRainOfFireSpell(position, skill.width, skill.damageDie, skill.tickDelay, skill.tickCount, new List<Faction>(new [] { factionComponent.hostileFaction }));
+            EntityFactory.createRainOfFireSpell(entityId, position, skill.width, skill.damageDie, skill.tickDelay, skill.tickCount, new List<Faction>(new [] { factionComponent.hostileFaction }));
             performingSkillsComponent.executingSkills.Add(executeSkill);
         }
 

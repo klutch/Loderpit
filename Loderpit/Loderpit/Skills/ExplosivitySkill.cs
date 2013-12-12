@@ -5,6 +5,8 @@ namespace Loderpit.Skills
 {
     public class ExplosivitySkill : Skill
     {
+        private int _explosivitySpellId;
+
         public string explosionChanceToProc { get { return calculateExplosionChanceToProc(); } }
         public string explosionDamageDie { get { return calculateExplosionDamageDie(); } }
         public float explosionForce { get { return 200f; } }
@@ -12,6 +14,7 @@ namespace Loderpit.Skills
         public string burningDamageDie { get { return calculateBurningDamageDie(); } }
         public int burningTickDelay { get { return 60; } }
         public int burningTickCount { get { return 3; } }
+        public int explosivitySpellId { get { return _explosivitySpellId; } set { _explosivitySpellId = value; } }
 
         public ExplosivitySkill(int entityId, int level)
             : base(SkillType.Explosivity, entityId, level, false)

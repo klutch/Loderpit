@@ -931,7 +931,7 @@ namespace Loderpit
         }
 
         // Create rain of fire spell
-        public static int createRainOfFireSpell(Vector2 position, float width, string damageDie, int tickDelay, int tickCount, List<Faction> factionsToAffect)
+        public static int createRainOfFireSpell(int ownerId, Vector2 position, float width, string damageDie, int tickDelay, int tickCount, List<Faction> factionsToAffect)
         {
             int entityId = EntityManager.createEntity();
             DamageOverTimeComponent damageOverTimeComponent = new DamageOverTimeComponent(entityId, DamageType.Fire, damageDie, tickDelay);
@@ -948,6 +948,8 @@ namespace Loderpit
             EntityManager.addComponent(entityId, timeToLiveComponent);
             EntityManager.addComponent(entityId, affectedEntitiesComponent);
             EntityManager.addComponent(entityId, areaOfEffectComponent);
+            EntityManager.addComponent(entityId, new SpellTypeComponent(entityId, SpellType.RainOfFire));
+            EntityManager.addComponent(entityId, new SpellOwnerComponent(entityId, ownerId));
             EntityManager.addComponent(entityId, new IgnoreBridgeRaycastComponent(entityId));
             EntityManager.addComponent(entityId, new IgnoreRopeRaycastComponent(entityId));
 

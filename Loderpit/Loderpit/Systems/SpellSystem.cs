@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework;
 using Loderpit.Components;
 using Loderpit.Components.SpellEffects;
 using Loderpit.Managers;
+using Loderpit.Skills;
 
 namespace Loderpit.Systems
 {
@@ -154,46 +155,68 @@ namespace Loderpit.Systems
                 return;
             }
 
-            foreach (int entityId in entities)
+            foreach (int dotSpellId in entities)
             {
-                DamageOverTimeComponent damageOverTimeComponent = EntityManager.getDamageOverTimeComponent(entityId);
+                DamageOverTimeComponent damageOverTimeComponent = EntityManager.getDamageOverTimeComponent(dotSpellId);
 
                 if (damageOverTimeComponent.currentDelay == 0)
                 {
-                    AffectedEntitiesComponent affectedEntitiesComponent = EntityManager.getAffectedEntitiesComponent(entityId);
+                    AffectedEntitiesComponent affectedEntitiesComponent = EntityManager.getAffectedEntitiesComponent(dotSpellId);
+                    SpellTypeComponent spellTypeComponent = EntityManager.getSpellTypeComponent(dotSpellId);
+                    SpellOwnerComponent spellOwnerComponent = EntityManager.getSpellOwnerComponent(dotSpellId);
                     List<int> copyOfAffectedEntities = new List<int>(affectedEntitiesComponent.entities);   // the entities collection can be modified when an entity dies, so operate on a copy of it
+                    bool isRainOfFireSpell = spellTypeComponent != null && spellTypeComponent.spellType == SpellType.RainOfFire;
 
                     damageOverTimeComponent.currentDelay = damageOverTimeComponent.baseDelay;
 
                     foreach (int affectedId in copyOfAffectedEntities)
                     {
-                        if (EntityManager.doesEntityExist(affectedId))
+                        int dotDamageModifier = 0;
+                        AffectedBySpellEntitiesComponent affectedBySpellEntitiesComponent = EntityManager.getAffectedBySpellEntitiesComponent(affectedId);
+
+                        // Skip if affected entity doesn't exist
+                        if (!EntityManager.doesEntityExist(affectedId))
                         {
-                            int dotDamageModifier = 0;
-                            AffectedBySpellEntitiesComponent affectedBySpellEntitiesComponent = EntityManager.getAffectedBySpellEntitiesComponent(affectedId);
+                            continue;
+                        }
 
-                            // Look for dot modifiers affecting this entity
-                            foreach (int spellId in affectedBySpellEntitiesComponent.spellEntities)
+                        // Look for dot modifiers affecting this entity
+                        foreach (int spellId in affectedBySpellEntitiesComponent.spellEntities)
+                        {
+                            DotDamageModifierComponent dotDamageModifierComponent;
+
+                            // Skip spell entities without a dot modifier
+                            if ((dotDamageModifierComponent = EntityManager.getDotDamageModifierComponent(spellId)) == null)
                             {
-                                DotDamageModifierComponent dotDamageModifierComponent;
-
-                                // Skip spell entities without a dot modifier
-                                if ((dotDamageModifierComponent = EntityManager.getDotDamageModifierComponent(spellId)) == null)
-                                {
-                                    continue;
-                                }
-
-                                // Skip if the damage types don't match up
-                                if (dotDamageModifierComponent.damageTypeToModifier != damageOverTimeComponent.damageType)
-                                {
-                                    continue;
-                                }
-
-                                dotDamageModifier += dotDamageModifierComponent.amount;
+                                continue;
                             }
 
-                            SystemManager.combatSystem.applySpellDamage(affectedId, Roller.roll(damageOverTimeComponent.damageDie) + dotDamageModifier);
+                            // Skip if the damage types don't match up
+                            if (dotDamageModifierComponent.damageTypeToModifier != damageOverTimeComponent.damageType)
+                            {
+                                continue;
+                            }
+
+                            dotDamageModifier += dotDamageModifierComponent.amount;
                         }
+
+                        // Special case -- Allow rain of fire to work with explosivity
+                        if (isRainOfFireSpell)
+                        {
+                            int ownerId = spellOwnerComponent.ownerId;
+                            SkillsComponent ownerSkillsComponent = EntityManager.getSkillsComponent(ownerId);
+                            ExplosivitySkill explosivitySkill = ownerSkillsComponent.getSkill(SkillType.Explosivity) as ExplosivitySkill;
+
+                            if (explosivitySkill != null)
+                            {
+                                ProcComponent explosivityProcComponent = EntityManager.getProcComponent(explosivitySkill.explosivitySpellId);
+
+                                explosivityProcComponent.onHitOther(explosivitySkill, ownerId, affectedId);
+                            }
+                        }
+
+                        // Apply spell damage
+                        SystemManager.combatSystem.applySpellDamage(affectedId, Roller.roll(damageOverTimeComponent.damageDie) + dotDamageModifier);
                     }
                 }
                 else

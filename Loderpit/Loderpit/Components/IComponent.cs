@@ -51,7 +51,8 @@ namespace Loderpit.Components
         FrenzyAI,
         DotDamageModifier,
         ExternalForce,
-        HealOverTime
+        HealOverTime,
+        SpellOwner
     }
 
     public interface IComponent

@@ -235,5 +235,6 @@ namespace Loderpit.Managers
         public static DotDamageModifierComponent getDotDamageModifierComponent(int entityId) { return getComponent<DotDamageModifierComponent>(entityId, ComponentType.DotDamageModifier); }
         public static ExternalForceComponent getExternalForceComponent(int entityId) { return getComponent<ExternalForceComponent>(entityId, ComponentType.ExternalForce); }
         public static HealOverTimeComponent getHealOverTimeComponent(int entityId) { return getComponent<HealOverTimeComponent>(entityId, ComponentType.HealOverTime); }
+        public static SpellOwnerComponent getSpellOwnerComponent(int entityId) { return getComponent<SpellOwnerComponent>(entityId, ComponentType.SpellOwner); }
     }
 }
