@@ -1139,6 +1139,18 @@ namespace Loderpit.Systems
             }
         }
 
+        // Perform servo bot skill -- creates a proxy character
+        public void performServoBotSkill(int entityId, ServoBotSkill skill)
+        {
+            // Skip if bot is already created
+            if (EntityManager.getHasProxyComponent(entityId) != null)
+            {
+                return;
+            }
+
+            EntityFactory.createServoBot(entityId, skill.maxHp);
+        }
+
         #endregion
 
         #region Cooldown methods
@@ -1481,6 +1493,30 @@ namespace Loderpit.Systems
             _skillsToRemove[entityId].Add(executeSkill);
         }
 
+        // Handle auto-performed skills -- Used to automatically execute passive skills that have a cooldown (like engi's servo bot skill)
+        private void handleAutoPerformedSkills(List<int> entities)
+        {
+            foreach (int entityId in entities)
+            {
+                SkillsComponent skillsComponent = EntityManager.getSkillsComponent(entityId);
+
+                foreach (Skill skill in skillsComponent.skills)
+                {
+                    if (skill.cooldown != 0)
+                    {
+                        continue;
+                    }
+
+                    switch (skill.type)
+                    {
+                        case SkillType.ServoBot:
+                            performServoBotSkill(entityId, skill as ServoBotSkill);
+                            break;
+                    }
+                }
+            }
+        }
+
         // Handle perform skills components
         private void handlePerformSkills(List<int> entities)
         {
@@ -1596,6 +1632,9 @@ namespace Loderpit.Systems
 
             // Decrement skill cooldowns
             decrementSkillCooldowns(skillsEntities);
+
+            // Handle auto performed skills
+            handleAutoPerformedSkills(skillsEntities);
 
             // Handle perform skills
             handlePerformSkills(performSkillsEntities);

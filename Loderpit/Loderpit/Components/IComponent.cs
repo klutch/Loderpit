@@ -52,7 +52,9 @@ namespace Loderpit.Components
         DotDamageModifier,
         ExternalForce,
         HealOverTime,
-        SpellOwner
+        SpellOwner,
+        HasProxy,
+        IsProxy
     }
 
     public interface IComponent

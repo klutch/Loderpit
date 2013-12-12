@@ -99,10 +99,12 @@
     <Compile Include="Components\FrenzyAIComponent.cs" />
     <Compile Include="Components\GroundBodyComponent.cs" />
     <Compile Include="Components\GroupComponent.cs" />
+    <Compile Include="Components\HasProxyComponent.cs" />
     <Compile Include="Components\IComponent.cs" />
     <Compile Include="Components\IgnoreBridgeRaycastComponent.cs" />
     <Compile Include="Components\IgnoreRopeRaycastComponent.cs" />
     <Compile Include="Components\IncapacitatedComponent.cs" />
+    <Compile Include="Components\IsProxyComponent.cs" />
     <Compile Include="Components\IsTouchingEndLevelComponent.cs" />
     <Compile Include="Components\PerformingSkillsComponent.cs" />
     <Compile Include="Components\PhysicsComponent.cs" />
@@ -201,6 +203,7 @@
     <Compile Include="Skills\RangedAttackSkill.cs" />
     <Compile Include="Skills\RegenerationSkill.cs" />
     <Compile Include="Skills\RiposteSkill.cs" />
+    <Compile Include="Skills\ServoBotSkill.cs" />
     <Compile Include="Skills\ShieldBashSkill.cs" />
     <Compile Include="Skills\ShieldOfThornsSkill.cs" />
     <Compile Include="Skills\Skill.cs" />

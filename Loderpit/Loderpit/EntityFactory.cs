@@ -102,6 +102,7 @@ namespace Loderpit
                     skills.Add(new BuildBridgeSkill(entityId, 1));
                     skills.Add(new ProximityMineSkill(entityId, 1));
                     skills.Add(new FortificationSkill(entityId, 1));
+                    skills.Add(new ServoBotSkill(entityId, 1));
                     break;
 
                 case CharacterClass.Healer:
@@ -778,6 +779,61 @@ namespace Loderpit
             EntityManager.addComponent(entityId, new StatsComponent(entityId, maxHp, maxHp, 0, 0, 0, 100));
             EntityManager.addComponent(entityId, new FactionComponent(entityId, Faction.Player, Faction.None));
             EntityManager.addComponent(entityId, new AffectedBySpellEntitiesComponent(entityId));
+
+            return entityId;
+        }
+
+        // Create servo bot entity
+        public static int createServoBot(int ownerId, int maxHp)
+        {
+            int entityId = EntityManager.createEntity();
+            PositionComponent ownerPositionComponent = EntityManager.getPositionComponent(ownerId);
+            PhysicsComponent ownerPhysicsComponent = EntityManager.getPhysicsComponent(ownerId);
+            FactionComponent ownerFactionComponent = EntityManager.getFactionComponent(ownerId);
+            Vector2 feetOffset = new Vector2(0, 0.25f);
+            Body body;
+            Body feet;
+            RevoluteJoint feetJoint;
+            World world = SystemManager.physicsSystem.world;
+
+            body = BodyFactory.CreateRectangle(world, 0.5f, 0.5f, 0.5f, ownerPositionComponent.position);
+            body.BodyType = BodyType.Dynamic;
+            body.UserData = entityId;
+            body.FixedRotation = true;
+            body.Friction = 0f;
+            body.UserData = entityId;
+            body.CollisionCategories = (ushort)CollisionCategory.Characters;
+
+            feet = BodyFactory.CreateCircle(world, 0.25f, 1f, ownerPositionComponent.position + feetOffset);
+            feet.BodyType = BodyType.Dynamic;
+            feet.UserData = entityId;
+            feet.Friction = 5f;
+            feet.CollisionCategories = (ushort)CollisionCategory.CharacterFeet;
+            feet.CollidesWith = (ushort)CollisionCategory.Terrain;
+
+            feetJoint = new RevoluteJoint(body, feet, feetOffset, Vector2.Zero, false);
+            feetJoint.MotorEnabled = true;
+            feetJoint.MaxMotorTorque = 100f;
+            feetJoint.MotorSpeed = 0f;
+            world.AddJoint(feetJoint);
+
+            // Owner components
+            EntityManager.addComponent(ownerId, new HasProxyComponent(ownerId, entityId));
+
+            // Bot components
+            EntityManager.addComponent(entityId, new IsProxyComponent(entityId, ownerId));
+            EntityManager.addComponent(entityId, new CharacterComponent(entityId, body, feet, feetJoint, CharacterClass.Fighter));
+            EntityManager.addComponent(entityId, new StatsComponent(entityId, maxHp, maxHp, 10, 10, 10, 100));
+            EntityManager.addComponent(entityId, new PositionComponent(entityId, body));
+            EntityManager.addComponent(entityId, new IgnoreRopeRaycastComponent(entityId));
+            EntityManager.addComponent(entityId, new IgnoreBridgeRaycastComponent(entityId));
+            EntityManager.addComponent(entityId, new FactionComponent(entityId, ownerFactionComponent.faction, ownerFactionComponent.hostileFaction));
+            EntityManager.addComponent(entityId, new RenderHealthComponent(entityId));
+            EntityManager.addComponent(entityId, new PerformingSkillsComponent(entityId));
+            EntityManager.addComponent(entityId, new ExternalMovementSpeedsComponent(entityId));
+            EntityManager.addComponent(entityId, new AffectedBySpellEntitiesComponent(entityId));
+            EntityManager.addComponent(entityId, new PhysicsComponent(entityId, new List<Body>(new[] { body, feet })));
+            EntityManager.addComponent(entityId, new PositionTargetComponent(entityId, ownerPhysicsComponent.bodies[0], 1f));
 
             return entityId;
         }

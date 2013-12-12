@@ -14,6 +14,7 @@ namespace Loderpit.Skills
         BuildBridge,
         ProximityMine,
         Fortification,
+        ServoBot,
 
         // Archer
         ShieldOfThorns,
