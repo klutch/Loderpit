@@ -132,7 +132,7 @@ namespace Loderpit.Systems
         {
             StatsComponent statsComponent = EntityManager.getStatsComponent(entityId);
             AffectedBySpellEntitiesComponent affectedBySpellEntitiesComponent = EntityManager.getAffectedBySpellEntitiesComponent(entityId);
-            int totalAttackDelay = statsComponent.baseAttackDelay;
+            int attackDelayModifier = 0;
 
             // Accumulate changes from spells
             foreach (int spellId in affectedBySpellEntitiesComponent.spellEntities)
@@ -141,14 +141,14 @@ namespace Loderpit.Systems
 
                 if (statModifierComponent != null)
                 {
-                    totalAttackDelay += statModifierComponent.attackDelayMod;
+                    attackDelayModifier += statModifierComponent.attackDelayMod;
                 }
             }
 
             // TODO: Accumulate changes from items
             // ...
 
-            return Math.Max(0, totalAttackDelay);
+            return Math.Max(0, statsComponent.baseAttackDelay + attackDelayModifier);
         }
 
         // Attack die
