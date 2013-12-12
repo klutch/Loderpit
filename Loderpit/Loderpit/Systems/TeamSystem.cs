@@ -170,6 +170,9 @@ namespace Loderpit.Systems
                             case SkillType.ProximityMine:
                                 handleInitializeProximityMine(selectedEntityId);
                                 break;
+                            case SkillType.Fortification:
+                                handleInitializeFortification(selectedEntityId);
+                                break;
 
                             // Archer
                             case SkillType.PowerShot:
@@ -486,6 +489,16 @@ namespace Loderpit.Systems
         {
             SystemManager.skillSystem.performGaleForceSkill(entityId, _initializingSkill as GaleForceSkill);
             _initializingSkill = null;
+        }
+
+        // Handle initialize fortification skill
+        private void handleInitializeFortification(int entityId)
+        {
+            if (Game.newMouseState.isLeftButtonPressed && !Game.oldMouseState.isLeftButtonPressed)
+            {
+                SystemManager.skillSystem.performFortificationSkill(entityId, _initializingSkill as FortificationSkill, Game.worldMouse);
+                _initializingSkill = null;
+            }
         }
 
         public void update()

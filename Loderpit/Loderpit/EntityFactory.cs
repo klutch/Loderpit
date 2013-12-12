@@ -101,6 +101,7 @@ namespace Loderpit
                     skills.Add(new ThrowRopeSkill(entityId, 1));
                     skills.Add(new BuildBridgeSkill(entityId, 1));
                     skills.Add(new ProximityMineSkill(entityId, 1));
+                    skills.Add(new FortificationSkill(entityId, 1));
                     break;
 
                 case CharacterClass.Healer:
@@ -747,6 +748,48 @@ namespace Loderpit
             EntityManager.addComponent(entityId, new PositionComponent(entityId, body));
             EntityManager.addComponent(entityId, new IgnoreBridgeRaycastComponent(entityId));
             EntityManager.addComponent(entityId, new IgnoreRopeRaycastComponent(entityId));
+
+            return entityId;
+        }
+
+        // Create fortification entity
+        public static int createFortification(Vector2 position, int maxHp, List<Faction> factionsToBlock)
+        {
+            int entityId = EntityManager.createEntity();
+            Body body = BodyFactory.CreateBody(SystemManager.physicsSystem.world, position);
+            Fixture fixture = FixtureFactory.AttachRectangle(3f, 8f, 1f, new Vector2(0f, -3.5f), body);
+
+            body.UserData = entityId;
+            body.CollidesWith = (ushort)CollisionCategory.Characters;
+
+            body.OnCollision += new OnCollisionEventHandler((fixtureA, fixtureB, contact) =>
+                {
+                    int entityIdB;
+                    FactionComponent factionComponentB;
+
+                    // Skip fixture bodies without a userdata
+                    if (fixtureB.Body.UserData == null)
+                    {
+                        return true;
+                    }
+
+                    entityIdB = (int)fixtureB.Body.UserData;
+
+                    // Skip if no faction component
+                    if ((factionComponentB = EntityManager.getFactionComponent(entityIdB)) == null)
+                    {
+                        return true;
+                    }
+
+                    // Filter collisions by faction
+                    return factionsToBlock.Contains(factionComponentB.faction);
+                });
+
+            EntityManager.addComponent(entityId, new PositionComponent(entityId, body));
+            EntityManager.addComponent(entityId, new DestructibleObstacleComponent(entityId, body));
+            EntityManager.addComponent(entityId, new StatsComponent(entityId, maxHp, maxHp, 0, 0, 0, 100));
+            EntityManager.addComponent(entityId, new FactionComponent(entityId, Faction.Player, Faction.None));
+            EntityManager.addComponent(entityId, new AffectedBySpellEntitiesComponent(entityId));
 
             return entityId;
         }

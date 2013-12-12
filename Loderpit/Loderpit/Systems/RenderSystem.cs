@@ -191,6 +191,11 @@ namespace Loderpit.Systems
                 _actionLabel.DisplayedString = "Golem Stance";
                 drawReticle(Game.sfmlWorldMouse, Color.Yellow);
             }
+            else if (teamSystem.initializingSkill.type == SkillType.Fortification)
+            {
+                _actionLabel.DisplayedString = "Fortification";
+                drawReticle(Game.sfmlWorldMouse, Color.Cyan);
+            }
         }
 
         public void update()

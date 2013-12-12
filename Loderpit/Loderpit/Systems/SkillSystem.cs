@@ -1085,6 +1085,60 @@ namespace Loderpit.Systems
             resetCooldown(entityId, SkillType.GaleForce);
         }
 
+        // Perform fortification skill
+        public void performFortificationSkill(int entityId, FortificationSkill skill, Vector2 target)
+        {
+            Vector2 pointA = target + new Vector2(0, -10f);
+            Vector2 pointB = target + new Vector2(0, 100f);
+            Vector2 final = target;
+            bool hit = false;
+
+            SystemManager.physicsSystem.world.RayCast((f, p, n, fr) =>
+                {
+                    int entityIdB;
+
+                    // Skip if fixture body has no userdata
+                    if (f.Body.UserData == null)
+                    {
+                        return -1;
+                    }
+
+                    entityIdB = (int)f.Body.UserData;
+
+                    // Skip if no ground component
+                    if (EntityManager.getGroundBodyComponent(entityIdB) == null)
+                    {
+                        return -1;
+                    }
+
+                    // Store hit position
+                    final = p;
+                    hit = true;
+                    return fr;
+                },
+                pointA,
+                pointB);
+
+            if (hit)
+            {
+                PerformingSkillsComponent performingSkillsComponent = EntityManager.getPerformingSkillsComponent(entityId);
+
+                EntityManager.addComponent(entityId, new PositionTargetComponent(entityId, final.X, skill.range));
+                performingSkillsComponent.executingSkills.Add(
+                    new ExecuteFortificationSkill(
+                        skill,
+                        final,
+                        () =>
+                        {
+                            PositionComponent checkPositionComponent = EntityManager.getPositionComponent(entityId);
+                            PositionTargetComponent positionTargetComponent = EntityManager.getPositionTargetComponent(entityId);
+                            float distance = Math.Abs(positionTargetComponent.position - checkPositionComponent.position.X);
+
+                            return distance <= positionTargetComponent.tolerance + SKILL_RANGE_TOLERANCE;
+                        }));
+            }
+        }
+
         #endregion
 
         #region Cooldown methods
@@ -1402,6 +1456,18 @@ namespace Loderpit.Systems
             resetCooldown(entityId, SkillType.Frenzy);
         }
 
+        // Execute fortification skill
+        private void executeFortification(int entityId, ExecuteFortificationSkill executeSkill)
+        {
+            FortificationSkill fortificationSkill = executeSkill.skill as FortificationSkill;
+            FactionComponent factionComponent = EntityManager.getFactionComponent(entityId);
+
+            EntityFactory.createFortification(executeSkill.target, fortificationSkill.maxHp, factionComponent.attackableFactions);
+            EntityManager.removeComponent(entityId, ComponentType.PositionTarget);
+            removeExecutedSkill(entityId, executeSkill);
+            resetCooldown(entityId, SkillType.Fortification);
+        }
+
         #endregion
 
         // Remove executed action from a PerformSkillsComponent
@@ -1444,6 +1510,9 @@ namespace Loderpit.Systems
                                 break;
                             case SkillType.ProximityMine:
                                 executeProximityMine(entityId, executeSkill as ExecuteProximityMineSkill);
+                                break;
+                            case SkillType.Fortification:
+                                executeFortification(entityId, executeSkill as ExecuteFortificationSkill);
                                 break;
 
                             // Archer

@@ -182,6 +182,7 @@
     <Compile Include="Skills\FatalitySkill.cs" />
     <Compile Include="Skills\FireballSkill.cs" />
     <Compile Include="Skills\FlameAuraSkill.cs" />
+    <Compile Include="Skills\FortificationSkill.cs" />
     <Compile Include="Skills\FrenzySkill.cs" />
     <Compile Include="Skills\GaleForceSkill.cs" />
     <Compile Include="Skills\GolemStanceSkill.cs" />
@@ -226,6 +227,9 @@
     <Compile Include="Systems\TeamSystem.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="resources\ui\action_icons\fortification.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="resources\ui\action_icons\gale_force.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
