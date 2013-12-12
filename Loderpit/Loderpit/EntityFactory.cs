@@ -194,6 +194,7 @@ namespace Loderpit
         {
             int entityIdA = (int)fixtureA.Body.UserData;
             int entityIdB;
+            FactionComponent factionComponentA = EntityManager.getFactionComponent(entityIdA);
             CharacterComponent characterComponentB;
             RopeComponent ropeComponentB;
             RopeGrabComponent ropeGrabComponentA;
@@ -216,7 +217,6 @@ namespace Loderpit
 
             if ((ropeComponentB = EntityManager.getRopeComponent(entityIdB)) != null)
             {
-                // A character is touching an entity with a rope component
                 if ((ropeGrabComponentA = EntityManager.getRopeGrabComponent(entityIdA)) == null)
                 {
                     SystemManager.characterSystem.grabRope(entityIdA, ropeComponentB, fixtureB.Body);
@@ -225,12 +225,21 @@ namespace Loderpit
             }
             else if ((sendActivateObstacleComponentB = EntityManager.getSendActivateObstacleComponent(entityIdB)) != null)
             {
-                // A character has entered an area designated to activate an obstacle
                 SystemManager.obstacleSystem.activateObstacle(sendActivateObstacleComponentB);
             }
             else if ((destructibleObstacleComponentB = EntityManager.getDestructibleObstacleComponent(entityIdB)) != null)
             {
-                // A character has touched a destructible object
+                // Check factions
+                if (destructibleObstacleComponentB.factionsToBlock.Contains(factionComponentA.faction))
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+
+                /*
                 GroupComponent groupComponent = SystemManager.groupSystem.getGroupComponentContaining(entityIdA);
 
                 if (groupComponent != null)
@@ -246,7 +255,7 @@ namespace Loderpit
                         groupComponent.addFormation(formation);
                         destructibleObstacleComponentB.formationsToRemove.Add(groupComponent.entityId, formation);
                     }
-                }
+                }*/
             }
 
             return true;
@@ -614,7 +623,7 @@ namespace Loderpit
             // DestructibleObstacle (with Vitals) components
             if (isDestructibleObstacle)
             {
-                EntityManager.addComponent(entityId, new DestructibleObstacleComponent(entityId, body));
+                EntityManager.addComponent(entityId, new DestructibleObstacleComponent(entityId, body, new List<Faction>(new [] { Faction.Enemy, Faction.Player })));
                 EntityManager.addComponent(entityId, new StatsComponent(entityId, 10, 10, 0, 0, 0, 100));
                 EntityManager.addComponent(entityId, new FactionComponent(entityId, Faction.Neutral, Faction.None));
                 EntityManager.addComponent(entityId, new AffectedBySpellEntitiesComponent(entityId));
@@ -757,36 +766,15 @@ namespace Loderpit
         {
             int entityId = EntityManager.createEntity();
             Body body = BodyFactory.CreateBody(SystemManager.physicsSystem.world, position);
-            Fixture fixture = FixtureFactory.AttachRectangle(3f, 8f, 1f, new Vector2(0f, -3.5f), body);
+            Fixture fixture = FixtureFactory.AttachRectangle(1.5f, 8f, 1f, new Vector2(0f, -3.5f), body);
 
             body.UserData = entityId;
             body.CollidesWith = (ushort)CollisionCategory.Characters;
-
-            body.OnCollision += new OnCollisionEventHandler((fixtureA, fixtureB, contact) =>
-                {
-                    int entityIdB;
-                    FactionComponent factionComponentB;
-
-                    // Skip fixture bodies without a userdata
-                    if (fixtureB.Body.UserData == null)
-                    {
-                        return true;
-                    }
-
-                    entityIdB = (int)fixtureB.Body.UserData;
-
-                    // Skip if no faction component
-                    if ((factionComponentB = EntityManager.getFactionComponent(entityIdB)) == null)
-                    {
-                        return true;
-                    }
-
-                    // Filter collisions by faction
-                    return factionsToBlock.Contains(factionComponentB.faction);
-                });
+            body.Friction = 0;
 
             EntityManager.addComponent(entityId, new PositionComponent(entityId, body));
-            EntityManager.addComponent(entityId, new DestructibleObstacleComponent(entityId, body));
+            EntityManager.addComponent(entityId, new RenderHealthComponent(entityId));
+            EntityManager.addComponent(entityId, new DestructibleObstacleComponent(entityId, body, factionsToBlock));
             EntityManager.addComponent(entityId, new StatsComponent(entityId, maxHp, maxHp, 0, 0, 0, 100));
             EntityManager.addComponent(entityId, new FactionComponent(entityId, Faction.Player, Faction.None));
             EntityManager.addComponent(entityId, new AffectedBySpellEntitiesComponent(entityId));
