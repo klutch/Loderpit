@@ -324,6 +324,12 @@ namespace Loderpit.Systems
         // Handle attacks
         private void handleAttacks(List<int> attackerEntities, List<int> defenderEntities)
         {
+            // Prevent attacks from happening too quickly
+            if (SystemManager.physicsSystem.isSlowMotion && !SystemManager.physicsSystem.isReadyForSlowMotionTick)
+            {
+                return;
+            }
+
             foreach (int attackerId in attackerEntities)
             {
                 if (EntityManager.doesEntityExist(attackerId))  // entity could have been killed earlier this frame
@@ -391,6 +397,12 @@ namespace Loderpit.Systems
         // Handle (passive) heals
         private void handleHeals(List<int> entities)
         {
+            // Prevent heals from happening too quickly
+            if (SystemManager.physicsSystem.isSlowMotion && !SystemManager.physicsSystem.isReadyForSlowMotionTick)
+            {
+                return;
+            }
+
             foreach (int entityId in entities)
             {
                 SkillsComponent skillsComponent = EntityManager.getSkillsComponent(entityId);
