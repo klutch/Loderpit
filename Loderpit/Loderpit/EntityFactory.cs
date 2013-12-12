@@ -107,6 +107,7 @@ namespace Loderpit
                     skills.Add(new HealingBlastSkill(entityId, 1));
                     skills.Add(new InfusionSkill(entityId, 1));
                     skills.Add(new DispelSkill(entityId, 1));
+                    skills.Add(new RegenerationSkill(entityId, 1));
                     break;
             }
 
@@ -978,6 +979,8 @@ namespace Loderpit
             EntityManager.addComponent(entityId, new AreaOfEffectComponent(entityId, sensor));
             EntityManager.addComponent(entityId, new AffectedEntitiesComponent(entityId, factionsToAffect));
             EntityManager.addComponent(entityId, new TrackEntityPositionComponent(entityId, targetId));
+            EntityManager.addComponent(entityId, new IgnoreBridgeRaycastComponent(entityId));
+            EntityManager.addComponent(entityId, new IgnoreRopeRaycastComponent(entityId));
 
             return entityId;
         }
@@ -1099,6 +1102,8 @@ namespace Loderpit
             EntityManager.addComponent(entityId, new AreaOfEffectComponent(entityId, sensor));
             EntityManager.addComponent(entityId, new AffectedEntitiesComponent(entityId, factionsToAffect));
             EntityManager.addComponent(entityId, statModifierComponent);
+            EntityManager.addComponent(entityId, new IgnoreBridgeRaycastComponent(entityId));
+            EntityManager.addComponent(entityId, new IgnoreRopeRaycastComponent(entityId));
 
             return entityId;
         }
@@ -1199,6 +1204,28 @@ namespace Loderpit
             EntityManager.addComponent(entityId, new AffectedEntitiesComponent(entityId, factionsToAffect));
             EntityManager.addComponent(entityId, new TrackEntityPositionComponent(entityId, ownerId));
             EntityManager.addComponent(entityId, new TimeToLiveComponent(entityId, timeToLive));
+            EntityManager.addComponent(entityId, new IgnoreBridgeRaycastComponent(entityId));
+            EntityManager.addComponent(entityId, new IgnoreRopeRaycastComponent(entityId));
+
+            return entityId;
+        }
+
+        // Create regeneration spell
+        public static int createRegenerationSpell(int ownerId, string healDie, float radius, int tickDelay, List<Faction> factionsToAffect)
+        {
+            int entityId = EntityManager.createEntity();
+            Body sensor = BodyFactory.CreateCircle(SystemManager.physicsSystem.world, radius, 1f);
+
+            sensor.UserData = entityId;
+            sensor.CollidesWith = (ushort)CollisionCategory.None;
+            sensor.BodyType = BodyType.Static;
+
+            EntityManager.addComponent(entityId, new TrackEntityPositionComponent(entityId, ownerId));
+            EntityManager.addComponent(entityId, new AffectedEntitiesComponent(entityId, factionsToAffect));
+            EntityManager.addComponent(entityId, new HealOverTimeComponent(entityId, healDie, tickDelay));
+            EntityManager.addComponent(entityId, new AreaOfEffectComponent(entityId, sensor));
+            EntityManager.addComponent(entityId, new IgnoreBridgeRaycastComponent(entityId));
+            EntityManager.addComponent(entityId, new IgnoreRopeRaycastComponent(entityId));
 
             return entityId;
         }

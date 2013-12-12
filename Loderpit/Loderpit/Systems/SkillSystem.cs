@@ -94,6 +94,9 @@ namespace Loderpit.Systems
                         case SkillType.FlameAura:
                             initializeFlameAuraSkill(entityId, skill as FlameAuraSkill);
                             break;
+                        case SkillType.Regeneration:
+                            initializeRegenerationSkill(entityId, skill as RegenerationSkill);
+                            break;
                     }
                 }
             }
@@ -380,6 +383,14 @@ namespace Loderpit.Systems
             FactionComponent factionComponent = EntityManager.getFactionComponent(entityId);
 
             EntityFactory.createBattleCrySpell(entityId, battleCrySkill.range, battleCrySkill.attackDelayBonus, battleCrySkill.damageBonus, new List<Faction>(new[] { factionComponent.faction }));
+        }
+
+        // Initialize regeneration skill
+        private void initializeRegenerationSkill(int entityId, RegenerationSkill regenSkill)
+        {
+            FactionComponent factionComponent = EntityManager.getFactionComponent(entityId);
+
+            EntityFactory.createRegenerationSpell(entityId, regenSkill.healDie, regenSkill.range, regenSkill.tickDelay, new List<Faction>(new [] { factionComponent.faction }));
         }
 
         #endregion
@@ -1167,7 +1178,7 @@ namespace Loderpit.Systems
             HealingBlastSkill healingBlastSkill = executeHealingBlast.skill as HealingBlastSkill;
             int targetId = executeHealingBlast.targetId;
 
-            SystemManager.combatSystem.applySpellHeal(entityId, targetId, Roller.roll(healingBlastSkill.healDie));
+            SystemManager.combatSystem.applySpellHeal(targetId, Roller.roll(healingBlastSkill.healDie));
             EntityManager.removeComponent(entityId, ComponentType.PositionTarget);
             resetCooldown(entityId, SkillType.HealingBlast);
             removeExecutedSkill(entityId, executeHealingBlast);

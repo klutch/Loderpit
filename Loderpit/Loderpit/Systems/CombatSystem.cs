@@ -267,7 +267,7 @@ namespace Loderpit.Systems
         }
 
         // Apply spell healing
-        public void applySpellHeal(int healerId, int targetId, int amount)
+        public void applySpellHeal(int targetId, int amount)
         {
             StatsComponent targetStats = EntityManager.getStatsComponent(targetId);
             PositionComponent targetPositionComponent = EntityManager.getPositionComponent(targetId);
@@ -442,7 +442,7 @@ namespace Loderpit.Systems
                 }
 
                 // Heal target
-                applySpellHeal(entityId, healTargetId, Roller.roll(healSkill.healDie));
+                applySpellHeal(healTargetId, Roller.roll(healSkill.healDie));
                 SystemManager.skillSystem.resetCooldown(entityId, SkillType.Heal);
             }
         }

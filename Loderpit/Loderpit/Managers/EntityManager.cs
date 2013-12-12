@@ -234,5 +234,6 @@ namespace Loderpit.Managers
         public static FrenzyAIComponent getFrenzyAiComponent(int entityId) { return getComponent<FrenzyAIComponent>(entityId, ComponentType.FrenzyAI); }
         public static DotDamageModifierComponent getDotDamageModifierComponent(int entityId) { return getComponent<DotDamageModifierComponent>(entityId, ComponentType.DotDamageModifier); }
         public static ExternalForceComponent getExternalForceComponent(int entityId) { return getComponent<ExternalForceComponent>(entityId, ComponentType.ExternalForce); }
+        public static HealOverTimeComponent getHealOverTimeComponent(int entityId) { return getComponent<HealOverTimeComponent>(entityId, ComponentType.HealOverTime); }
     }
 }

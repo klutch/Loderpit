@@ -50,7 +50,8 @@ namespace Loderpit.Components
         Uncontrollable,
         FrenzyAI,
         DotDamageModifier,
-        ExternalForce
+        ExternalForce,
+        HealOverTime
     }
 
     public interface IComponent

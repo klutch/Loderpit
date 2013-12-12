@@ -49,7 +49,8 @@ namespace Loderpit.Skills
         Heal,
         HealingBlast,
         Infusion,
-        Dispel
+        Dispel,
+        Regeneration
     }
 
     abstract public class Skill

@@ -203,9 +203,62 @@ namespace Loderpit.Systems
             }
         }
 
+        // Handle heal over time
+        private void handleHealOverTime(List<int> entities)
+        {
+            // Prevent heal over time from being applied too quickly
+            if (SystemManager.physicsSystem.isSlowMotion && !SystemManager.physicsSystem.isReadyForSlowMotionTick)
+            {
+                return;
+            }
+
+            foreach (int entityId in entities)
+            {
+                HealOverTimeComponent healOverTimeComponent = EntityManager.getHealOverTimeComponent(entityId);
+
+                if (healOverTimeComponent.currentDelay == 0)
+                {
+                    AffectedEntitiesComponent affectedEntitiesComponent = EntityManager.getAffectedEntitiesComponent(entityId);
+                    List<int> copyOfAffectedEntities = new List<int>(affectedEntitiesComponent.entities);   // the entities collection can be modified when an entity dies, so operate on a copy of it
+
+                    healOverTimeComponent.currentDelay = healOverTimeComponent.baseDelay;
+
+                    foreach (int affectedId in copyOfAffectedEntities)
+                    {
+                        StatsComponent statsComponent = EntityManager.getStatsComponent(affectedId);
+
+                        // Skip if entity's dead
+                        if (!EntityManager.doesEntityExist(affectedId))
+                        {
+                            continue;
+                        }
+
+                        // Skip if already fully healed
+                        if (statsComponent.currentHp >= SystemManager.statSystem.getMaxHp(affectedId))
+                        {
+                            continue;
+                        }
+
+                        // Heal
+                        SystemManager.combatSystem.applySpellHeal(affectedId, Roller.roll(healOverTimeComponent.healDie));
+                    }
+                }
+                else
+                {
+                    healOverTimeComponent.currentDelay--;
+                }
+            }
+        }
+
         // Handle external forces
         private void handleExternalForces(List<int> entities)
         {
+            // Prevent external forces from being applied too quickly
+            if (SystemManager.physicsSystem.isSlowMotion && !SystemManager.physicsSystem.isReadyForSlowMotionTick)
+            {
+                return;
+            }
+
             foreach (int spellId in entities)
             {
                 ExternalForceComponent externalForceComponent;
@@ -249,6 +302,9 @@ namespace Loderpit.Systems
 
             // Handle damage over time
             handleDamageOverTime(EntityManager.getEntitiesPossessing(ComponentType.DamageOverTime));
+
+            // Handle heal over time
+            handleHealOverTime(EntityManager.getEntitiesPossessing(ComponentType.HealOverTime));
 
             // Handle external forces
             handleExternalForces(EntityManager.getEntitiesPossessing(ComponentType.ExternalForce));
