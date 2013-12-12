@@ -17,7 +17,7 @@ namespace Loderpit.Systems
         }
 
         // Create explosion
-        public List<int> createExplosion(int entityId, Vector2 position, float radius, int damage, float force)
+        public List<int> createExplosion(Vector2 position, float radius, int damage, float force, List<Faction> factionsToAffect)
         {
             AABB aabb = new AABB(position - new Vector2(radius, radius), position + new Vector2(radius, radius));
             List<int> affectedEntities = new List<int>();
@@ -28,7 +28,8 @@ namespace Loderpit.Systems
                 int targetEntityId;
                 Vector2 relative = fixture.Body.Position - position;
                 Vector2 normal = Vector2.Normalize(relative);
-                CharacterComponent characterComponent;
+                CharacterComponent targetCharacterComponent;
+                FactionComponent targetFactionComponent;
 
                 // Skip fixtures whose bodies don't have a user data
                 if (fixture.Body.UserData == null)
@@ -52,13 +53,25 @@ namespace Loderpit.Systems
 
                 // Skip entities that aren't characters
                 // TODO: handle other types of entities
-                if ((characterComponent = EntityManager.getCharacterComponent(targetEntityId)) == null)
+                if ((targetCharacterComponent = EntityManager.getCharacterComponent(targetEntityId)) == null)
                 {
                     return true;
                 }
 
-                characterComponent.body.ApplyLinearImpulse(new Vector2(0, -1f));
-                characterComponent.body.ApplyForce(normal * force);
+                // Skip if no faction component
+                if ((targetFactionComponent = EntityManager.getFactionComponent(targetEntityId)) == null)
+                {
+                    return true;
+                }
+
+                // Skip entities that aren't in the list of factions to affect
+                if (!factionsToAffect.Contains(targetFactionComponent.faction))
+                {
+                    return true;
+                }
+
+                targetCharacterComponent.body.ApplyLinearImpulse(new Vector2(0, -1f));
+                targetCharacterComponent.body.ApplyForce(normal * force);
                 SystemManager.combatSystem.applySpellDamage(targetEntityId, damage);
                 affectedEntities.Add(targetEntityId);
 
@@ -88,7 +101,7 @@ namespace Loderpit.Systems
                 if (timedExplosionComponent.delay == 0)
                 {
                     positionComponent = EntityManager.getPositionComponent(entityId);
-                    createExplosion(entityId, positionComponent.position, timedExplosionComponent.radius, Roller.roll(timedExplosionComponent.damageDie), timedExplosionComponent.force);
+                    createExplosion(positionComponent.position, timedExplosionComponent.radius, Roller.roll(timedExplosionComponent.damageDie), timedExplosionComponent.force, timedExplosionComponent.factionsToAffect);
                     EntityManager.destroyEntity(entityId);
                 }
                 else

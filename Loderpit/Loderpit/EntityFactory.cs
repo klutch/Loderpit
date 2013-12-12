@@ -78,7 +78,7 @@ namespace Loderpit
                     break;
 
                 case CharacterClass.Archer:
-                    skills.Add(new RangedAttackSkill(entityId, 1, "bow_icon"));
+                    skills.Add(new RangedAttackSkill(entityId, 1, DamageType.Physical, "bow_icon"));
                     skills.Add(new ShieldOfThornsSkill(entityId, 1));
                     skills.Add(new PowerShotSkill(entityId, 1));
                     skills.Add(new DeadeyeSkill(entityId, 1));
@@ -88,12 +88,13 @@ namespace Loderpit
                     break;
 
                 case CharacterClass.Mage:
-                    skills.Add(new RangedAttackSkill(entityId, 1, "wand_icon"));
+                    skills.Add(new RangedAttackSkill(entityId, 1, DamageType.Fire, "wand_icon"));
                     skills.Add(new IgniteSkill(entityId, 1));
                     skills.Add(new FireballSkill(entityId, 1));
                     skills.Add(new FlameAuraSkill(entityId, 1));
                     skills.Add(new RainOfFireSkill(entityId, 1));
                     skills.Add(new GaleForceSkill(entityId, 1, new Vector2(1.5f, -1f)));
+                    skills.Add(new ExplosivitySkill(entityId, 1));
                     break;
 
                 case CharacterClass.Engineer:
@@ -334,7 +335,7 @@ namespace Loderpit
             feet.OnCollision += new OnCollisionEventHandler(enemyCharacterFeetOnCollision);
 
             EntityManager.addComponent(entityId, new CharacterComponent(entityId, body, feet, feetJoint, characterClass));
-            EntityManager.addComponent(entityId, new StatsComponent(entityId, 6, 6, 10, 1, 1, 120, "d3"));
+            EntityManager.addComponent(entityId, new StatsComponent(entityId, 60, 60, 10, 1, 1, 120, "d3"));
             EntityManager.addComponent(entityId, new PositionComponent(entityId, body));
             EntityManager.addComponent(entityId, new IgnoreRopeRaycastComponent(entityId));
             EntityManager.addComponent(entityId, new IgnoreBridgeRaycastComponent(entityId));
@@ -698,11 +699,11 @@ namespace Loderpit
         }
 
         // Create proximity mine
-        public static int createProximityMine(Vector2 position, Faction hostileFaction, float radius, float force, string damageDie)
+        public static int createProximityMine(Vector2 position, float radius, float force, string damageDie, List<Faction> factionsToAffect)
         {
             int entityId = EntityManager.createEntity();
             Body body = BodyFactory.CreateCircle(SystemManager.physicsSystem.world, 3f, 1f, position);
-            TimedExplosionComponent timedExplosionComponent = new TimedExplosionComponent(entityId, 60, radius, force, damageDie);
+            TimedExplosionComponent timedExplosionComponent = new TimedExplosionComponent(entityId, 60, radius, force, damageDie, factionsToAffect);
             PhysicsComponent physicsComponent = new PhysicsComponent(entityId);
 
             body.UserData = entityId;
@@ -728,8 +729,8 @@ namespace Loderpit
                     return false;
                 }
 
-                // Check faction
-                if (hostileFaction != factionComponentB.faction)
+                // Skip unaffected factions
+                if (!factionsToAffect.Contains(factionComponentB.faction))
                 {
                     return false;
                 }

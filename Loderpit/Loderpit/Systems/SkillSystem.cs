@@ -87,6 +87,11 @@ namespace Loderpit.Systems
                             initializeBattleCrySkill(entityId, skill as BattleCrySkill);
                             break;
 
+                        // Healer
+                        case SkillType.Regeneration:
+                            initializeRegenerationSkill(entityId, skill as RegenerationSkill);
+                            break;
+
                         // Mage
                         case SkillType.Ignite:
                             initializeIgniteSkill(entityId, skill as IgniteSkill);
@@ -94,8 +99,8 @@ namespace Loderpit.Systems
                         case SkillType.FlameAura:
                             initializeFlameAuraSkill(entityId, skill as FlameAuraSkill);
                             break;
-                        case SkillType.Regeneration:
-                            initializeRegenerationSkill(entityId, skill as RegenerationSkill);
+                        case SkillType.Explosivity:
+                            initializeExplosivitySkill(entityId, skill as ExplosivitySkill);
                             break;
                     }
                 }
@@ -349,6 +354,12 @@ namespace Loderpit.Systems
                     return;
                 }
 
+                // Skip if defender's dead
+                if (!EntityManager.doesEntityExist(defenderId))
+                {
+                    return;
+                }
+
                 SystemManager.combatSystem.applyKnockback(attackerId, defenderId, shieldBashSkill.knockbackForce, shieldBashSkill.knockbackNormal);
             };
 
@@ -391,6 +402,67 @@ namespace Loderpit.Systems
             FactionComponent factionComponent = EntityManager.getFactionComponent(entityId);
 
             EntityFactory.createRegenerationSpell(entityId, regenSkill.healDie, regenSkill.range, regenSkill.tickDelay, new List<Faction>(new [] { factionComponent.faction }));
+        }
+
+        // Initialize explosivity skill
+        private void initializeExplosivitySkill(int entityId, ExplosivitySkill explosivitySkill)
+        {
+            FactionComponent factionComponent = EntityManager.getFactionComponent(entityId);
+            Random rng = new Random();
+            int spellId;
+            Action<Skill, int, int> onHitOther = (skill, attackerId, defenderId) =>
+                {
+                    RangedAttackSkill rangedSkill;
+                    PositionComponent positionComponent;
+
+                    // Skip if not ranged attack skill
+                    if (skill.type != SkillType.RangedAttack)
+                    {
+                        return;
+                    }
+
+                    rangedSkill = skill as RangedAttackSkill;
+
+                    // Skip if ranged skill's damage type isn't fire
+                    if (rangedSkill.damageType != DamageType.Fire)
+                    {
+                        return;
+                    }
+
+                    // Skip if defender's dead
+                    if (!EntityManager.doesEntityExist(defenderId))
+                    {
+                        return;
+                    }
+
+                    positionComponent = EntityManager.getPositionComponent(defenderId);
+
+                    // Roll for explosion
+                    if (Roller.roll(explosivitySkill.explosionChanceToProc) == 1)
+                    {
+                        Vector2 explosionPosition = positionComponent.position + new Vector2(Helpers.randomBetween(rng, -0.5f, 0.5f), 0.75f);
+
+                        SystemManager.explosionSystem.createExplosion(explosionPosition, explosivitySkill.range, Roller.roll(explosivitySkill.explosionDamageDie), explosivitySkill.explosionForce, factionComponent.attackableFactions);
+
+                        // Stop here if defender is dead
+                        if (!EntityManager.doesEntityExist(defenderId))
+                        {
+                            return;
+                        }
+
+                        // Roll for burning
+                        if (Roller.roll(explosivitySkill.burningChanceToProc) == 1)
+                        {
+                            EntityFactory.createDoTSpell(defenderId, DamageType.Fire, explosivitySkill.burningDamageDie, explosivitySkill.burningTickDelay, explosivitySkill.burningTickCount);
+                        }
+                    }
+                };
+
+            // Create proc for ranged attacks
+            spellId = EntityFactory.createProcSpell(entityId, onHitOther);
+
+            // Add a spell type so other spells can use the proc
+            EntityManager.addComponent(spellId, new SpellTypeComponent(spellId, SpellType.ExplosivityProc));
         }
 
         #endregion
@@ -1151,9 +1223,10 @@ namespace Loderpit.Systems
         // Execute fireball
         private void executeFireball(int entityId, ExecuteFireballSkill executeFireballSkill)
         {
+            FactionComponent factionComponent = EntityManager.getFactionComponent(entityId);
             PerformingSkillsComponent performingSkillsComponent = EntityManager.getPerformingSkillsComponent(entityId);
             FireballSkill fireballSkill = executeFireballSkill.skill as FireballSkill;
-            List<int> hitEntities = SystemManager.explosionSystem.createExplosion(entityId, executeFireballSkill.target, fireballSkill.explosionRadius, Roller.roll(fireballSkill.explosionDamageDie), fireballSkill.explosionForce);
+            List<int> hitEntities = SystemManager.explosionSystem.createExplosion(executeFireballSkill.target, fireballSkill.explosionRadius, Roller.roll(fireballSkill.explosionDamageDie), fireballSkill.explosionForce, factionComponent.attackableFactions);
 
             foreach (int hitEntityId in hitEntities)
             {
@@ -1254,7 +1327,7 @@ namespace Loderpit.Systems
 
             if (hit)
             {
-                EntityFactory.createProximityMine(point, factionComponent.hostileFaction, skill.explosionRadius, skill.explosionForce, skill.damageDie);
+                EntityFactory.createProximityMine(point, skill.explosionRadius, skill.explosionForce, skill.damageDie, factionComponent.attackableFactions);
             }
 
             EntityManager.removeComponent(entityIdA, ComponentType.PositionTarget);

@@ -7,6 +7,8 @@ namespace Loderpit
 {
     public enum SpellType
     {
-        GolemStance
+        GolemStance,
+        ExplosivityProc,
+        RainOfFire
     }
 }

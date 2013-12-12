@@ -177,6 +177,7 @@
     <Compile Include="Skills\BuildBridgeSkill.cs" />
     <Compile Include="Skills\DeadeyeSkill.cs" />
     <Compile Include="Skills\DispelSkill.cs" />
+    <Compile Include="Skills\ExplosivitySkill.cs" />
     <Compile Include="Skills\FatalitySkill.cs" />
     <Compile Include="Skills\FireballSkill.cs" />
     <Compile Include="Skills\FlameAuraSkill.cs" />

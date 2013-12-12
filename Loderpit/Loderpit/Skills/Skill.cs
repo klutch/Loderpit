@@ -44,6 +44,7 @@ namespace Loderpit.Skills
         FlameAura,
         RainOfFire,
         GaleForce,
+        Explosivity,
 
         // Healer
         Heal,

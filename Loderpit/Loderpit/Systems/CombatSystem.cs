@@ -462,14 +462,11 @@ namespace Loderpit.Systems
         // Update system
         public void update()
         {
-            List<int> skillsEntities = EntityManager.getEntitiesPossessing(ComponentType.Skills);
-            List<int> attackableEntities = EntityManager.getEntitiesPossessing(ComponentType.Stats);
-
             // Handle attacks
-            handleAttacks(skillsEntities, attackableEntities);
+            handleAttacks(EntityManager.getEntitiesPossessing(ComponentType.Skills), EntityManager.getEntitiesPossessing(ComponentType.Stats));
 
             // Handle heals
-            handleHeals(skillsEntities);
+            handleHeals(EntityManager.getEntitiesPossessing(ComponentType.Skills));
         }
     }
 }
