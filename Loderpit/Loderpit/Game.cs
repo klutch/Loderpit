@@ -80,6 +80,7 @@ namespace Loderpit
             SystemManager.interLevelSystem = new InterLevelSystem();
             SystemManager.spellSystem = new SpellSystem();
             SystemManager.explosionSystem = new ExplosionSystem();
+            SystemManager.proxySystem = new ProxySystem();
 
             // Open create team screen
             startCreateTeamState();
@@ -315,6 +316,7 @@ namespace Loderpit
                 SystemManager.spellSystem.update();
                 SystemManager.combatSystem.update();
                 SystemManager.explosionSystem.update();
+                SystemManager.proxySystem.update();
             }
 
             Game.singleStep = false;

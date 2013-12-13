@@ -110,6 +110,7 @@
     <Compile Include="Components\PhysicsComponent.cs" />
     <Compile Include="Components\PositionComponent.cs" />
     <Compile Include="Components\PositionTargetComponent.cs" />
+    <Compile Include="Components\RestoreProxyPositionTargetComponent.cs" />
     <Compile Include="Components\SpellEffects\DamageMitigationComponent.cs" />
     <Compile Include="Components\SpellEffects\DamageTransferComponent.cs" />
     <Compile Include="Components\SpellEffects\DispellableComponent.cs" />
@@ -223,6 +224,7 @@
     <Compile Include="Systems\LevelSystem.cs" />
     <Compile Include="Systems\ObstacleSystem.cs" />
     <Compile Include="Systems\PhysicsSystem.cs" />
+    <Compile Include="Systems\ProxySystem.cs" />
     <Compile Include="Systems\RenderSystem.cs" />
     <Compile Include="Systems\SkillSystem.cs" />
     <Compile Include="Systems\SpellSystem.cs" />

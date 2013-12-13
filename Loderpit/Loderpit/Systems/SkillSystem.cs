@@ -619,11 +619,22 @@ namespace Loderpit.Systems
         }
 
         // Perform throw rope skill
-        public void performThrowRopeSkill(int entityId, ThrowRopeSkill throwRopeSkill, Vector2 anchor)
+        public void performThrowRopeSkill(int entityId, ThrowRopeSkill throwRopeSkill, Vector2 anchor, GroupComponent groupComponent = null)
         {
             PerformingSkillsComponent performingSkillsComponent = EntityManager.getPerformingSkillsComponent(entityId);
-            GroupComponent groupComponent = SystemManager.groupSystem.getGroupComponentContaining(entityId);
+            HasProxyComponent hasProxyComponent = EntityManager.getHasProxyComponent(entityId);
             ExecuteThrowRopeSkill executeSkill;
+
+            // Find group
+            groupComponent = groupComponent ?? SystemManager.groupSystem.getGroupComponentContaining(entityId);
+
+            // Check for has proxy component
+            if (hasProxyComponent != null)
+            {
+                EntityManager.removeComponent(hasProxyComponent.proxyId, ComponentType.PositionTarget);
+                performThrowRopeSkill(hasProxyComponent.proxyId, throwRopeSkill, anchor, groupComponent);
+                return;
+            }
 
             // Create execute skill object
             executeSkill = new ExecuteThrowRopeSkill(
@@ -1228,7 +1239,18 @@ namespace Loderpit.Systems
         private void executeThrowRope(int entityId, ExecuteThrowRopeSkill executeThrowRopeSkill)
         {
             PerformingSkillsComponent performSkillsComponent = EntityManager.getPerformingSkillsComponent(entityId);
-            GroupComponent groupComponent = SystemManager.groupSystem.getGroupComponentContaining(entityId);
+            IsProxyComponent isProxyComponent = EntityManager.getIsProxyComponent(entityId);
+            GroupComponent groupComponent;
+
+            // Handle proxies
+            if (isProxyComponent != null)
+            {
+                groupComponent = SystemManager.groupSystem.getGroupComponentContaining(isProxyComponent.proxyForId);
+            }
+            else
+            {
+                groupComponent = SystemManager.groupSystem.getGroupComponentContaining(isProxyComponent.proxyForId);
+            }
 
             EntityFactory.createRope(executeThrowRopeSkill.anchor);
             EntityManager.removeComponent(entityId, ComponentType.PositionTarget);

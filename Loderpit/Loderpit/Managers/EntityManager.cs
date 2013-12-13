@@ -237,6 +237,6 @@ namespace Loderpit.Managers
         public static HealOverTimeComponent getHealOverTimeComponent(int entityId) { return getComponent<HealOverTimeComponent>(entityId, ComponentType.HealOverTime); }
         public static SpellOwnerComponent getSpellOwnerComponent(int entityId) { return getComponent<SpellOwnerComponent>(entityId, ComponentType.SpellOwner); }
         public static HasProxyComponent getHasProxyComponent(int entityId) { return getComponent<HasProxyComponent>(entityId, ComponentType.HasProxy); }
-        public static IsProxyComponent isProxyComponent(int entityId) { return getComponent<IsProxyComponent>(entityId, ComponentType.IsProxy); }
+        public static IsProxyComponent getIsProxyComponent(int entityId) { return getComponent<IsProxyComponent>(entityId, ComponentType.IsProxy); }
     }
 }

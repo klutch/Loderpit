@@ -21,5 +21,6 @@ namespace Loderpit.Managers
         public static InterLevelSystem interLevelSystem;
         public static SpellSystem spellSystem;
         public static ExplosionSystem explosionSystem;
+        public static ProxySystem proxySystem;
     }
 }

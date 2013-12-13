@@ -54,7 +54,8 @@ namespace Loderpit.Components
         HealOverTime,
         SpellOwner,
         HasProxy,
-        IsProxy
+        IsProxy,
+        RestoreProxyPositionTarget
     }
 
     public interface IComponent

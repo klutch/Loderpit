@@ -789,7 +789,6 @@ namespace Loderpit
         {
             int entityId = EntityManager.createEntity();
             PositionComponent ownerPositionComponent = EntityManager.getPositionComponent(ownerId);
-            PhysicsComponent ownerPhysicsComponent = EntityManager.getPhysicsComponent(ownerId);
             FactionComponent ownerFactionComponent = EntityManager.getFactionComponent(ownerId);
             Vector2 feetOffset = new Vector2(0, 0.25f);
             Body body;
@@ -835,7 +834,7 @@ namespace Loderpit
             EntityManager.addComponent(entityId, new ExternalMovementSpeedsComponent(entityId));
             EntityManager.addComponent(entityId, new AffectedBySpellEntitiesComponent(entityId));
             EntityManager.addComponent(entityId, new PhysicsComponent(entityId, new List<Body>(new[] { body, feet })));
-            EntityManager.addComponent(entityId, new PositionTargetComponent(entityId, ownerPhysicsComponent.bodies[0], 1f));
+            EntityManager.addComponent(entityId, new RestoreProxyPositionTargetComponent(entityId));
 
             return entityId;
         }

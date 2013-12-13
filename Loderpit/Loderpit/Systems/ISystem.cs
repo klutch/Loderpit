@@ -18,7 +18,8 @@ namespace Loderpit.Systems
         AI,
         InterLevel,
         Spell,
-        Explosion
+        Explosion,
+        Proxy
     }
 
     public interface ISystem
