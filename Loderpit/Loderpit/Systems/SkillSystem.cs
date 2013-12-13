@@ -585,12 +585,32 @@ namespace Loderpit.Systems
         public void performBuildBridgeSkill(int entityId, BuildBridgeSkill buildBridgeSkill, Vector2 anchorA, Vector2 anchorB)
         {
             PerformingSkillsComponent performingSkillsComponent = EntityManager.getPerformingSkillsComponent(entityId);
+            HasProxyComponent hasProxyComponent = EntityManager.getHasProxyComponent(entityId);
+            IsProxyComponent isProxyComponent = EntityManager.getIsProxyComponent(entityId);
             ExecuteBuildBridgeSkill executeSkill;
             GroupComponent groupComponent = SystemManager.groupSystem.getGroupComponentContaining(entityId);
             PositionComponent positionComponent = EntityManager.getPositionComponent(entityId);
             float distanceA = Math.Abs(anchorA.X - positionComponent.position.X);
             float distanceB = Math.Abs(anchorB.X - positionComponent.position.X);
             Vector2 closestAnchor = distanceA > distanceB ? anchorB : anchorA;
+
+            // Find group
+            if (isProxyComponent != null)
+            {
+                groupComponent = SystemManager.groupSystem.getGroupComponentContaining(isProxyComponent.proxyForId);
+            }
+            else
+            {
+                groupComponent = SystemManager.groupSystem.getGroupComponentContaining(entityId);
+            }
+
+            // Handle proxy
+            if (hasProxyComponent != null)
+            {
+                EntityManager.removeComponent(hasProxyComponent.proxyId, ComponentType.PositionTarget);
+                performBuildBridgeSkill(hasProxyComponent.proxyId, buildBridgeSkill, anchorA, anchorB);
+                return;
+            }
 
             // Create execute skill object
             executeSkill = new ExecuteBuildBridgeSkill(
@@ -619,20 +639,29 @@ namespace Loderpit.Systems
         }
 
         // Perform throw rope skill
-        public void performThrowRopeSkill(int entityId, ThrowRopeSkill throwRopeSkill, Vector2 anchor, GroupComponent groupComponent = null)
+        public void performThrowRopeSkill(int entityId, ThrowRopeSkill throwRopeSkill, Vector2 anchor)
         {
             PerformingSkillsComponent performingSkillsComponent = EntityManager.getPerformingSkillsComponent(entityId);
             HasProxyComponent hasProxyComponent = EntityManager.getHasProxyComponent(entityId);
+            IsProxyComponent isProxyComponent = EntityManager.getIsProxyComponent(entityId);
+            GroupComponent groupComponent;
             ExecuteThrowRopeSkill executeSkill;
 
             // Find group
-            groupComponent = groupComponent ?? SystemManager.groupSystem.getGroupComponentContaining(entityId);
+            if (isProxyComponent != null)
+            {
+                groupComponent = SystemManager.groupSystem.getGroupComponentContaining(isProxyComponent.proxyForId);
+            }
+            else
+            {
+                groupComponent = SystemManager.groupSystem.getGroupComponentContaining(entityId);
+            }
 
             // Check for has proxy component
             if (hasProxyComponent != null)
             {
                 EntityManager.removeComponent(hasProxyComponent.proxyId, ComponentType.PositionTarget);
-                performThrowRopeSkill(hasProxyComponent.proxyId, throwRopeSkill, anchor, groupComponent);
+                performThrowRopeSkill(hasProxyComponent.proxyId, throwRopeSkill, anchor);
                 return;
             }
 
@@ -1218,7 +1247,18 @@ namespace Loderpit.Systems
         private void executeBuildBridge(int entityId, ExecuteBuildBridgeSkill executeBuildBridgeSkill)
         {
             PerformingSkillsComponent performSkillsComponent = EntityManager.getPerformingSkillsComponent(entityId);
-            GroupComponent groupComponent = SystemManager.groupSystem.getGroupComponentContaining(entityId);
+            IsProxyComponent isProxyComponent = EntityManager.getIsProxyComponent(entityId);
+            GroupComponent groupComponent;
+
+            // Handle proxies
+            if (isProxyComponent != null)
+            {
+                groupComponent = SystemManager.groupSystem.getGroupComponentContaining(isProxyComponent.proxyForId);
+            }
+            else
+            {
+                groupComponent = SystemManager.groupSystem.getGroupComponentContaining(isProxyComponent.proxyForId);
+            }
 
             EntityFactory.createBridge(executeBuildBridgeSkill.anchorA, executeBuildBridgeSkill.anchorB);
             EntityManager.removeComponent(entityId, ComponentType.PositionTarget);
