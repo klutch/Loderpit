@@ -93,19 +93,19 @@ namespace Loderpit.Managers
         }
 
         // Destroy an entity
-        public static void destroyEntity(int entityId)
+        public static void destroyEntity(int idToDestroy)
         {
-            GroupComponent groupComponent = SystemManager.groupSystem.getGroupComponentContaining(entityId);
-            DestructibleObstacleComponent destructibleObstacleComponent = EntityManager.getDestructibleObstacleComponent(entityId);
-            AreaOfEffectComponent areaOfEffectComponent = EntityManager.getAreaOfEffectComponent(entityId);
-            AffectedBySpellEntitiesComponent affectedBySpellEntitiesComponent = EntityManager.getAffectedBySpellEntitiesComponent(entityId);
-            AffectedEntitiesComponent affectedEntitiesComponent = EntityManager.getAffectedEntitiesComponent(entityId);
-            PhysicsComponent physicsComponent = EntityManager.getPhysicsComponent(entityId);
+            GroupComponent groupComponent = SystemManager.groupSystem.getGroupComponentContaining(idToDestroy);
+            DestructibleObstacleComponent destructibleObstacleComponent = EntityManager.getDestructibleObstacleComponent(idToDestroy);
+            AreaOfEffectComponent areaOfEffectComponent = EntityManager.getAreaOfEffectComponent(idToDestroy);
+            AffectedBySpellEntitiesComponent affectedBySpellEntitiesComponent = EntityManager.getAffectedBySpellEntitiesComponent(idToDestroy);
+            AffectedEntitiesComponent affectedEntitiesComponent = EntityManager.getAffectedEntitiesComponent(idToDestroy);
+            PhysicsComponent physicsComponent = EntityManager.getPhysicsComponent(idToDestroy);
 
             // Handle removal from a group
             if (groupComponent != null)
             {
-                groupComponent.entities.Remove(entityId);
+                groupComponent.entities.Remove(idToDestroy);
             }
 
             // Handle destructible obstacle removal
@@ -143,27 +143,27 @@ namespace Loderpit.Managers
                     spellsAffectedEntitiesComponent = EntityManager.getAffectedEntitiesComponent(spellId);
 
                     // Remove (character) entity being destroyed from the spell entity's list of affected entities
-                    spellsAffectedEntitiesComponent.entities.Remove(entityId);
+                    spellsAffectedEntitiesComponent.entities.Remove(idToDestroy);
                 }
             }
 
             // Handle spell entity references (assuming this is a spell affecting a character)
             if (affectedEntitiesComponent != null)
             {
-                foreach (int id in affectedEntitiesComponent.entities)
+                foreach (int affectedId in affectedEntitiesComponent.entities)
                 {
                     AffectedBySpellEntitiesComponent charactersAffectedBySpellEntitiesComponent;
 
                     // Skip if entity is dead
-                    if (!EntityManager.doesEntityExist(id))
+                    if (!EntityManager.doesEntityExist(affectedId))
                     {
                         continue;
                     }
 
-                    charactersAffectedBySpellEntitiesComponent = EntityManager.getAffectedBySpellEntitiesComponent(id);
+                    charactersAffectedBySpellEntitiesComponent = EntityManager.getAffectedBySpellEntitiesComponent(affectedId);
 
                     // Remove (spell) entity being destroyed from a character's list of spell entities affecting it
-                    charactersAffectedBySpellEntitiesComponent.spellEntities.Remove(id);
+                    charactersAffectedBySpellEntitiesComponent.spellEntities.Remove(idToDestroy);
                 }
             }
 
@@ -177,7 +177,7 @@ namespace Loderpit.Managers
             }
 
             // Finally, remove the entity from the dictionary
-            _entities.Remove(entityId);
+            _entities.Remove(idToDestroy);
         }
 
         // Destroy all entities
