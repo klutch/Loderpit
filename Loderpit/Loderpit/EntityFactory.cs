@@ -172,8 +172,8 @@ namespace Loderpit
 
             characterComponent = new CharacterComponent(entityId, body, feet, feetJoint, characterClass);
             characterComponent.body.OnCollision += new OnCollisionEventHandler(playerCharacterBodyOnCollision);
-            characterComponent.feet.OnCollision += new OnCollisionEventHandler(playerCharacterFeetOnCollision);
-            characterComponent.feet.OnSeparation += new OnSeparationEventHandler(playerCharacterFeetOnSeparation);
+            //characterComponent.feet.OnCollision += new OnCollisionEventHandler(playerCharacterFeetOnCollision);
+            //characterComponent.feet.OnSeparation += new OnSeparationEventHandler(playerCharacterFeetOnSeparation);
 
             EntityManager.addComponent(entityId, characterComponent);
             EntityManager.addComponent(entityId, getCharacterStats(entityId, characterClass));
@@ -262,6 +262,7 @@ namespace Loderpit
             return true;
         }
 
+        /*
         private static bool playerCharacterFeetOnCollision(Fixture fixtureA, Fixture fixtureB, Contact contact)
         {
             int entityIdA = (int)fixtureA.Body.UserData;
@@ -310,7 +311,7 @@ namespace Loderpit
 
                 characterBodyComponent.groundContactCount--;
             }
-        }
+        }*/
 
         public static int createEnemy(CharacterClass characterClass, Vector2 position)
         {
@@ -803,6 +804,7 @@ namespace Loderpit
             body.Friction = 0f;
             body.UserData = entityId;
             body.CollisionCategories = (ushort)CollisionCategory.Characters;
+            body.OnCollision += new OnCollisionEventHandler(playerCharacterBodyOnCollision);
 
             feet = BodyFactory.CreateCircle(world, 0.25f, 1f, ownerPositionComponent.position + feetOffset);
             feet.BodyType = BodyType.Dynamic;
