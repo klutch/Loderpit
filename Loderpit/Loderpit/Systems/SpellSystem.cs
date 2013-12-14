@@ -215,8 +215,11 @@ namespace Loderpit.Systems
                             }
                         }
 
-                        // Apply spell damage
-                        SystemManager.combatSystem.applySpellDamage(affectedId, Roller.roll(damageOverTimeComponent.damageDie) + dotDamageModifier);
+                        if (EntityManager.doesEntityExist(affectedId))  // Entity could have died from explosivity proc
+                        {
+                            // Apply spell damage
+                            SystemManager.combatSystem.applySpellDamage(affectedId, Roller.roll(damageOverTimeComponent.damageDie) + dotDamageModifier);
+                        }
                     }
                 }
                 else
