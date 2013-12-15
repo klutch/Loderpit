@@ -897,6 +897,15 @@ namespace Loderpit.Systems
         public void performProximityMineSkill(int entityId, ProximityMineSkill skill, Vector2 target)
         {
             PerformingSkillsComponent performingSkillsComponent = EntityManager.getPerformingSkillsComponent(entityId);
+            HasProxyComponent hasProxyComponent = EntityManager.getHasProxyComponent(entityId);
+
+            // Handle proxy
+            if (hasProxyComponent != null)
+            {
+                EntityManager.removeComponent(hasProxyComponent.proxyId, ComponentType.PositionTarget);
+                performProximityMineSkill(hasProxyComponent.proxyId, skill, target);
+                return;
+            }
 
             // Create execute skill object
             performingSkillsComponent.executingSkills.Add(new ExecuteProximityMineSkill(
@@ -1406,6 +1415,7 @@ namespace Loderpit.Systems
             PositionComponent positionComponent = EntityManager.getPositionComponent(entityIdA);
             FactionComponent factionComponent = EntityManager.getFactionComponent(entityIdA);
             ProximityMineSkill skill = executeSkill.skill as ProximityMineSkill;
+            IsProxyComponent isProxyComponent = EntityManager.getIsProxyComponent(entityIdA);
             bool hit = false;
             Vector2 point = Vector2.Zero;
 
@@ -1474,7 +1484,14 @@ namespace Loderpit.Systems
             }
 
             EntityManager.removeComponent(entityIdA, ComponentType.PositionTarget);
-            resetCooldown(entityIdA, SkillType.ProximityMine);
+            if (isProxyComponent != null)
+            {
+                resetCooldown(isProxyComponent.proxyForId, SkillType.ProximityMine);
+            }
+            else
+            {
+                resetCooldown(entityIdA, SkillType.ProximityMine);
+            }
             removeExecutedSkill(entityIdA, executeSkill);
         }
 
