@@ -1610,6 +1610,7 @@ namespace Loderpit.Systems
                     {
                         case SkillType.ServoBot:
                             performServoBotSkill(entityId, skill as ServoBotSkill);
+                            resetCooldown(entityId, SkillType.ServoBot);
                             break;
                     }
                 }
