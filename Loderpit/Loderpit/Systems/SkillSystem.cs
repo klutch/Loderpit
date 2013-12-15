@@ -1128,10 +1128,19 @@ namespace Loderpit.Systems
         // Perform fortification skill
         public void performFortificationSkill(int entityId, FortificationSkill skill, Vector2 target)
         {
+            HasProxyComponent hasProxyComponent = EntityManager.getHasProxyComponent(entityId);
             Vector2 pointA = target + new Vector2(0, -10f);
             Vector2 pointB = target + new Vector2(0, 100f);
             Vector2 final = target;
             bool hit = false;
+
+            // Handle proxy
+            if (hasProxyComponent != null)
+            {
+                EntityManager.removeComponent(hasProxyComponent.proxyId, ComponentType.PositionTarget);
+                performFortificationSkill(hasProxyComponent.proxyId, skill, target);
+                return;
+            }
 
             SystemManager.physicsSystem.world.RayCast((f, p, n, fr) =>
                 {
@@ -1533,13 +1542,24 @@ namespace Loderpit.Systems
         // Execute fortification skill
         private void executeFortification(int entityId, ExecuteFortificationSkill executeSkill)
         {
+            IsProxyComponent isProxyComponent = EntityManager.getIsProxyComponent(entityId);
             FortificationSkill fortificationSkill = executeSkill.skill as FortificationSkill;
-            FactionComponent factionComponent = EntityManager.getFactionComponent(entityId);
+            FactionComponent factionComponent;
+
+            if (isProxyComponent != null)
+            {
+                factionComponent = EntityManager.getFactionComponent(isProxyComponent.proxyForId);
+                resetCooldown(isProxyComponent.proxyForId, SkillType.Fortification);
+            }
+            else
+            {
+                factionComponent = EntityManager.getFactionComponent(entityId);
+                resetCooldown(entityId, SkillType.Fortification);
+            }
 
             EntityFactory.createFortification(executeSkill.target, fortificationSkill.maxHp, factionComponent.attackableFactions);
             EntityManager.removeComponent(entityId, ComponentType.PositionTarget);
             removeExecutedSkill(entityId, executeSkill);
-            resetCooldown(entityId, SkillType.Fortification);
         }
 
         #endregion
