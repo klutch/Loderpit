@@ -295,9 +295,10 @@ namespace Loderpit.Systems
         private void handleZeroHealth(int defenderId)
         {
             FactionComponent factionComponent = EntityManager.getFactionComponent(defenderId);
+            IsProxyComponent isProxyComponent = EntityManager.getIsProxyComponent(defenderId);
             List<int> allCombatEntities;
 
-            if (factionComponent.faction == Faction.Player)
+            if (factionComponent.faction == Faction.Player && isProxyComponent == null)
             {
                 // Incapacitate the entity
                 EntityManager.addComponent(defenderId, new IncapacitatedComponent(defenderId));

@@ -46,7 +46,7 @@ namespace Loderpit.Screens
         // Initialize assets and components
         public override void initialize()
         {
-            int count = 4;
+            int count = 1;
             float offsetWidth = 72f;
             float totalWidth = (count - 1) * offsetWidth;
             Vector2f position = new Vector2f(Game.window.Size.X, Game.window.Size.Y) * 0.5f - new Vector2f(totalWidth * 0.5f, 0f);

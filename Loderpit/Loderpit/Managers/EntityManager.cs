@@ -101,6 +101,7 @@ namespace Loderpit.Managers
             AffectedBySpellEntitiesComponent affectedBySpellEntitiesComponent = EntityManager.getAffectedBySpellEntitiesComponent(idToDestroy);
             AffectedEntitiesComponent affectedEntitiesComponent = EntityManager.getAffectedEntitiesComponent(idToDestroy);
             PhysicsComponent physicsComponent = EntityManager.getPhysicsComponent(idToDestroy);
+            IsProxyComponent isProxyComponent = EntityManager.getIsProxyComponent(idToDestroy);
 
             // Handle removal from a group
             if (groupComponent != null)
@@ -174,6 +175,12 @@ namespace Loderpit.Managers
                 {
                     SystemManager.physicsSystem.world.RemoveBody(body);
                 }
+            }
+
+            // Handle proxy reference
+            if (isProxyComponent != null)
+            {
+                EntityManager.removeComponent(isProxyComponent.proxyForId, ComponentType.HasProxy);
             }
 
             // Finally, remove the entity from the dictionary
