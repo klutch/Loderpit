@@ -22,5 +22,6 @@ namespace Loderpit.Managers
         public static SpellSystem spellSystem;
         public static ExplosionSystem explosionSystem;
         public static ProxySystem proxySystem;
+        public static BattleDroneSystem battleDroneSystem;
     }
 }

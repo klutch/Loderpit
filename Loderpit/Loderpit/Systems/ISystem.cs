@@ -19,7 +19,8 @@ namespace Loderpit.Systems
         InterLevel,
         Spell,
         Explosion,
-        Proxy
+        Proxy,
+        BattleDrone
     }
 
     public interface ISystem

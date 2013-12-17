@@ -81,6 +81,7 @@ namespace Loderpit
             SystemManager.spellSystem = new SpellSystem();
             SystemManager.explosionSystem = new ExplosionSystem();
             SystemManager.proxySystem = new ProxySystem();
+            SystemManager.battleDroneSystem = new BattleDroneSystem();
 
             // Open create team screen
             startCreateTeamState();
@@ -313,6 +314,7 @@ namespace Loderpit
                 SystemManager.statSystem.update();
                 SystemManager.renderSystem.update();
                 SystemManager.skillSystem.update();
+                SystemManager.battleDroneSystem.update();
                 SystemManager.spellSystem.update();
                 SystemManager.combatSystem.update();
                 SystemManager.explosionSystem.update();

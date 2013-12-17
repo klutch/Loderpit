@@ -89,6 +89,7 @@
     <Compile Include="CharacterClasses.cs" />
     <Compile Include="Components\AffectedBySpellEntitiesComponent.cs" />
     <Compile Include="Components\BasicCombatAIComponent.cs" />
+    <Compile Include="Components\BattleDroneOwnerComponent.cs" />
     <Compile Include="Components\BridgeComponent.cs" />
     <Compile Include="Components\CeilingComponent.cs" />
     <Compile Include="Components\CharacterComponent.cs" />
@@ -176,6 +177,7 @@
     <Compile Include="Screens\TemporaryWorldTextComponent.cs" />
     <Compile Include="Skills\ArrowTimeSkill.cs" />
     <Compile Include="Skills\BattleCrySkill.cs" />
+    <Compile Include="Skills\BattleDroneSkill.cs" />
     <Compile Include="Skills\BlockSkill.cs" />
     <Compile Include="Skills\BloodletterSkill.cs" />
     <Compile Include="Skills\BuildBridgeSkill.cs" />
@@ -213,6 +215,7 @@
     <Compile Include="Skills\VolleySkill.cs" />
     <Compile Include="SpecialFixtureTypes.cs" />
     <Compile Include="SpellTypes.cs" />
+    <Compile Include="Systems\BattleDroneSystem.cs" />
     <Compile Include="Systems\CameraSystem.cs" />
     <Compile Include="Systems\CharacterSystem.cs" />
     <Compile Include="Systems\CombatSystem.cs" />

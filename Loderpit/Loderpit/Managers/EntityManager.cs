@@ -245,5 +245,6 @@ namespace Loderpit.Managers
         public static SpellOwnerComponent getSpellOwnerComponent(int entityId) { return getComponent<SpellOwnerComponent>(entityId, ComponentType.SpellOwner); }
         public static HasProxyComponent getHasProxyComponent(int entityId) { return getComponent<HasProxyComponent>(entityId, ComponentType.HasProxy); }
         public static IsProxyComponent getIsProxyComponent(int entityId) { return getComponent<IsProxyComponent>(entityId, ComponentType.IsProxy); }
+        public static BattleDroneOwnerComponent getBattleDroneOwnerComponent(int entityId) { return getComponent<BattleDroneOwnerComponent>(entityId, ComponentType.BattleDroneOwner); }
     }
 }

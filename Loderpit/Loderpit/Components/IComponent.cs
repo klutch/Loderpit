@@ -55,7 +55,8 @@ namespace Loderpit.Components
         SpellOwner,
         HasProxy,
         IsProxy,
-        RestoreProxyPositionTarget
+        RestoreProxyPositionTarget,
+        BattleDroneOwner
     }
 
     public interface IComponent

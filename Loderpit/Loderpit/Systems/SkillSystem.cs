@@ -102,6 +102,11 @@ namespace Loderpit.Systems
                         case SkillType.Explosivity:
                             initializeExplosivitySkill(entityId, skill as ExplosivitySkill);
                             break;
+
+                        // Engineer
+                        case SkillType.BattleDrone:
+                            initializeBattleDroneSkill(entityId, skill as BattleDroneSkill);
+                            break;
                     }
                 }
             }
@@ -469,6 +474,12 @@ namespace Loderpit.Systems
 
             // Give the skill a reference to its spell
             explosivitySkill.explosivitySpellId = spellId;
+        }
+
+        // Initialize battle drone skill
+        private void initializeBattleDroneSkill(int entityId, BattleDroneSkill battleDroneSkill)
+        {
+            EntityManager.addComponent(entityId, new BattleDroneOwnerComponent(entityId));
         }
 
         #endregion

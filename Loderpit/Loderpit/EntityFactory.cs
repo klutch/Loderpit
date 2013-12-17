@@ -103,6 +103,7 @@ namespace Loderpit
                     skills.Add(new ProximityMineSkill(entityId, 1));
                     skills.Add(new FortificationSkill(entityId, 1));
                     skills.Add(new ServoBotSkill(entityId, 1));
+                    skills.Add(new BattleDroneSkill(entityId, 1));
                     break;
 
                 case CharacterClass.Healer:
@@ -835,6 +836,40 @@ namespace Loderpit
             EntityManager.addComponent(entityId, new AffectedBySpellEntitiesComponent(entityId));
             EntityManager.addComponent(entityId, new PhysicsComponent(entityId, new List<Body>(new[] { body, feet })));
             EntityManager.addComponent(entityId, new RestoreProxyPositionTargetComponent(entityId));
+
+            return entityId;
+        }
+
+        // Create battle drone
+        public static int createBattleDrone(int ownerId, string damageDie, int maxHp)
+        {
+            int entityId = EntityManager.createEntity();
+            Vector2 position = EntityManager.getPositionComponent(ownerId).position;
+            PhysicsComponent ownerPhysicsComponent = EntityManager.getPhysicsComponent(ownerId);
+            FactionComponent ownerFactionComponent = EntityManager.getFactionComponent(ownerId);
+            Body body = BodyFactory.CreateCircle(SystemManager.physicsSystem.world, 0.5f, 1f, position);
+            BattleDroneOwnerComponent battleDroneOwnerComponent = EntityManager.getBattleDroneOwnerComponent(ownerId);
+
+            body.UserData = entityId;
+            body.CollidesWith = (ushort)CollisionCategory.None;
+            body.BodyType = BodyType.Dynamic;
+            body.IgnoreGravity = true;
+            body.LinearDamping = 1f;
+            body.FixedRotation = true;
+
+            battleDroneOwnerComponent.droneIds.Add(entityId);
+
+            EntityManager.addComponent(entityId, new StatsComponent(entityId, maxHp, maxHp, 10, 10, 10, 120, damageDie));
+            EntityManager.addComponent(entityId, new PhysicsComponent(entityId, new List<Body>(new [] {body})));
+            EntityManager.addComponent(entityId, new PositionComponent(entityId, body));
+            EntityManager.addComponent(entityId, new PositionTargetComponent(entityId, ownerPhysicsComponent.bodies[0], 2f));
+            EntityManager.addComponent(entityId, new IgnoreRopeRaycastComponent(entityId));
+            EntityManager.addComponent(entityId, new IgnoreBridgeRaycastComponent(entityId));
+            EntityManager.addComponent(entityId, new SkillsComponent(entityId, new List<Skill>(new [] { new RangedAttackSkill(entityId, 1, DamageType.Physical) })));
+            EntityManager.addComponent(entityId, new FactionComponent(entityId, ownerFactionComponent.faction, ownerFactionComponent.hostileFaction, ownerFactionComponent.attackableFactions));
+            EntityManager.addComponent(entityId, new RenderHealthComponent(entityId));
+            EntityManager.addComponent(entityId, new AffectedBySpellEntitiesComponent(entityId));
+            EntityManager.addComponent(entityId, new BasicCombatAIComponent(entityId));
 
             return entityId;
         }
