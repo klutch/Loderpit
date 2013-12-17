@@ -43,6 +43,14 @@ namespace Loderpit.Systems
             }
         }
 
+        // Calculate drone position
+        private Vector2 calculateDronePosition(int i)
+        {
+            float f = (float)Math.PI + ((float)i / 4f * (float)Math.PI);
+
+            return new Vector2((float)Math.Cos(f), (float)Math.Sin(f)) * 2f;
+        }
+
         // Handle follow owners
         private void handleFollowOwners(List<int> entities)
         {
@@ -50,16 +58,17 @@ namespace Loderpit.Systems
             {
                 BattleDroneOwnerComponent battleDroneOwnerComponent = EntityManager.getBattleDroneOwnerComponent(entityId);
                 PositionComponent ownerPositionComponent = EntityManager.getPositionComponent(entityId);
-                Vector2 targetPosition = ownerPositionComponent.position + new Vector2(0, -1f);
 
-                foreach (int droneId in battleDroneOwnerComponent.droneIds)
+                for (int i = 0; i < battleDroneOwnerComponent.droneIds.Count; i++)
                 {
+                    int droneId = battleDroneOwnerComponent.droneIds[i];
+                    Vector2 targetPosition = ownerPositionComponent.position + calculateDronePosition(i);
                     PhysicsComponent dronePhysicsComponent = EntityManager.getPhysicsComponent(droneId);
                     PositionComponent dronePositionComponent = EntityManager.getPositionComponent(droneId);
                     Vector2 relative = targetPosition - dronePositionComponent.position;
                     float length = relative.Length();
 
-                    if (length > 2f)
+                    if (length > 3f)
                     {
                         dronePhysicsComponent.bodies[0].ApplyForce(relative * 25f);
                     }
@@ -69,7 +78,7 @@ namespace Loderpit.Systems
                     }
                     else
                     {
-                        Vector2 randomForce = new Vector2(Helpers.randomBetween(_rng, -1f, 1f), Helpers.randomBetween(_rng, -1f, 1f)) * 10f;
+                        Vector2 randomForce = new Vector2(Helpers.randomBetween(_rng, -1f, 1f), Helpers.randomBetween(_rng, -1f, 1f)) * 5f;
 
                         dronePhysicsComponent.bodies[0].ApplyForce(randomForce);
                     }

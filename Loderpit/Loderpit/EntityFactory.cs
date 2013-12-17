@@ -862,7 +862,6 @@ namespace Loderpit
             EntityManager.addComponent(entityId, new StatsComponent(entityId, maxHp, maxHp, 10, 10, 10, 120, damageDie));
             EntityManager.addComponent(entityId, new PhysicsComponent(entityId, new List<Body>(new [] {body})));
             EntityManager.addComponent(entityId, new PositionComponent(entityId, body));
-            EntityManager.addComponent(entityId, new PositionTargetComponent(entityId, ownerPhysicsComponent.bodies[0], 2f));
             EntityManager.addComponent(entityId, new IgnoreRopeRaycastComponent(entityId));
             EntityManager.addComponent(entityId, new IgnoreBridgeRaycastComponent(entityId));
             EntityManager.addComponent(entityId, new SkillsComponent(entityId, new List<Skill>(new [] { new RangedAttackSkill(entityId, 1, DamageType.Physical) })));

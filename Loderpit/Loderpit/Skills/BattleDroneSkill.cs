@@ -7,7 +7,7 @@ namespace Loderpit.Skills
 {
     public class BattleDroneSkill : Skill
     {
-        public int droneCount { get { return 2; } }
+        public int droneCount { get { return 5; } }
         public string damageDie { get { return "3d3"; } }
         public int maxHp { get { return 10; } }
 
