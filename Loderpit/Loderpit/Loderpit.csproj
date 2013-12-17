@@ -162,6 +162,13 @@
     <Compile Include="Managers\SystemManager.cs" />
     <Compile Include="Level.cs" />
     <Compile Include="MouseState.cs" />
+    <Compile Include="Particles\BloodParticle.cs" />
+    <Compile Include="Particles\IFadeAlpha.cs" />
+    <Compile Include="Particles\IAcceleration.cs" />
+    <Compile Include="Particles\IPosition.cs" />
+    <Compile Include="Particles\ITimeToLive.cs" />
+    <Compile Include="Particles\IVelocity.cs" />
+    <Compile Include="Particles\Particle.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Roller.cs" />
@@ -226,6 +233,7 @@
     <Compile Include="Systems\ISystem.cs" />
     <Compile Include="Systems\LevelSystem.cs" />
     <Compile Include="Systems\ObstacleSystem.cs" />
+    <Compile Include="Systems\ParticleRenderSystem.cs" />
     <Compile Include="Systems\PhysicsSystem.cs" />
     <Compile Include="Systems\ProxySystem.cs" />
     <Compile Include="Systems\RenderSystem.cs" />

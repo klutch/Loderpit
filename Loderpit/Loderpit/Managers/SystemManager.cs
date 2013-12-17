@@ -23,5 +23,6 @@ namespace Loderpit.Managers
         public static ExplosionSystem explosionSystem;
         public static ProxySystem proxySystem;
         public static BattleDroneSystem battleDroneSystem;
+        public static ParticleRenderSystem particleRenderSystem;
     }
 }

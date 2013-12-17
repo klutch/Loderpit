@@ -153,9 +153,11 @@ namespace Loderpit.Systems
             AffectedBySpellEntitiesComponent attackerSpells = EntityManager.getAffectedBySpellEntitiesComponent(attackerId);
             AffectedBySpellEntitiesComponent defenderSpells = EntityManager.getAffectedBySpellEntitiesComponent(defenderId);
             PositionComponent defenderPositionComponent = EntityManager.getPositionComponent(defenderId);
+            PositionComponent attackerPositionComponent = EntityManager.getPositionComponent(attackerId);
             RiposteComponent defenderRiposteComponent = null;
             int defenderArmorClass = SystemManager.statSystem.getArmorClass(defenderId);
             int attackRoll;
+            Vector2 relative = defenderPositionComponent.position - attackerPositionComponent.position;
 
             attackDie = attackDie ?? SystemManager.statSystem.getAttackDie(attackerId);
             hitDie = hitDie ?? SystemManager.statSystem.getDamageDie(attackerId);
@@ -196,6 +198,7 @@ namespace Loderpit.Systems
 
                 // Apply damage
                 applyDamage(attackerId, defenderId, damage);
+                SystemManager.particleRenderSystem.addBloodParticleEffect(defenderPositionComponent.position, (Vector2.Normalize(relative) + new Vector2(0, -1f)) * 4f, 32);
                 addMessage(defenderPositionComponent.position, "-" + damage.ToString());
 
                 // Check for attacker procs

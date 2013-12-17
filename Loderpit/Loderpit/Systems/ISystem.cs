@@ -20,7 +20,8 @@ namespace Loderpit.Systems
         Spell,
         Explosion,
         Proxy,
-        BattleDrone
+        BattleDrone,
+        ParticleRender
     }
 
     public interface ISystem

@@ -82,6 +82,7 @@ namespace Loderpit
             SystemManager.explosionSystem = new ExplosionSystem();
             SystemManager.proxySystem = new ProxySystem();
             SystemManager.battleDroneSystem = new BattleDroneSystem();
+            SystemManager.particleRenderSystem = new ParticleRenderSystem();
 
             // Open create team screen
             startCreateTeamState();
@@ -313,6 +314,7 @@ namespace Loderpit
                 SystemManager.characterSystem.update();
                 SystemManager.statSystem.update();
                 SystemManager.renderSystem.update();
+                SystemManager.particleRenderSystem.update();
                 SystemManager.skillSystem.update();
                 SystemManager.battleDroneSystem.update();
                 SystemManager.spellSystem.update();
@@ -333,6 +335,9 @@ namespace Loderpit
 
             // Draw render system
             SystemManager.renderSystem.draw();
+
+            // Draw particle effects
+            SystemManager.particleRenderSystem.draw();
 
             // Restore screen view
             _window.SetView(_window.DefaultView);
