@@ -134,14 +134,7 @@ namespace Loderpit
             ResourceManager.addResource("frenzy_icon", new Texture("resources/ui/action_icons/frenzy.png"));
             ResourceManager.addResource("gale_force_icon", new Texture("resources/ui/action_icons/gale_force.png"));
             ResourceManager.addResource("fortification_icon", new Texture("resources/ui/action_icons/fortification.png"));
-            ResourceManager.addResource("blood_1_particle", new Texture("resources/particles/blood_1.png"));
-            ResourceManager.addResource("blood_2_particle", new Texture("resources/particles/blood_2.png"));
-            ResourceManager.addResource("blood_3_particle", new Texture("resources/particles/blood_3.png"));
-            ResourceManager.addResource("blood_4_particle", new Texture("resources/particles/blood_4.png"));
-            ResourceManager.addResource("fire_1_particle", new Texture("resources/particles/fire_1.png"));
-            ResourceManager.addResource("fire_2_particle", new Texture("resources/particles/fire_2.png"));
-            ResourceManager.addResource("fire_3_particle", new Texture("resources/particles/fire_3.png"));
-            ResourceManager.addResource("fire_4_particle", new Texture("resources/particles/fire_4.png"));
+            ResourceManager.addResource("fluid_particle", new Texture("resources/particles/fluid_1.png"));
             ResourceManager.addResource("shot_trail", new Texture("resources/particles/shot_trail.png"));
             ResourceManager.addResource("reticle", new Texture("resources/ui/reticle.png"));
 

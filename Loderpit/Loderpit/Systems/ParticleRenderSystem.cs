@@ -14,15 +14,16 @@ namespace Loderpit.Systems
         private List<int> _livingParticles;
         private List<int> _particlesToKill;
         private Random _rng;
-        private List<Texture> _bloodTextures;
+        private Texture _fluidTexture;
         private Texture _shotTrailTexture;
-        private List<Texture> _fireTextures;
+        private Color _fireColor;
 
         public SystemType systemType { get { return SystemType.ParticleRender; } }
 
         public ParticleRenderSystem()
         {
             _rng = new Random();
+            _fireColor = new Color(255, 128, 0, 255);
 
             // Initialize particles
             _livingParticles = new List<int>();
@@ -33,21 +34,8 @@ namespace Loderpit.Systems
                 _particles[i] = new Particle();
             }
 
-            // Initialize blood textures
-            _bloodTextures = new List<Texture>();
-            for (int i = 0; i < 4; i++)
-            {
-                _bloodTextures.Add(ResourceManager.getResource<Texture>(String.Format("blood_{0}_particle", (i + 1).ToString())));
-            }
-
-            // Initialize fire textures
-            _fireTextures = new List<Texture>();
-            for (int i = 0; i < 4; i++)
-            {
-                _fireTextures.Add(ResourceManager.getResource<Texture>(String.Format("fire_{0}_particle", (i + 1).ToString())));
-            }
-
-            // Initialize other textures
+            // Textures
+            _fluidTexture = ResourceManager.getResource<Texture>("fluid_particle");
             _shotTrailTexture = ResourceManager.getResource<Texture>("shot_trail");
         }
 
@@ -92,13 +80,14 @@ namespace Loderpit.Systems
             for (int i = 0; i < amount; i++)
             {
                 Vector2 offset = new Vector2(Helpers.randomBetween(_rng, -1f, 1f), Helpers.randomBetween(_rng, -1f, 1f));
-                Texture texture = _bloodTextures[_rng.Next(0, _bloodTextures.Count)];
+                Texture texture = _fluidTexture;
+                float scale = Helpers.randomBetween(_rng, 0.25f, 0.9f);
 
                 createParticle(
                     texture,
                     color,
-                    (float)texture.Size.X / CameraSystem.ORIGINAL_SCALE,
-                    (float)texture.Size.Y / CameraSystem.ORIGINAL_SCALE,
+                    ((float)texture.Size.X / CameraSystem.ORIGINAL_SCALE) * scale,
+                    ((float)texture.Size.Y / CameraSystem.ORIGINAL_SCALE) * scale,
                     position + offset * 0.4f,
                     new Vector2(0.5f, 0.5f),
                     (force + offset * 1.5f) + new Vector2(0, 1f),
@@ -116,7 +105,7 @@ namespace Loderpit.Systems
             float angleInRads = (float)Math.Atan2(relative.Y, relative.X);
             float rotation = Helpers.radToDeg(angleInRads) + 180;
 
-            createParticle(_shotTrailTexture, color, 0.05f, relative.Length(), pointB, Vector2.Zero, Vector2.Zero, Vector2.Zero, 120, rotation, 0);
+            createParticle(_shotTrailTexture, color, 0.05f, relative.Length(), pointB, Vector2.Zero, Vector2.Zero, Vector2.Zero, 30, rotation, 0);
         }
 
         // Add fire particle
@@ -124,11 +113,11 @@ namespace Loderpit.Systems
         {
             for (int i = 0; i < amount; i++)
             {
-                Texture texture = _fireTextures[_rng.Next(0, _fireTextures.Count)];
+                Texture texture = _fluidTexture;
                 float size = Helpers.randomBetween(_rng, 0.25f, 0.5f);
                 Vector2 jitter = new Vector2(Helpers.randomBetween(_rng, -0.25f, 0.25f), Helpers.randomBetween(_rng, -1.5f, 0f));
 
-                createParticle(texture, Color.White, size, size, position + jitter, new Vector2(0.5f, 0.5f), new Vector2(jitter.X * 5f, 0f), new Vector2(0, -1.5f), 180, 0f, 0f);
+                createParticle(texture, _fireColor, size, size, position + jitter, new Vector2(0.5f, 0.5f), new Vector2(jitter.X * 5f, 0f), new Vector2(0, -1.5f), 180, 0f, 0f);
             }
         }
 
