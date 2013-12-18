@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
+using SFML.Graphics;
 using FarseerPhysics.Dynamics;
 using Loderpit.Components;
 using Loderpit.Components.SpellEffects;
@@ -201,7 +202,13 @@ namespace Loderpit.Systems
                 applyDamage(attackerId, defenderId, damage);
                 addMessage(defenderPositionComponent.position, "-" + damage.ToString());
 
-                // Create particle effect
+                // Create shot trail
+                if (attackSkill.type == SkillType.RangedAttack || attackSkill.type == SkillType.Piercing)
+                {
+                    SystemManager.particleRenderSystem.addShotTrail(Color.White, attackerPositionComponent.position, defenderPositionComponent.position);
+                }
+
+                // Blood particle effects
                 if (defenderBloodColorComponent != null)
                 {
                     SystemManager.particleRenderSystem.addBloodParticleEffect(defenderBloodColorComponent.color, defenderPositionComponent.position, (Vector2.Normalize(relative) + new Vector2(0, -1f)) * 4f, 8);

@@ -15,6 +15,7 @@ namespace Loderpit.Systems
         private List<int> _particlesToKill;
         private Random _rng;
         private List<Texture> _bloodTextures;
+        private Texture _shotTrailTexture;
 
         public SystemType systemType { get { return SystemType.ParticleRender; } }
 
@@ -37,6 +38,9 @@ namespace Loderpit.Systems
             {
                 _bloodTextures.Add(ResourceManager.getResource<Texture>(String.Format("blood_{0}_particle", (i + 1).ToString())));
             }
+
+            // Initialize other textures
+            _shotTrailTexture = ResourceManager.getResource<Texture>("shot_trail");
         }
 
         // Find first dead particle
@@ -54,7 +58,7 @@ namespace Loderpit.Systems
         }
 
         // Create particle
-        public void createParticle(Texture texture, Color color, Vector2 position, Vector2 velocity, Vector2 acceleration, float scale, int timeToLive, float rotationVelocity)
+        public void createParticle(Texture texture, Color color, float worldWidth, float worldHeight, Vector2 position, Vector2 offset, Vector2 velocity, Vector2 acceleration, int timeToLive, float rotation, float rotationVelocity)
         {
             int particleId = findFirstDeadParticle();
             Particle particle = _particles[particleId];
@@ -65,8 +69,10 @@ namespace Loderpit.Systems
             particle.color = color;
             particle.texture = texture;
             particle.timeToLive = timeToLive;
+            particle.rotation = rotation;
             particle.rotationVelocity = rotationVelocity;
-            particle.scale = scale;
+            particle.shape.Size = new Vector2f(worldWidth, worldHeight);
+            particle.shape.Origin = new Vector2f(particle.shape.Size.X * offset.X, particle.shape.Size.Y * offset.Y);
 
             _livingParticles.Add(particleId);
         }
@@ -77,17 +83,31 @@ namespace Loderpit.Systems
             for (int i = 0; i < amount; i++)
             {
                 Vector2 offset = new Vector2(Helpers.randomBetween(_rng, -1f, 1f), Helpers.randomBetween(_rng, -1f, 1f));
+                float scale = Helpers.randomBetween(_rng, 0.25f, 0.75f);
 
                 createParticle(
                     _bloodTextures[_rng.Next(0, _bloodTextures.Count)],
                     color,
+                    scale,
+                    scale,
                     position + offset * 0.4f,
+                    new Vector2(0.5f, 0.5f),
                     (force + offset * 1.5f) + new Vector2(0, 1f),
                     new Vector2(0, 9.8f),
-                    Helpers.randomBetween(_rng, 0.5f, 1f),
                     240,
+                    0,
                     Helpers.randomBetween(_rng, -10f, 10f));
             }
+        }
+
+        // Add shot trail
+        public void addShotTrail(Color color, Vector2 pointA, Vector2 pointB)
+        {
+            Vector2 relative = pointB - pointA;
+            float angleInRads = (float)Math.Atan2(relative.Y, relative.X);
+            float rotation = Helpers.radToDeg(angleInRads) + 180;
+
+            createParticle(_shotTrailTexture, color, 0.05f, relative.Length(), pointB, Vector2.Zero, Vector2.Zero, Vector2.Zero, 120, rotation, 0);
         }
 
         // Update
@@ -134,7 +154,7 @@ namespace Loderpit.Systems
         {
             foreach (int particleId in _livingParticles)
             {
-                Game.window.Draw(_particles[particleId]);
+                Game.window.Draw(_particles[particleId].shape);
             }
         }
     }
