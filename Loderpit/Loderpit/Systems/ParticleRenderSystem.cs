@@ -16,6 +16,7 @@ namespace Loderpit.Systems
         private Random _rng;
         private List<Texture> _bloodTextures;
         private Texture _shotTrailTexture;
+        private List<Texture> _fireTextures;
 
         public SystemType systemType { get { return SystemType.ParticleRender; } }
 
@@ -37,6 +38,13 @@ namespace Loderpit.Systems
             for (int i = 0; i < 4; i++)
             {
                 _bloodTextures.Add(ResourceManager.getResource<Texture>(String.Format("blood_{0}_particle", (i + 1).ToString())));
+            }
+
+            // Initialize fire textures
+            _fireTextures = new List<Texture>();
+            for (int i = 0; i < 4; i++)
+            {
+                _fireTextures.Add(ResourceManager.getResource<Texture>(String.Format("fire_{0}_particle", (i + 1).ToString())));
             }
 
             // Initialize other textures
@@ -109,6 +117,19 @@ namespace Loderpit.Systems
             float rotation = Helpers.radToDeg(angleInRads) + 180;
 
             createParticle(_shotTrailTexture, color, 0.05f, relative.Length(), pointB, Vector2.Zero, Vector2.Zero, Vector2.Zero, 120, rotation, 0);
+        }
+
+        // Add fire particle
+        public void addFireParticle(Vector2 position, int amount)
+        {
+            for (int i = 0; i < amount; i++)
+            {
+                Texture texture = _fireTextures[_rng.Next(0, _fireTextures.Count)];
+                float size = Helpers.randomBetween(_rng, 0.25f, 0.5f);
+                Vector2 jitter = new Vector2(Helpers.randomBetween(_rng, -0.25f, 0.25f), Helpers.randomBetween(_rng, -1.5f, 0f));
+
+                createParticle(texture, Color.White, size, size, position + jitter, new Vector2(0.5f, 0.5f), new Vector2(jitter.X * 5f, 0f), new Vector2(0, -1.5f), 180, 0f, 0f);
+            }
         }
 
         // Update

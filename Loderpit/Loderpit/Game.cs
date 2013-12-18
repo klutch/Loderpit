@@ -138,6 +138,10 @@ namespace Loderpit
             ResourceManager.addResource("blood_2_particle", new Texture("resources/particles/blood_2.png"));
             ResourceManager.addResource("blood_3_particle", new Texture("resources/particles/blood_3.png"));
             ResourceManager.addResource("blood_4_particle", new Texture("resources/particles/blood_4.png"));
+            ResourceManager.addResource("fire_1_particle", new Texture("resources/particles/fire_1.png"));
+            ResourceManager.addResource("fire_2_particle", new Texture("resources/particles/fire_2.png"));
+            ResourceManager.addResource("fire_3_particle", new Texture("resources/particles/fire_3.png"));
+            ResourceManager.addResource("fire_4_particle", new Texture("resources/particles/fire_4.png"));
             ResourceManager.addResource("shot_trail", new Texture("resources/particles/shot_trail.png"));
             ResourceManager.addResource("reticle", new Texture("resources/ui/reticle.png"));
 

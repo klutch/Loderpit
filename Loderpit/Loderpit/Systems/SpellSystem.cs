@@ -217,6 +217,12 @@ namespace Loderpit.Systems
 
                         if (EntityManager.doesEntityExist(affectedId))  // Entity could have died from explosivity proc
                         {
+                            // Rendering
+                            if (damageOverTimeComponent.damageType == DamageType.Fire)
+                            {
+                                SystemManager.particleRenderSystem.addFireParticle(EntityManager.getPositionComponent(affectedId).position, 3);
+                            }
+
                             // Apply spell damage
                             SystemManager.combatSystem.applySpellDamage(affectedId, Roller.roll(damageOverTimeComponent.damageDie) + dotDamageModifier);
                         }
