@@ -68,6 +68,7 @@ namespace Loderpit.Systems
             particle.position = new Vector2f(position.X, position.Y);
             particle.color = color;
             particle.texture = texture;
+            particle.shape.TextureRect = new IntRect(0, 0, (int)texture.Size.X, (int)texture.Size.Y);
             particle.timeToLive = timeToLive;
             particle.rotation = rotation;
             particle.rotationVelocity = rotationVelocity;
@@ -83,20 +84,20 @@ namespace Loderpit.Systems
             for (int i = 0; i < amount; i++)
             {
                 Vector2 offset = new Vector2(Helpers.randomBetween(_rng, -1f, 1f), Helpers.randomBetween(_rng, -1f, 1f));
-                float scale = Helpers.randomBetween(_rng, 0.25f, 0.75f);
+                Texture texture = _bloodTextures[_rng.Next(0, _bloodTextures.Count)];
 
                 createParticle(
-                    _bloodTextures[_rng.Next(0, _bloodTextures.Count)],
+                    texture,
                     color,
-                    scale,
-                    scale,
+                    (float)texture.Size.X / CameraSystem.ORIGINAL_SCALE,
+                    (float)texture.Size.Y / CameraSystem.ORIGINAL_SCALE,
                     position + offset * 0.4f,
                     new Vector2(0.5f, 0.5f),
                     (force + offset * 1.5f) + new Vector2(0, 1f),
                     new Vector2(0, 9.8f),
                     240,
-                    0,
-                    Helpers.randomBetween(_rng, -10f, 10f));
+                    0f,
+                    0f);
             }
         }
 
