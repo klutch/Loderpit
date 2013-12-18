@@ -90,6 +90,7 @@
     <Compile Include="Components\AffectedBySpellEntitiesComponent.cs" />
     <Compile Include="Components\BasicCombatAIComponent.cs" />
     <Compile Include="Components\BattleDroneOwnerComponent.cs" />
+    <Compile Include="Components\BloodColorComponent.cs" />
     <Compile Include="Components\BridgeComponent.cs" />
     <Compile Include="Components\CeilingComponent.cs" />
     <Compile Include="Components\CharacterComponent.cs" />
@@ -162,13 +163,7 @@
     <Compile Include="Managers\SystemManager.cs" />
     <Compile Include="Level.cs" />
     <Compile Include="MouseState.cs" />
-    <Compile Include="Particles\BloodParticle.cs" />
-    <Compile Include="Particles\IFadeAlpha.cs" />
-    <Compile Include="Particles\IAcceleration.cs" />
-    <Compile Include="Particles\IPosition.cs" />
-    <Compile Include="Particles\ITimeToLive.cs" />
-    <Compile Include="Particles\IVelocity.cs" />
-    <Compile Include="Particles\Particle.cs" />
+    <Compile Include="Particle.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Roller.cs" />
@@ -243,6 +238,18 @@
     <Compile Include="Systems\TeamSystem.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="resources\particles\blood_1.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\particles\blood_2.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\particles\blood_3.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\particles\blood_4.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="resources\ui\action_icons\fortification.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

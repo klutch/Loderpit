@@ -154,6 +154,7 @@ namespace Loderpit.Systems
             AffectedBySpellEntitiesComponent defenderSpells = EntityManager.getAffectedBySpellEntitiesComponent(defenderId);
             PositionComponent defenderPositionComponent = EntityManager.getPositionComponent(defenderId);
             PositionComponent attackerPositionComponent = EntityManager.getPositionComponent(attackerId);
+            BloodColorComponent defenderBloodColorComponent = EntityManager.getBloodColorComponent(defenderId);
             RiposteComponent defenderRiposteComponent = null;
             int defenderArmorClass = SystemManager.statSystem.getArmorClass(defenderId);
             int attackRoll;
@@ -198,8 +199,13 @@ namespace Loderpit.Systems
 
                 // Apply damage
                 applyDamage(attackerId, defenderId, damage);
-                SystemManager.particleRenderSystem.addBloodParticleEffect(defenderPositionComponent.position, (Vector2.Normalize(relative) + new Vector2(0, -1f)) * 4f, 32);
                 addMessage(defenderPositionComponent.position, "-" + damage.ToString());
+
+                // Create particle effect
+                if (defenderBloodColorComponent != null)
+                {
+                    SystemManager.particleRenderSystem.addBloodParticleEffect(defenderBloodColorComponent.color, defenderPositionComponent.position, (Vector2.Normalize(relative) + new Vector2(0, -1f)) * 4f, 8);
+                }
 
                 // Check for attacker procs
                 foreach (int spellId in attackerSpells.spellEntities)

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using SFML.Graphics;
 using SFML.Window;
-using Loderpit.Particles;
 using Loderpit.Managers;
 
 namespace Loderpit.Systems
@@ -11,34 +10,83 @@ namespace Loderpit.Systems
     public class ParticleRenderSystem : ISystem
     {
         private const int MAX_PARTICLES = 4000;
-        private List<Particle> _particles;
-        private VertexArray _particleVertexArray;
+        private Particle[] _particles;
+        private List<int> _livingParticles;
+        private List<int> _particlesToKill;
         private Random _rng;
-        private List<Particle> _particlesToRemove;
+        private List<Texture> _bloodTextures;
 
         public SystemType systemType { get { return SystemType.ParticleRender; } }
 
         public ParticleRenderSystem()
         {
             _rng = new Random();
-            _particles = new List<Particle>(MAX_PARTICLES);
-            _particlesToRemove = new List<Particle>();
-            _particleVertexArray = new VertexArray(PrimitiveType.Triangles, MAX_PARTICLES);
+
+            // Initialize particles
+            _livingParticles = new List<int>();
+            _particlesToKill = new List<int>();
+            _particles = new Particle[MAX_PARTICLES];
+            for (int i = 0; i < MAX_PARTICLES; i++)
+            {
+                _particles[i] = new Particle();
+            }
+
+            // Initialize blood textures
+            _bloodTextures = new List<Texture>();
+            for (int i = 0; i < 4; i++)
+            {
+                _bloodTextures.Add(ResourceManager.getResource<Texture>(String.Format("blood_{0}_particle", (i + 1).ToString())));
+            }
+        }
+
+        // Find first dead particle
+        private int findFirstDeadParticle()
+        {
+            for (int i = 0; i < MAX_PARTICLES; i++)
+            {
+                if (!_livingParticles.Contains(i))
+                {
+                    return i;
+                }
+            }
+
+            return -1;
+        }
+
+        // Create particle
+        public void createParticle(Texture texture, Color color, Vector2 position, Vector2 velocity, Vector2 acceleration, float scale, int timeToLive, float rotationVelocity)
+        {
+            int particleId = findFirstDeadParticle();
+            Particle particle = _particles[particleId];
+
+            particle.acceleration = new Vector2f(acceleration.X, acceleration.Y);
+            particle.velocity = new Vector2f(velocity.X, velocity.Y);
+            particle.position = new Vector2f(position.X, position.Y);
+            particle.color = color;
+            particle.texture = texture;
+            particle.timeToLive = timeToLive;
+            particle.rotationVelocity = rotationVelocity;
+            particle.scale = scale;
+
+            _livingParticles.Add(particleId);
         }
 
         // Add blood particle effect
-        public void addBloodParticleEffect(Vector2 position, Vector2 force, int amount)
+        public void addBloodParticleEffect(Color color, Vector2 position, Vector2 force, int amount)
         {
             for (int i = 0; i < amount; i++)
             {
-                _particles.Add(
-                    new BloodParticle(
-                        new Vector2f(position.X, position.Y),
-                        new Vector2f(0f, 9.8f),
-                        new Vector2f(Helpers.randomBetween(_rng, -1f, 1f), Helpers.randomBetween(_rng, -1, 1f)) * 0.75f + new Vector2f(force.X, force.Y),
-                        180,
-                        1f,
-                        -0.001f));
+                Vector2 offset = new Vector2(Helpers.randomBetween(_rng, -1f, 1f), Helpers.randomBetween(_rng, -1f, 1f));
+
+                createParticle(
+                    _bloodTextures[_rng.Next(0, _bloodTextures.Count)],
+                    color,
+                    position + offset * 0.4f,
+                    (force + offset * 1.5f) + new Vector2(0, 1f),
+                    new Vector2(0, 9.8f),
+                    Helpers.randomBetween(_rng, 0.5f, 1f),
+                    240,
+                    Helpers.randomBetween(_rng, -10f, 10f));
             }
         }
 
@@ -48,82 +96,46 @@ namespace Loderpit.Systems
             float dt = SystemManager.physicsSystem.isSlowMotion ? PhysicsSystem.SLOW_DT : PhysicsSystem.NORMAL_DT;
 
             // Update particle aspects
-            for (int i = 0; i < _particles.Count; i++)
+            for (int i = 0; i < _livingParticles.Count; i++)
             {
-                Particle particle = _particles[i];
+                int particleId = _livingParticles[i];
+                Particle particle = _particles[particleId];
 
-                // Handle time to live -- handle slow motion
-                if ((!SystemManager.physicsSystem.isSlowMotion) ||
-                    (SystemManager.physicsSystem.isSlowMotion && SystemManager.physicsSystem.isReadyForSlowMotionTick))
+                // Handle slow motion
+                if ((!SystemManager.physicsSystem.isSlowMotion) || (SystemManager.physicsSystem.isSlowMotion && SystemManager.physicsSystem.isReadyForSlowMotionTick))
                 {
-                    if (particle is ITimeToLive)
+                    // Handle time to live
+                    if (particle.timeToLive == 0)
                     {
-                        ITimeToLive timeToLiveParticle = particle as ITimeToLive;
-
-                        if (timeToLiveParticle.timeToLive == 0)
-                        {
-                            _particlesToRemove.Add(particle);
-                        }
-                        else
-                        {
-                            timeToLiveParticle.timeToLive--;
-                        }
+                        _particlesToKill.Add(particleId);
+                    }
+                    else
+                    {
+                        particle.timeToLive--;
                     }
 
-                    // Handle acceleration
-                    if (particle is IAcceleration)
-                    {
-                        IVelocity velocityParticle = particle as IVelocity;
-                        IAcceleration accelerationParticle = particle as IAcceleration;
-
-                        velocityParticle.velocity += accelerationParticle.acceleration * dt;
-                    }
-                }
-
-                // Handle physics
-                if (particle is IVelocity)
-                {
-                    IPosition positionParticle = particle as IPosition;
-                    IVelocity velocityParticle = particle as IVelocity;
-
-                    positionParticle.position += velocityParticle.velocity * dt;
-                }
-
-                // Handle alpha fade
-                if (particle is IFadeAlpha)
-                {
-                    IFadeAlpha fadeAlphaParticle = particle as IFadeAlpha;
-
-                    fadeAlphaParticle.alpha += fadeAlphaParticle.changeAlphaPerFrame;
+                    // Handle physics
+                    particle.velocity += particle.acceleration * dt;
+                    particle.position += particle.velocity * dt;
+                    particle.rotation += particle.rotationVelocity;
                 }
             }
 
             // Remove dead particles
-            foreach (Particle particle in _particlesToRemove)
+            foreach (int particleId in _particlesToKill)
             {
-                _particles.Remove(particle);
+                _livingParticles.Remove(particleId);
             }
-            _particlesToRemove.Clear();
-
-            // Build vertex array
-            for (int i = 0; i < _particles.Count; i++)
-            {
-                IPosition position = _particles[i] as IPosition;
-                IFadeAlpha fadeAlpha = _particles[i] as IFadeAlpha;
-                float alpha = fadeAlpha == null ? 1f : fadeAlpha.alpha;
-                Color color = new Color(255, 30, 30, (byte)(alpha * 255f));
-
-                _particleVertexArray.Append(new Vertex(position.position + new Vector2f(-0.1f, -0.1f), color));
-                _particleVertexArray.Append(new Vertex(position.position + new Vector2f(0.1f, -0.1f), color));
-                _particleVertexArray.Append(new Vertex(position.position, color));
-            }
+            _particlesToKill.Clear();
         }
 
         // Draw
         public void draw()
         {
-            Game.window.Draw(_particleVertexArray);
-            _particleVertexArray.Clear();
+            foreach (int particleId in _livingParticles)
+            {
+                Game.window.Draw(_particles[particleId]);
+            }
         }
     }
 }

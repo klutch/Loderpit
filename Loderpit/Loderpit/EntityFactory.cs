@@ -9,6 +9,7 @@ using FarseerPhysics.Dynamics.Contacts;
 using FarseerPhysics.Dynamics.Joints;
 using FarseerPhysics.Factories;
 using FarseerRubeLoader;
+using SFML.Graphics;
 using Loderpit.Formations;
 using Loderpit.Components;
 using Loderpit.Components.SpellEffects;
@@ -173,8 +174,6 @@ namespace Loderpit
 
             characterComponent = new CharacterComponent(entityId, body, feet, feetJoint, characterClass);
             characterComponent.body.OnCollision += new OnCollisionEventHandler(playerCharacterBodyOnCollision);
-            //characterComponent.feet.OnCollision += new OnCollisionEventHandler(playerCharacterFeetOnCollision);
-            //characterComponent.feet.OnSeparation += new OnSeparationEventHandler(playerCharacterFeetOnSeparation);
 
             EntityManager.addComponent(entityId, characterComponent);
             EntityManager.addComponent(entityId, getCharacterStats(entityId, characterClass));
@@ -188,6 +187,7 @@ namespace Loderpit
             EntityManager.addComponent(entityId, new ExternalMovementSpeedsComponent(entityId));
             EntityManager.addComponent(entityId, new AffectedBySpellEntitiesComponent(entityId));
             EntityManager.addComponent(entityId, new PhysicsComponent(entityId, new List<Body>( new [] { body, feet })));
+            EntityManager.addComponent(entityId, new BloodColorComponent(entityId, Color.Red));
 
             return entityId;
         }
@@ -360,6 +360,7 @@ namespace Loderpit
             EntityManager.addComponent(entityId, new AffectedBySpellEntitiesComponent(entityId));
             EntityManager.addComponent(entityId, new BasicCombatAIComponent(entityId));
             EntityManager.addComponent(entityId, new PhysicsComponent(entityId, new List<Body>(new[] { body, feet })));
+            EntityManager.addComponent(entityId, new BloodColorComponent(entityId, Color.Green));
 
             return entityId;
         }

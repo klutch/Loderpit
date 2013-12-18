@@ -56,7 +56,8 @@ namespace Loderpit.Components
         HasProxy,
         IsProxy,
         RestoreProxyPositionTarget,
-        BattleDroneOwner
+        BattleDroneOwner,
+        BloodColor
     }
 
     public interface IComponent

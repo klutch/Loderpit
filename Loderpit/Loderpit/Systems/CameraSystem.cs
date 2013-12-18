@@ -10,6 +10,7 @@ namespace Loderpit.Systems
 {
     public class CameraSystem : ISystem
     {
+        public const float ORIGINAL_SCALE = 32f;
         private View _worldView;
 
         public View worldView { get { return _worldView; } }
@@ -18,7 +19,7 @@ namespace Loderpit.Systems
         public CameraSystem()
         {
             _worldView = new View(new Vector2f(0, 0), new Vector2f(Game.window.DefaultView.Size.X, Game.window.DefaultView.Size.Y));
-            _worldView.Zoom(1f / 32f);
+            _worldView.Zoom(1f / ORIGINAL_SCALE);
         }
 
         public void update()
