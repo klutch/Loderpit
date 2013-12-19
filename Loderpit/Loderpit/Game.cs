@@ -71,7 +71,7 @@ namespace Loderpit
             SystemManager.teamSystem = new TeamSystem();
             SystemManager.cameraSystem = new CameraSystem();
             SystemManager.characterSystem = new CharacterSystem();
-            SystemManager.characterAnimationSystem = new CharacterAnimationSystem();
+            SystemManager.animationSystem = new AnimationSystem();
             SystemManager.renderSystem = new RenderSystem();
             SystemManager.obstacleSystem = new ObstacleSystem();
             SystemManager.groupSystem = new GroupSystem();
@@ -152,6 +152,7 @@ namespace Loderpit
             ResourceManager.addResource("character_walk_right_4", new Texture("resources/characters/prototype/walk_right_4.png"));
             ResourceManager.addResource("character_walk_right_5", new Texture("resources/characters/prototype/walk_right_5.png"));
             ResourceManager.addResource("character_walk_right_6", new Texture("resources/characters/prototype/walk_right_6.png"));
+            ResourceManager.addResource("drone_idle_0", new Texture("resources/characters/drone/idle_0.png"));
             ResourceManager.addResource("reticle", new Texture("resources/ui/reticle.png"));
 
             // Debug
@@ -331,7 +332,7 @@ namespace Loderpit
                 SystemManager.aiSystem.update();
                 SystemManager.characterSystem.update();
                 SystemManager.statSystem.update();
-                SystemManager.characterAnimationSystem.update();
+                SystemManager.animationSystem.update();
                 SystemManager.renderSystem.update();
                 SystemManager.particleRenderSystem.update();
                 SystemManager.skillSystem.update();

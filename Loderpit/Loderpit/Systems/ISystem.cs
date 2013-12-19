@@ -22,7 +22,7 @@ namespace Loderpit.Systems
         Proxy,
         BattleDrone,
         ParticleRender,
-        CharacterAnimation
+        Animation
     }
 
     public interface ISystem

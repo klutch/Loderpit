@@ -4,9 +4,10 @@ using SFML.Graphics;
 
 namespace Loderpit.Components
 {
-    public class CharacterAnimationComponent : IComponent
+    public class AnimationComponent : IComponent
     {
-        private CharacterAnimationType _type;
+        private AnimationType _animationType;
+        private AnimationCategory _animationCategory;
         private int _entityId;
         private int _ticksSinceFrameChange;
         private int _ticksPerFrame;
@@ -14,16 +15,19 @@ namespace Loderpit.Components
         private RectangleShape _shape;
 
         public int entityId { get { return _entityId; } }
-        public ComponentType componentType { get { return ComponentType.CharacterAnimation; } }
+        public ComponentType componentType { get { return ComponentType.Animation; } }
         public int ticksSinceFrameChange { get { return _ticksSinceFrameChange; } set { _ticksSinceFrameChange = value; } }
         public int ticksPerFrame { get { return _ticksPerFrame; } set { _ticksPerFrame = value; } }
         public int frameIndex { get { return _frameIndex; } set { _frameIndex = value; } }
-        public CharacterAnimationType type { get { return _type; } set { _type = value; } }
+        public AnimationType animationType { get { return _animationType; } set { _animationType = value; } }
+        public AnimationCategory animationCategory { get { return _animationCategory; } }
         public RectangleShape shape { get { return _shape; } }
-        
-        public CharacterAnimationComponent(int entityId, int ticksPerFrame)
+
+        public AnimationComponent(int entityId, AnimationCategory animationCategory, AnimationType animationType, int ticksPerFrame)
         {
             _entityId = entityId;
+            _animationCategory = animationCategory;
+            _animationType = animationType;
             _ticksPerFrame = ticksPerFrame;
             _shape = new RectangleShape();
         }

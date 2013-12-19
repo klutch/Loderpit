@@ -190,7 +190,7 @@ namespace Loderpit
             EntityManager.addComponent(entityId, new AffectedBySpellEntitiesComponent(entityId));
             EntityManager.addComponent(entityId, new PhysicsComponent(entityId, new List<Body>( new [] { body, feet })));
             EntityManager.addComponent(entityId, new BloodColorComponent(entityId, Color.Red));
-            EntityManager.addComponent(entityId, new CharacterAnimationComponent(entityId, 3));
+            EntityManager.addComponent(entityId, new AnimationComponent(entityId, AnimationCategory.Character, AnimationType.Idle, 3));
 
             return entityId;
         }
@@ -913,6 +913,7 @@ namespace Loderpit
             EntityManager.addComponent(entityId, new RenderHealthComponent(entityId));
             EntityManager.addComponent(entityId, new AffectedBySpellEntitiesComponent(entityId));
             EntityManager.addComponent(entityId, new BasicCombatAIComponent(entityId));
+            EntityManager.addComponent(entityId, new AnimationComponent(entityId, AnimationCategory.Drone, AnimationType.Idle, 60));
 
             return entityId;
         }

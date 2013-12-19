@@ -248,6 +248,6 @@ namespace Loderpit.Managers
         public static BattleDroneOwnerComponent getBattleDroneOwnerComponent(int entityId) { return getComponent<BattleDroneOwnerComponent>(entityId, ComponentType.BattleDroneOwner); }
         public static BloodColorComponent getBloodColorComponent(int entityId) { return getComponent<BloodColorComponent>(entityId, ComponentType.BloodColor); }
         public static ColorPrimitiveRenderComponent getColorPrimitiveRenderComponent(int entityId) { return getComponent<ColorPrimitiveRenderComponent>(entityId, ComponentType.ColorPrimitiveRender); }
-        public static CharacterAnimationComponent getCharacterAnimationComponent(int entityId) { return getComponent<CharacterAnimationComponent>(entityId, ComponentType.CharacterAnimation); }
+        public static AnimationComponent getAnimationComponent(int entityId) { return getComponent<AnimationComponent>(entityId, ComponentType.Animation); }
     }
 }

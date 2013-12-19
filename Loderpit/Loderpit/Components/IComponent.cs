@@ -59,7 +59,7 @@ namespace Loderpit.Components
         BattleDroneOwner,
         BloodColor,
         ColorPrimitiveRender,
-        CharacterAnimation
+        Animation
     }
 
     public interface IComponent

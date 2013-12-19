@@ -5,10 +5,16 @@ using System.Text;
 
 namespace Loderpit
 {
-    public enum CharacterAnimationType
+    public enum AnimationType
     {
         Idle,
         WalkLeft,
         WalkRight
+    }
+
+    public enum AnimationCategory
+    {
+        Character,
+        Drone
     }
 }

@@ -11,7 +11,7 @@ namespace Loderpit.Managers
         public static PhysicsSystem physicsSystem;
         public static TeamSystem teamSystem;
         public static StatSystem statSystem;
-        public static CharacterAnimationSystem characterAnimationSystem;
+        public static AnimationSystem animationSystem;
         public static RenderSystem renderSystem;
         public static ObstacleSystem obstacleSystem;
         public static GroupSystem groupSystem;
