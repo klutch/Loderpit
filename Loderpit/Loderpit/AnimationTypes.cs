@@ -15,6 +15,7 @@ namespace Loderpit
     public enum AnimationCategory
     {
         Character,
+        Enemy,
         Drone
     }
 }

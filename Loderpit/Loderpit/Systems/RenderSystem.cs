@@ -76,26 +76,36 @@ namespace Loderpit.Systems
             _animations = new Dictionary<AnimationCategory, Dictionary<AnimationType, List<Texture>>>();
             _animations.Add(AnimationCategory.Character, new Dictionary<AnimationType, List<Texture>>());
             _animations.Add(AnimationCategory.Drone, new Dictionary<AnimationType, List<Texture>>());
+            _animations.Add(AnimationCategory.Enemy, new Dictionary<AnimationType, List<Texture>>());
             _animations[AnimationCategory.Character].Add(AnimationType.Idle, new List<Texture>(new[] { ResourceManager.getResource<Texture>("character_idle_0") }));
             _animations[AnimationCategory.Drone].Add(AnimationType.Idle, new List<Texture>( new [] { ResourceManager.getResource<Texture>("drone_idle_0") }));
+            _animations[AnimationCategory.Enemy].Add(AnimationType.Idle, new List<Texture>(new [] { ResourceManager.getResource<Texture>("enemy_idle_0") }));
 
             // Finish initializing character animations
             foreach (string direction in new[] { "left", "right" })
             {
-                List<Texture> results = new List<Texture>();
+                List<Texture> characterResults = new List<Texture>();
+                List<Texture> enemyResults = new List<Texture>();
 
                 for (int i = 0; i < 6; i++)
                 {
-                    results.Add(ResourceManager.getResource<Texture>(String.Format("character_walk_{0}_{1}", direction, i)));
+                    characterResults.Add(ResourceManager.getResource<Texture>(String.Format("character_walk_{0}_{1}", direction, i)));
+                }
+
+                for (int i = 0; i < 7; i++)
+                {
+                    enemyResults.Add(ResourceManager.getResource<Texture>(String.Format("enemy_walk_{0}_{1}", direction, i)));
                 }
 
                 if (direction == "left")
                 {
-                    _animations[AnimationCategory.Character].Add(AnimationType.WalkLeft, results);
+                    _animations[AnimationCategory.Character].Add(AnimationType.WalkLeft, characterResults);
+                    _animations[AnimationCategory.Enemy].Add(AnimationType.WalkLeft, enemyResults);
                 }
                 else if (direction == "right")
                 {
-                    _animations[AnimationCategory.Character].Add(AnimationType.WalkRight, results);
+                    _animations[AnimationCategory.Enemy].Add(AnimationType.WalkRight, enemyResults);
+                    _animations[AnimationCategory.Character].Add(AnimationType.WalkRight, characterResults);
                 }
             }
         }

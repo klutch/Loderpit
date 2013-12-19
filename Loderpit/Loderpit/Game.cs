@@ -152,6 +152,23 @@ namespace Loderpit
             ResourceManager.addResource("character_walk_right_4", new Texture("resources/characters/prototype/walk_right_4.png"));
             ResourceManager.addResource("character_walk_right_5", new Texture("resources/characters/prototype/walk_right_5.png"));
             ResourceManager.addResource("character_walk_right_6", new Texture("resources/characters/prototype/walk_right_6.png"));
+            ResourceManager.addResource("enemy_idle_0", new Texture("resources/characters/enemy/idle_0.png"));
+            ResourceManager.addResource("enemy_walk_left_0", new Texture("resources/characters/enemy/walk_left_0.png"));
+            ResourceManager.addResource("enemy_walk_left_1", new Texture("resources/characters/enemy/walk_left_1.png"));
+            ResourceManager.addResource("enemy_walk_left_2", new Texture("resources/characters/enemy/walk_left_2.png"));
+            ResourceManager.addResource("enemy_walk_left_3", new Texture("resources/characters/enemy/walk_left_3.png"));
+            ResourceManager.addResource("enemy_walk_left_4", new Texture("resources/characters/enemy/walk_left_4.png"));
+            ResourceManager.addResource("enemy_walk_left_5", new Texture("resources/characters/enemy/walk_left_5.png"));
+            ResourceManager.addResource("enemy_walk_left_6", new Texture("resources/characters/enemy/walk_left_6.png"));
+            ResourceManager.addResource("enemy_walk_left_7", new Texture("resources/characters/enemy/walk_left_7.png"));
+            ResourceManager.addResource("enemy_walk_right_0", new Texture("resources/characters/enemy/walk_right_0.png"));
+            ResourceManager.addResource("enemy_walk_right_1", new Texture("resources/characters/enemy/walk_right_1.png"));
+            ResourceManager.addResource("enemy_walk_right_2", new Texture("resources/characters/enemy/walk_right_2.png"));
+            ResourceManager.addResource("enemy_walk_right_3", new Texture("resources/characters/enemy/walk_right_3.png"));
+            ResourceManager.addResource("enemy_walk_right_4", new Texture("resources/characters/enemy/walk_right_4.png"));
+            ResourceManager.addResource("enemy_walk_right_5", new Texture("resources/characters/enemy/walk_right_5.png"));
+            ResourceManager.addResource("enemy_walk_right_6", new Texture("resources/characters/enemy/walk_right_6.png"));
+            ResourceManager.addResource("enemy_walk_right_7", new Texture("resources/characters/enemy/walk_right_7.png"));
             ResourceManager.addResource("drone_idle_0", new Texture("resources/characters/drone/idle_0.png"));
             ResourceManager.addResource("reticle", new Texture("resources/ui/reticle.png"));
 

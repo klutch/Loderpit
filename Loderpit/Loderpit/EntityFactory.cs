@@ -363,7 +363,8 @@ namespace Loderpit
             EntityManager.addComponent(entityId, new AffectedBySpellEntitiesComponent(entityId));
             EntityManager.addComponent(entityId, new BasicCombatAIComponent(entityId));
             EntityManager.addComponent(entityId, new PhysicsComponent(entityId, new List<Body>(new[] { body, feet })));
-            EntityManager.addComponent(entityId, new BloodColorComponent(entityId, Color.Green));
+            EntityManager.addComponent(entityId, new BloodColorComponent(entityId, Color.Red));
+            EntityManager.addComponent(entityId, new AnimationComponent(entityId, AnimationCategory.Enemy, AnimationType.Idle, 3));
 
             return entityId;
         }

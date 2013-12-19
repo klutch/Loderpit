@@ -24,6 +24,7 @@ namespace Loderpit.Systems
 
                 switch (animationComponent.animationCategory)
                 {
+                    case AnimationCategory.Enemy:
                     case AnimationCategory.Character:
                         Vector2 velocity = physicsComponent.bodies[0].LinearVelocity;
                         float speed = velocity.Length();
