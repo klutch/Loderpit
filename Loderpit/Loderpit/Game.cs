@@ -172,6 +172,7 @@ namespace Loderpit
             ResourceManager.addResource("drone_idle_0", new Texture("resources/characters/drone/idle_0.png"));
             ResourceManager.addResource("servo_bot_idle_0", new Texture("resources/characters/servo_bot/idle_0.png"));
             ResourceManager.addResource("rope_particle", new Texture("resources/particles/rope_1.png"));
+            ResourceManager.addResource("bridge_normal_0", new Texture("resources/bridges/normal/bridge_0.png"));
             ResourceManager.addResource("reticle", new Texture("resources/ui/reticle.png"));
 
             // Debug

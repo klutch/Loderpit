@@ -14,9 +14,10 @@ namespace Loderpit.Systems
     public class RenderSystem : ISystem
     {
         private const int MAX_HP_BARS = 1000;
+        private const int MAX_ROPE_KNOTS = 10000;
+        private const int MAX_BRIDGE_SEGMENTS = 2000;
         private const float HP_BAR_WIDTH = 30f;
         private const float HP_BAR_HEIGHT = 4f;
-        private const int MAX_ROPE_KNOTS = 10000;
         private DebugView _debugView;
         private RectangleShape _buildBridgeShape;
         private RectangleShape _reticleShape;
@@ -26,9 +27,12 @@ namespace Loderpit.Systems
         private RectangleShape[] _hpBarForegrounds;
         private int _usedHpBarCount;
         private Dictionary<AnimationCategory, Dictionary<AnimationType, List<Texture>>> _animations;
-        private RectangleShape[] _ropeKnots;
-        private List<int> _activeRopeKnots;
+        private RectangleShape[] _ropeKnotShapes;
+        private RectangleShape[] _bridgeSegmentShapes;
+        private List<int> _activeRopeKnotShapes;
+        private List<int> _activeBridgeSegmentShapes;
         private Texture _ropeKnotTexture;
+        private Texture _bridgeSegmentTexture;
 
         public SystemType systemType { get { return SystemType.Render; } }
 
@@ -70,15 +74,26 @@ namespace Loderpit.Systems
             _reticleShape.Size = new Vector2f(_reticleShape.Texture.Size.X, _reticleShape.Texture.Size.Y) / 35f;
             _reticleShape.Origin = _reticleShape.Size * 0.5f;
 
-            _activeRopeKnots = new List<int>();
+            _activeRopeKnotShapes = new List<int>();
             _ropeKnotTexture = ResourceManager.getResource<Texture>("rope_particle");
-            _ropeKnots = new RectangleShape[MAX_ROPE_KNOTS];
+            _ropeKnotShapes = new RectangleShape[MAX_ROPE_KNOTS];
             for (int i = 0; i < MAX_ROPE_KNOTS; i++)
             {
-                _ropeKnots[i] = new RectangleShape();
-                _ropeKnots[i].Texture = _ropeKnotTexture;
-                _ropeKnots[i].Size = new Vector2f(0.25f, 0.3f);
-                _ropeKnots[i].Origin = _ropeKnots[i].Size * 0.5f;
+                _ropeKnotShapes[i] = new RectangleShape();
+                _ropeKnotShapes[i].Texture = _ropeKnotTexture;
+                _ropeKnotShapes[i].Size = new Vector2f(0.25f, 0.3f);
+                _ropeKnotShapes[i].Origin = _ropeKnotShapes[i].Size * 0.5f;
+            }
+
+            _activeBridgeSegmentShapes = new List<int>();
+            _bridgeSegmentTexture = ResourceManager.getResource<Texture>("bridge_normal_0");
+            _bridgeSegmentShapes = new RectangleShape[MAX_BRIDGE_SEGMENTS];
+            for (int i = 0; i < MAX_BRIDGE_SEGMENTS; i++)
+            {
+                _bridgeSegmentShapes[i] = new RectangleShape();
+                _bridgeSegmentShapes[i].Texture = _bridgeSegmentTexture;
+                _bridgeSegmentShapes[i].Size = new Vector2f(2f, 0.5f);
+                _bridgeSegmentShapes[i].Origin = _bridgeSegmentShapes[i].Size * 0.5f;
             }
 
             // Initialize animation textures
@@ -208,7 +223,7 @@ namespace Loderpit.Systems
         // Prepare rope rendering
         private void prepareRopeRender(List<int> entities)
         {
-            _activeRopeKnots.Clear();
+            _activeRopeKnotShapes.Clear();
 
             foreach (int entityId in entities)
             {
@@ -216,7 +231,7 @@ namespace Loderpit.Systems
 
                 for (int i = 0; i < ropeComponent.bodies.Count; i++)
                 {
-                    int shapeIndex = _activeRopeKnots.Count;
+                    int shapeIndex = _activeRopeKnotShapes.Count;
                     Body body = ropeComponent.bodies[i];
                     Vector2 a, b, c, d;
 
@@ -258,15 +273,38 @@ namespace Loderpit.Systems
 
                     for (float mu = 0; mu <= 1f; mu += 0.1f)
                     {
-                        RectangleShape shape = _ropeKnots[shapeIndex];
+                        RectangleShape shape = _ropeKnotShapes[shapeIndex];
                         Vector2 point;
 
                         Helpers.interpolate(ref a, ref b, ref c, ref d, mu, out point);
                         shape.Position = new Vector2f(point.X, point.Y);
 
-                        _activeRopeKnots.Add(shapeIndex);
+                        _activeRopeKnotShapes.Add(shapeIndex);
                         shapeIndex++;
                     }
+                }
+            }
+        }
+
+        // Prepare bridge render
+        private void prepareBridgeRender(List<int> entities)
+        {
+            _activeBridgeSegmentShapes.Clear();
+
+            foreach (int entityId in entities)
+            {
+                BridgeComponent bridgeComponent = EntityManager.getBridgeComponent(entityId);
+
+                for (int i = 0; i < bridgeComponent.bodies.Count; i++)
+                {
+                    Body body = bridgeComponent.bodies[i];
+                    int shapeIndex = _activeBridgeSegmentShapes.Count;
+                    RectangleShape shape = _bridgeSegmentShapes[shapeIndex];
+
+                    shape.Position = new Vector2f(body.Position.X, body.Position.Y);
+                    shape.Rotation = Helpers.radToDeg(body.Rotation) + 90;
+
+                    _activeBridgeSegmentShapes.Add(shapeIndex);
                 }
             }
         }
@@ -410,9 +448,18 @@ namespace Loderpit.Systems
         // Draw ropes
         private void drawRopes()
         {
-            foreach (int ropeKnotId in _activeRopeKnots)
+            foreach (int ropeKnotId in _activeRopeKnotShapes)
             {
-                Game.window.Draw(_ropeKnots[ropeKnotId]);
+                Game.window.Draw(_ropeKnotShapes[ropeKnotId]);
+            }
+        }
+
+        // Draw bridge segments
+        private void drawBridgeSegments()
+        {
+            foreach (int bridgeSegmentId in _activeBridgeSegmentShapes)
+            {
+                Game.window.Draw(_bridgeSegmentShapes[bridgeSegmentId]);
             }
         }
 
@@ -429,6 +476,9 @@ namespace Loderpit.Systems
 
             // Prepare rope rendering
             prepareRopeRender(EntityManager.getEntitiesPossessing(ComponentType.Rope));
+
+            // Prepare bridge rendering
+            prepareBridgeRender(EntityManager.getEntitiesPossessing(ComponentType.Bridge));
 
             // Prepare character animation components
             prepareAnimation(EntityManager.getEntitiesPossessing(ComponentType.Animation));
@@ -448,6 +498,9 @@ namespace Loderpit.Systems
 
             // Draw rope
             drawRopes();
+
+            // Draw bridge segments
+            drawBridgeSegments();
 
             // Draw actions currently being performed
             drawCurrentActions();
