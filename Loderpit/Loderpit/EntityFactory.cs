@@ -881,6 +881,7 @@ namespace Loderpit
             EntityManager.addComponent(entityId, new AffectedBySpellEntitiesComponent(entityId));
             EntityManager.addComponent(entityId, new PhysicsComponent(entityId, new List<Body>(new[] { body, feet })));
             EntityManager.addComponent(entityId, new RestoreProxyPositionTargetComponent(entityId));
+            EntityManager.addComponent(entityId, new AnimationComponent(entityId, AnimationCategory.ServoBot, AnimationType.Idle, 3));
 
             return entityId;
         }

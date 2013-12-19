@@ -16,6 +16,7 @@ namespace Loderpit
     {
         Character,
         Enemy,
-        Drone
+        Drone,
+        ServoBot
     }
 }

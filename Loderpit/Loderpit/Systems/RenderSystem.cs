@@ -77,9 +77,11 @@ namespace Loderpit.Systems
             _animations.Add(AnimationCategory.Character, new Dictionary<AnimationType, List<Texture>>());
             _animations.Add(AnimationCategory.Drone, new Dictionary<AnimationType, List<Texture>>());
             _animations.Add(AnimationCategory.Enemy, new Dictionary<AnimationType, List<Texture>>());
+            _animations.Add(AnimationCategory.ServoBot, new Dictionary<AnimationType, List<Texture>>());
             _animations[AnimationCategory.Character].Add(AnimationType.Idle, new List<Texture>(new[] { ResourceManager.getResource<Texture>("character_idle_0") }));
             _animations[AnimationCategory.Drone].Add(AnimationType.Idle, new List<Texture>( new [] { ResourceManager.getResource<Texture>("drone_idle_0") }));
             _animations[AnimationCategory.Enemy].Add(AnimationType.Idle, new List<Texture>(new [] { ResourceManager.getResource<Texture>("enemy_idle_0") }));
+            _animations[AnimationCategory.ServoBot].Add(AnimationType.Idle, new List<Texture>(new [] { ResourceManager.getResource<Texture>("servo_bot_idle_0") }));
 
             // Finish initializing character animations
             foreach (string direction in new[] { "left", "right" })
