@@ -8,8 +8,10 @@ using FarseerPhysics.Dynamics;
 using FarseerPhysics.Dynamics.Contacts;
 using FarseerPhysics.Dynamics.Joints;
 using FarseerPhysics.Factories;
+using FarseerPhysics.Collision.Shapes;
 using FarseerRubeLoader;
 using SFML.Graphics;
+using SFML.Window;
 using Loderpit.Formations;
 using Loderpit.Components;
 using Loderpit.Components.SpellEffects;
@@ -587,6 +589,44 @@ namespace Loderpit
             return entityId;
         }
 
+        // Create color primitive render component from a body
+        private static ColorPrimitiveRenderComponent createColorPrimitiveRenderComponent(int entityId, Body body, Color color)
+        {
+            ColorPrimitiveRenderComponent component = new ColorPrimitiveRenderComponent(entityId, color);
+            List<BodyRenderData> allRenderData = new List<BodyRenderData>();
+            BodyRenderData renderData = new BodyRenderData();
+            List<ConvexShape> shapes = new List<ConvexShape>();
+
+            foreach (Fixture fixture in body.FixtureList)
+            {
+                if (fixture.Shape.ShapeType == ShapeType.Polygon)
+                {
+                    PolygonShape polygonShape = fixture.Shape as PolygonShape;
+                    ConvexShape sfmlShape = new ConvexShape((uint)polygonShape.Vertices.Count);
+
+                    for (int i = 0; i < polygonShape.Vertices.Count; i++)
+                    {
+                        Vector2 vertex = polygonShape.Vertices[i];
+
+                        sfmlShape.SetPoint((uint)i, new Vector2f(vertex.X, vertex.Y));
+                    }
+
+                    sfmlShape.FillColor = color;
+                    shapes.Add(sfmlShape);
+                }
+            }
+
+            renderData.body = body;
+            renderData.shapes = shapes;
+
+            allRenderData.Add(renderData);
+
+            component.renderData = allRenderData;
+
+            return component;
+        }
+
+        // afterLoadBody -- Called from terrain module loader
         public static int afterLoadBody(string name, Body body, CustomProperties customProperties, XElement bodyData)
         {
             bool activatesObstacle = false;
@@ -615,6 +655,7 @@ namespace Loderpit
             {
                 body.CollisionCategories = (ushort)CollisionCategory.Terrain;
                 EntityManager.addComponent(entityId, new GroundBodyComponent(entityId, body));
+                EntityManager.addComponent(entityId, createColorPrimitiveRenderComponent(entityId, body, new Color(64, 37, 10, 255)));
             }
 
             // Ceiling component
@@ -622,6 +663,7 @@ namespace Loderpit
             {
                 body.CollisionCategories = (ushort)CollisionCategory.Terrain;
                 EntityManager.addComponent(entityId, new CeilingComponent(entityId, body));
+                EntityManager.addComponent(entityId, createColorPrimitiveRenderComponent(entityId, body, new Color(64, 37, 10, 255)));
             }
 
             // DestructibleObstacle (with Vitals) components

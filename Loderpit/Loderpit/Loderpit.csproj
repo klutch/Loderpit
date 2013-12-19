@@ -94,6 +94,7 @@
     <Compile Include="Components\BridgeComponent.cs" />
     <Compile Include="Components\CeilingComponent.cs" />
     <Compile Include="Components\CharacterComponent.cs" />
+    <Compile Include="Components\ColorPrimitiveRenderComponent.cs" />
     <Compile Include="Components\CombatTargetComponent.cs" />
     <Compile Include="Components\DestructibleObstacleComponent.cs" />
     <Compile Include="Components\ExternalMovementSpeedsComponent.cs" />

@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using SFML.Graphics;
 using SFML.Window;
+using FarseerPhysics.Dynamics;
+using FarseerPhysics.Collision.Shapes;
 using Microsoft.Xna.Framework;
 using Loderpit.Managers;
 using Loderpit.Components;
@@ -81,6 +83,29 @@ namespace Loderpit.Systems
                 _hpBarBackgrounds[_usedHpBarCount].Position = screenPositionF;
                 _hpBarForegrounds[_usedHpBarCount].Position = screenPositionF;
                 _hpBarForegrounds[_usedHpBarCount++].Size = new Vector2f(HP_BAR_WIDTH * percentHp, HP_BAR_HEIGHT);
+            }
+        }
+
+        // Prepare color primitive render components
+        private void prepareColorPrimitiveRender(List<int> entities)
+        {
+            foreach (int entityId in entities)
+            {
+                ColorPrimitiveRenderComponent colorPrimitiveRenderComponent = EntityManager.getColorPrimitiveRenderComponent(entityId);
+
+                for (int i = 0; i < colorPrimitiveRenderComponent.renderData.Count; i++)
+                {
+                    BodyRenderData renderData = colorPrimitiveRenderComponent.renderData[i];
+                    Transform transform = Transform.Identity;
+                    Vector2 bodyPosition = renderData.body.Position;
+                    float bodyAngleInRadians = renderData.body.Rotation;
+
+                    transform.Translate(new Vector2f(bodyPosition.X, bodyPosition.Y));
+                    transform.Rotate(Helpers.radToDeg(bodyAngleInRadians) + 90);
+
+                    renderData.transform = transform;
+                    colorPrimitiveRenderComponent.renderData[i] = renderData;
+                }
             }
         }
 
@@ -198,18 +223,37 @@ namespace Loderpit.Systems
             }
         }
 
+        // Draw color primitives
+        private void drawColorPrimitives(List<int> entities)
+        {
+            foreach (int entityId in entities)
+            {
+                ColorPrimitiveRenderComponent colorPrimitiveRenderComponent = EntityManager.getColorPrimitiveRenderComponent(entityId);
+
+                Game.window.Draw(colorPrimitiveRenderComponent);
+            }
+        }
+
+        // Update
         public void update()
         {
             List<int> renderHealthEntities = EntityManager.getEntitiesPossessing(ComponentType.RenderHealth);
 
             // Prepare to draw hp bars
             prepareHpBars(renderHealthEntities);
+
+            // Prepare color primitive render components
+            prepareColorPrimitiveRender(EntityManager.getEntitiesPossessing(ComponentType.ColorPrimitiveRender));
         }
 
+        // Draw
         public void draw()
         {
             // Draw physical world (debug view)
             _debugView.draw();
+
+            // Draw color primitives
+            drawColorPrimitives(EntityManager.getEntitiesPossessing(ComponentType.ColorPrimitiveRender));
 
             // Draw actions currently being performed
             drawCurrentActions();
