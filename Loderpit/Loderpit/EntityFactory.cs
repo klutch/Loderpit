@@ -746,6 +746,12 @@ namespace Loderpit
             // Get entityId
             entityIdB = (int)fixtureB.Body.UserData;
 
+            // Skip if entity is dead
+            if (!EntityManager.doesEntityExist(entityIdB))
+            {
+                return;
+            }
+
             // Make sure the entity is in the player's group
             if (!playerGroup.entities.Contains(entityIdB))
             {

@@ -26,15 +26,16 @@ namespace Loderpit.Systems
         // Called by Game.endInterLevelState() -- Unload inter-level by removing all physical bodies and destroying all entities
         public void unload()
         {
+            // Destroy all entities
+            EntityManager.destroyAllEntities();
+            SystemManager.physicsSystem.world.Step(1f / 60f);
+
             // Remove physical bodies
             foreach (Body body in SystemManager.physicsSystem.world.BodyList)
             {
                 SystemManager.physicsSystem.world.RemoveBody(body);
             }
             SystemManager.physicsSystem.world.Step(1f / 60f);
-
-            // Destroy all entities
-            EntityManager.destroyAllEntities();
         }
 
         // Update

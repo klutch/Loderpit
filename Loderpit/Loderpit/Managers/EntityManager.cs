@@ -180,7 +180,10 @@ namespace Loderpit.Managers
             // Handle proxy reference
             if (isProxyComponent != null)
             {
-                EntityManager.removeComponent(isProxyComponent.proxyForId, ComponentType.HasProxy);
+                if (EntityManager.doesEntityExist(isProxyComponent.proxyForId))
+                {
+                    EntityManager.removeComponent(isProxyComponent.proxyForId, ComponentType.HasProxy);
+                }
             }
 
             // Finally, remove the entity from the dictionary
@@ -190,7 +193,9 @@ namespace Loderpit.Managers
         // Destroy all entities
         public static void destroyAllEntities()
         {
-            foreach (int entityId in _entities.Keys)
+            List<int> keys = new List<int>(_entities.Keys);
+
+            foreach (int entityId in keys)
             {
                 destroyEntity(entityId);
             }

@@ -34,6 +34,7 @@ namespace Loderpit
     public class Game : IDisposable
     {
         private static RenderWindow _window;
+        private static bool _skipDraw;
         public static bool inFocus = true;
         public static KeyboardState newKeyState;
         public static KeyboardState oldKeyState;
@@ -186,6 +187,7 @@ namespace Loderpit
         {
             ScreenManager.addScreen(new CreateTeamScreen());
             _state = GameState.CreateTeam;
+            _skipDraw = true;
         }
 
         // End create team state
@@ -199,12 +201,13 @@ namespace Loderpit
         {
             int playerGroupId;
 
-            SystemManager.levelSystem.generateLevel(12);
+            SystemManager.levelSystem.generateLevel(2);
             playerGroupId = EntityFactory.createPlayerGroup(characterClasses);
             SystemManager.teamSystem.playerGroup = EntityManager.getGroupComponent(playerGroupId);
             SystemManager.skillSystem.initializeSkills();
             ScreenManager.addScreen(new LevelScreen());
             _state = GameState.Level;
+            _skipDraw = true;
         }
 
         // End level state
@@ -225,6 +228,7 @@ namespace Loderpit
             SystemManager.teamSystem.playerGroup = EntityManager.getGroupComponent(playerGroupId);
             ScreenManager.addScreen(new InterLevelScreen());
             _state = GameState.InterLevel;
+            _skipDraw = true;
         }
 
         // End inter-level state
@@ -449,6 +453,12 @@ namespace Loderpit
         // Main draw method
         public void draw()
         {
+            if (_skipDraw)
+            {
+                _skipDraw = false;
+                return;
+            }
+
             _window.Clear();
 
             if (_state == GameState.CreateTeam)

@@ -27,15 +27,16 @@ namespace Loderpit.Systems
         // Called from Game.endLevelState() -- Unloads the level and destroys all entities
         public void unload()
         {
-            // Destroy all physical bodies
+            // Destroy all entities
+            EntityManager.destroyAllEntities();
+            SystemManager.physicsSystem.world.Step(1f / 60f);
+
+            // Destroy left over bodies
             foreach (Body body in SystemManager.physicsSystem.world.BodyList)
             {
                 SystemManager.physicsSystem.world.RemoveBody(body);
             }
             SystemManager.physicsSystem.world.Step(1f / 60f);
-
-            // Destroy all entities
-            EntityManager.destroyAllEntities();
         }
 
         private void placeTemporaryEnemies()
