@@ -24,6 +24,7 @@ namespace Loderpit.Systems
         private RectangleShape[] _hpBarBackgrounds;
         private RectangleShape[] _hpBarForegrounds;
         private int _usedHpBarCount;
+        private Dictionary<CharacterAnimationType, List<Texture>> _characterAnimations;
 
         public SystemType systemType { get { return SystemType.Render; } }
 
@@ -64,6 +65,35 @@ namespace Loderpit.Systems
             _reticleShape.Texture = ResourceManager.getResource<Texture>("reticle");
             _reticleShape.Size = new Vector2f(_reticleShape.Texture.Size.X, _reticleShape.Texture.Size.Y) / 35f;
             _reticleShape.Origin = _reticleShape.Size * 0.5f;
+
+            // Initialize character animation textures
+            initializeCharacterAnimations();
+        }
+
+        // Initialize character animation textures
+        private void initializeCharacterAnimations()
+        {
+            _characterAnimations = new Dictionary<CharacterAnimationType, List<Texture>>();
+            _characterAnimations.Add(CharacterAnimationType.Idle, new List<Texture>(new[] { ResourceManager.getResource<Texture>("character_idle_0") }));
+
+            foreach (string direction in new[] { "left", "right" })
+            {
+                List<Texture> results = new List<Texture>();
+
+                for (int i = 0; i < 6; i++)
+                {
+                    results.Add(ResourceManager.getResource<Texture>(String.Format("character_walk_{0}_{1}", direction, i)));
+                }
+
+                if (direction == "left")
+                {
+                    _characterAnimations.Add(CharacterAnimationType.WalkLeft, results);
+                }
+                else if (direction == "right")
+                {
+                    _characterAnimations.Add(CharacterAnimationType.WalkRight, results);
+                }
+            }
         }
 
         // Prepare hp bars
@@ -105,6 +135,40 @@ namespace Loderpit.Systems
 
                     renderData.transform = transform;
                     colorPrimitiveRenderComponent.renderData[i] = renderData;
+                }
+            }
+        }
+
+        // Prepare character animation components
+        private void prepareCharacterAnimation(List<int> entities)
+        {
+            if (SystemManager.physicsSystem.isSlowMotion && !SystemManager.physicsSystem.isReadyForSlowMotionTick)
+            {
+                return;
+            }
+
+            foreach (int entityId in entities)
+            {
+                CharacterAnimationComponent characterAnimationComponent = EntityManager.getCharacterAnimationComponent(entityId);
+                PositionComponent characterPositionComponent = EntityManager.getPositionComponent(entityId);
+
+                if (characterAnimationComponent.ticksSinceFrameChange >= characterAnimationComponent.ticksPerFrame)
+                {
+                    Texture texture;
+
+                    characterAnimationComponent.frameIndex = (characterAnimationComponent.frameIndex + 1) % _characterAnimations[characterAnimationComponent.type].Count;
+                    characterAnimationComponent.ticksSinceFrameChange = 0;
+
+                    texture = _characterAnimations[characterAnimationComponent.type][characterAnimationComponent.frameIndex];
+
+                    characterAnimationComponent.shape.Position = new Vector2f(characterPositionComponent.position.X, characterPositionComponent.position.Y);
+                    characterAnimationComponent.shape.Texture = texture;
+                    characterAnimationComponent.shape.Size = (new Vector2f((float)texture.Size.X, (float)texture.Size.Y) / CameraSystem.ORIGINAL_SCALE);
+                    characterAnimationComponent.shape.Origin = characterAnimationComponent.shape.Size * 0.5f;
+                }
+                else
+                {
+                    characterAnimationComponent.ticksSinceFrameChange++;
                 }
             }
         }
@@ -234,6 +298,17 @@ namespace Loderpit.Systems
             }
         }
 
+        // Draw character animations
+        private void drawCharacterAnimations(List<int> entities)
+        {
+            foreach (int entityId in entities)
+            {
+                CharacterAnimationComponent characterAnimationComponent = EntityManager.getCharacterAnimationComponent(entityId);
+
+                Game.window.Draw(characterAnimationComponent.shape);
+            }
+        }
+
         // Update
         public void update()
         {
@@ -244,6 +319,9 @@ namespace Loderpit.Systems
 
             // Prepare color primitive render components
             prepareColorPrimitiveRender(EntityManager.getEntitiesPossessing(ComponentType.ColorPrimitiveRender));
+
+            // Prepare character animation components
+            prepareCharacterAnimation(EntityManager.getEntitiesPossessing(ComponentType.CharacterAnimation));
         }
 
         // Draw
@@ -254,6 +332,9 @@ namespace Loderpit.Systems
 
             // Draw color primitives
             drawColorPrimitives(EntityManager.getEntitiesPossessing(ComponentType.ColorPrimitiveRender));
+
+            // Draw character animations
+            drawCharacterAnimations(EntityManager.getEntitiesPossessing(ComponentType.CharacterAnimation));
 
             // Draw actions currently being performed
             drawCurrentActions();

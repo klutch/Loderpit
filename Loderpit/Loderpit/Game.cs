@@ -71,6 +71,7 @@ namespace Loderpit
             SystemManager.teamSystem = new TeamSystem();
             SystemManager.cameraSystem = new CameraSystem();
             SystemManager.characterSystem = new CharacterSystem();
+            SystemManager.characterAnimationSystem = new CharacterAnimationSystem();
             SystemManager.renderSystem = new RenderSystem();
             SystemManager.obstacleSystem = new ObstacleSystem();
             SystemManager.groupSystem = new GroupSystem();
@@ -136,6 +137,21 @@ namespace Loderpit
             ResourceManager.addResource("fortification_icon", new Texture("resources/ui/action_icons/fortification.png"));
             ResourceManager.addResource("fluid_particle", new Texture("resources/particles/fluid_1.png"));
             ResourceManager.addResource("shot_trail", new Texture("resources/particles/shot_trail.png"));
+            ResourceManager.addResource("character_idle_0", new Texture("resources/characters/prototype/idle_0.png"));
+            ResourceManager.addResource("character_walk_left_0", new Texture("resources/characters/prototype/walk_left_0.png"));
+            ResourceManager.addResource("character_walk_left_1", new Texture("resources/characters/prototype/walk_left_1.png"));
+            ResourceManager.addResource("character_walk_left_2", new Texture("resources/characters/prototype/walk_left_2.png"));
+            ResourceManager.addResource("character_walk_left_3", new Texture("resources/characters/prototype/walk_left_3.png"));
+            ResourceManager.addResource("character_walk_left_4", new Texture("resources/characters/prototype/walk_left_4.png"));
+            ResourceManager.addResource("character_walk_left_5", new Texture("resources/characters/prototype/walk_left_5.png"));
+            ResourceManager.addResource("character_walk_left_6", new Texture("resources/characters/prototype/walk_left_6.png"));
+            ResourceManager.addResource("character_walk_right_0", new Texture("resources/characters/prototype/walk_right_0.png"));
+            ResourceManager.addResource("character_walk_right_1", new Texture("resources/characters/prototype/walk_right_1.png"));
+            ResourceManager.addResource("character_walk_right_2", new Texture("resources/characters/prototype/walk_right_2.png"));
+            ResourceManager.addResource("character_walk_right_3", new Texture("resources/characters/prototype/walk_right_3.png"));
+            ResourceManager.addResource("character_walk_right_4", new Texture("resources/characters/prototype/walk_right_4.png"));
+            ResourceManager.addResource("character_walk_right_5", new Texture("resources/characters/prototype/walk_right_5.png"));
+            ResourceManager.addResource("character_walk_right_6", new Texture("resources/characters/prototype/walk_right_6.png"));
             ResourceManager.addResource("reticle", new Texture("resources/ui/reticle.png"));
 
             // Debug
@@ -315,6 +331,7 @@ namespace Loderpit
                 SystemManager.aiSystem.update();
                 SystemManager.characterSystem.update();
                 SystemManager.statSystem.update();
+                SystemManager.characterAnimationSystem.update();
                 SystemManager.renderSystem.update();
                 SystemManager.particleRenderSystem.update();
                 SystemManager.skillSystem.update();

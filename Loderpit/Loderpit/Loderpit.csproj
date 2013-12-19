@@ -86,6 +86,7 @@
     <Reference Include="System.Net" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CharacterAnimationTypes.cs" />
     <Compile Include="CharacterClasses.cs" />
     <Compile Include="Components\AffectedBySpellEntitiesComponent.cs" />
     <Compile Include="Components\BasicCombatAIComponent.cs" />
@@ -93,6 +94,7 @@
     <Compile Include="Components\BloodColorComponent.cs" />
     <Compile Include="Components\BridgeComponent.cs" />
     <Compile Include="Components\CeilingComponent.cs" />
+    <Compile Include="Components\CharacterAnimationComponent.cs" />
     <Compile Include="Components\CharacterComponent.cs" />
     <Compile Include="Components\ColorPrimitiveRenderComponent.cs" />
     <Compile Include="Components\CombatTargetComponent.cs" />
@@ -220,6 +222,7 @@
     <Compile Include="SpellTypes.cs" />
     <Compile Include="Systems\BattleDroneSystem.cs" />
     <Compile Include="Systems\CameraSystem.cs" />
+    <Compile Include="Systems\CharacterAnimationSystem.cs" />
     <Compile Include="Systems\CharacterSystem.cs" />
     <Compile Include="Systems\CombatSystem.cs" />
     <Compile Include="Systems\AISystem.cs" />
@@ -239,6 +242,51 @@
     <Compile Include="Systems\TeamSystem.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="resources\characters\prototype\idle_0.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\characters\prototype\walk_left_0.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\characters\prototype\walk_left_1.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\characters\prototype\walk_left_2.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\characters\prototype\walk_left_3.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\characters\prototype\walk_left_4.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\characters\prototype\walk_left_5.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\characters\prototype\walk_left_6.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\characters\prototype\walk_right_0.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\characters\prototype\walk_right_1.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\characters\prototype\walk_right_2.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\characters\prototype\walk_right_3.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\characters\prototype\walk_right_4.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\characters\prototype\walk_right_5.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\characters\prototype\walk_right_6.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="resources\particles\fluid_1.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
