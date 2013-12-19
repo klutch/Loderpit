@@ -12,10 +12,13 @@ namespace Loderpit.Systems
 {
     public class SpellSystem : ISystem
     {
+        private Random _rng;
+
         public SystemType systemType { get { return SystemType.Spell; } }
 
         public SpellSystem()
         {
+            _rng = new Random();
         }
 
         // Clear affected entities
@@ -158,13 +161,28 @@ namespace Loderpit.Systems
             foreach (int dotSpellId in entities)
             {
                 DamageOverTimeComponent damageOverTimeComponent = EntityManager.getDamageOverTimeComponent(dotSpellId);
+                AffectedEntitiesComponent affectedEntitiesComponent = EntityManager.getAffectedEntitiesComponent(dotSpellId);
+                List<int> copyOfAffectedEntities = new List<int>(affectedEntitiesComponent.entities);   // the entities collection can be modified when an entity dies, so operate on a copy of it
 
+                // Dot rendering
+                if (damageOverTimeComponent.damageType == DamageType.Fire)
+                {
+                    foreach (int affectedId in copyOfAffectedEntities)
+                    {
+                        PositionComponent positionComponent = EntityManager.getPositionComponent(affectedId);
+
+                        if (_rng.Next(1, 8) == 1)
+                        {
+                            SystemManager.particleRenderSystem.addFireParticle(positionComponent.position, 1);
+                        }
+                    }
+                }
+
+                // Dot logic
                 if (damageOverTimeComponent.currentDelay == 0)
                 {
-                    AffectedEntitiesComponent affectedEntitiesComponent = EntityManager.getAffectedEntitiesComponent(dotSpellId);
                     SpellTypeComponent spellTypeComponent = EntityManager.getSpellTypeComponent(dotSpellId);
                     SpellOwnerComponent spellOwnerComponent = EntityManager.getSpellOwnerComponent(dotSpellId);
-                    List<int> copyOfAffectedEntities = new List<int>(affectedEntitiesComponent.entities);   // the entities collection can be modified when an entity dies, so operate on a copy of it
                     bool isRainOfFireSpell = spellTypeComponent != null && spellTypeComponent.spellType == SpellType.RainOfFire;
 
                     damageOverTimeComponent.currentDelay = damageOverTimeComponent.baseDelay;
@@ -217,12 +235,6 @@ namespace Loderpit.Systems
 
                         if (EntityManager.doesEntityExist(affectedId))  // Entity could have died from explosivity proc
                         {
-                            // Rendering
-                            if (damageOverTimeComponent.damageType == DamageType.Fire)
-                            {
-                                SystemManager.particleRenderSystem.addFireParticle(EntityManager.getPositionComponent(affectedId).position, 3);
-                            }
-
                             // Apply spell damage
                             SystemManager.combatSystem.applySpellDamage(affectedId, Roller.roll(damageOverTimeComponent.damageDie) + dotDamageModifier);
                         }
