@@ -16,6 +16,7 @@ namespace Loderpit.Systems
         private const int MAX_HP_BARS = 1000;
         private const float HP_BAR_WIDTH = 30f;
         private const float HP_BAR_HEIGHT = 4f;
+        private const int MAX_ROPE_KNOTS = 10000;
         private DebugView _debugView;
         private RectangleShape _buildBridgeShape;
         private RectangleShape _reticleShape;
@@ -25,6 +26,9 @@ namespace Loderpit.Systems
         private RectangleShape[] _hpBarForegrounds;
         private int _usedHpBarCount;
         private Dictionary<AnimationCategory, Dictionary<AnimationType, List<Texture>>> _animations;
+        private RectangleShape[] _ropeKnots;
+        private List<int> _activeRopeKnots;
+        private Texture _ropeKnotTexture;
 
         public SystemType systemType { get { return SystemType.Render; } }
 
@@ -65,6 +69,17 @@ namespace Loderpit.Systems
             _reticleShape.Texture = ResourceManager.getResource<Texture>("reticle");
             _reticleShape.Size = new Vector2f(_reticleShape.Texture.Size.X, _reticleShape.Texture.Size.Y) / 35f;
             _reticleShape.Origin = _reticleShape.Size * 0.5f;
+
+            _activeRopeKnots = new List<int>();
+            _ropeKnotTexture = ResourceManager.getResource<Texture>("rope_particle");
+            _ropeKnots = new RectangleShape[MAX_ROPE_KNOTS];
+            for (int i = 0; i < MAX_ROPE_KNOTS; i++)
+            {
+                _ropeKnots[i] = new RectangleShape();
+                _ropeKnots[i].Texture = _ropeKnotTexture;
+                _ropeKnots[i].Size = new Vector2f(0.25f, 0.3f);
+                _ropeKnots[i].Origin = _ropeKnots[i].Size * 0.5f;
+            }
 
             // Initialize animation textures
             initializeAnimations();
@@ -187,6 +202,72 @@ namespace Loderpit.Systems
                 }
 
                 animationComponent.shape.Position = new Vector2f(positionComponent.position.X, positionComponent.position.Y);
+            }
+        }
+
+        // Prepare rope rendering
+        private void prepareRopeRender(List<int> entities)
+        {
+            _activeRopeKnots.Clear();
+
+            foreach (int entityId in entities)
+            {
+                RopeComponent ropeComponent = EntityManager.getRopeComponent(entityId);
+
+                for (int i = 0; i < ropeComponent.bodies.Count; i++)
+                {
+                    int shapeIndex = _activeRopeKnots.Count;
+                    Body body = ropeComponent.bodies[i];
+                    Vector2 a, b, c, d;
+
+                    // Calculate point a
+                    if (i == 0)
+                    {
+                        Body nextBody = ropeComponent.bodies[i + 1];
+                        Vector2 relative = nextBody.Position - body.Position;
+
+                        a = body.Position - relative;
+                    }
+                    else
+                    {
+                        Body previousBody = ropeComponent.bodies[i - 1];
+
+                        a = previousBody.Position;
+                    }
+
+                    // Calculate point b
+                    b = (a + body.Position) * 0.5f;
+
+                    // Calculate point d
+                    if (i == ropeComponent.bodies.Count - 1)
+                    {
+                        Body previousBody = ropeComponent.bodies[i - 1];
+                        Vector2 relative = previousBody.Position - body.Position;
+
+                        d = body.Position - relative;
+                    }
+                    else
+                    {
+                        Body nextBody = ropeComponent.bodies[i + 1];
+
+                        d = nextBody.Position;
+                    }
+
+                    // Calculate point c
+                    c = (d + body.Position) * 0.5f;
+
+                    for (float mu = 0; mu <= 1f; mu += 0.1f)
+                    {
+                        RectangleShape shape = _ropeKnots[shapeIndex];
+                        Vector2 point;
+
+                        Helpers.interpolate(ref a, ref b, ref c, ref d, mu, out point);
+                        shape.Position = new Vector2f(point.X, point.Y);
+
+                        _activeRopeKnots.Add(shapeIndex);
+                        shapeIndex++;
+                    }
+                }
             }
         }
 
@@ -326,6 +407,15 @@ namespace Loderpit.Systems
             }
         }
 
+        // Draw ropes
+        private void drawRopes()
+        {
+            foreach (int ropeKnotId in _activeRopeKnots)
+            {
+                Game.window.Draw(_ropeKnots[ropeKnotId]);
+            }
+        }
+
         // Update
         public void update()
         {
@@ -336,6 +426,9 @@ namespace Loderpit.Systems
 
             // Prepare color primitive render components
             prepareColorPrimitiveRender(EntityManager.getEntitiesPossessing(ComponentType.ColorPrimitiveRender));
+
+            // Prepare rope rendering
+            prepareRopeRender(EntityManager.getEntitiesPossessing(ComponentType.Rope));
 
             // Prepare character animation components
             prepareAnimation(EntityManager.getEntitiesPossessing(ComponentType.Animation));
@@ -352,6 +445,9 @@ namespace Loderpit.Systems
 
             // Draw animations
             drawAnimations(EntityManager.getEntitiesPossessing(ComponentType.Animation));
+
+            // Draw rope
+            drawRopes();
 
             // Draw actions currently being performed
             drawCurrentActions();
