@@ -73,6 +73,7 @@ namespace Loderpit
             SystemManager.cameraSystem = new CameraSystem();
             SystemManager.characterSystem = new CharacterSystem();
             SystemManager.animationSystem = new AnimationSystem();
+            SystemManager.particleRenderSystem = new ParticleRenderSystem();
             SystemManager.renderSystem = new RenderSystem();
             SystemManager.obstacleSystem = new ObstacleSystem();
             SystemManager.groupSystem = new GroupSystem();
@@ -84,7 +85,6 @@ namespace Loderpit
             SystemManager.explosionSystem = new ExplosionSystem();
             SystemManager.proxySystem = new ProxySystem();
             SystemManager.battleDroneSystem = new BattleDroneSystem();
-            SystemManager.particleRenderSystem = new ParticleRenderSystem();
 
             // Open create team screen
             startCreateTeamState();
@@ -377,11 +377,11 @@ namespace Loderpit
             // Switch to world view
             _window.SetView(SystemManager.cameraSystem.worldView);
 
-            // Draw render system
-            SystemManager.renderSystem.draw();
-
             // Draw particle effects
             SystemManager.particleRenderSystem.draw();
+
+            // Draw render system
+            SystemManager.renderSystem.draw();
 
             // Restore screen view
             _window.SetView(_window.DefaultView);
