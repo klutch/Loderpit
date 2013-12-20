@@ -385,9 +385,6 @@ namespace Loderpit
             // Switch to world view
             _window.SetView(SystemManager.cameraSystem.worldView);
 
-            // Draw particle effects
-            SystemManager.particleRenderSystem.draw();
-
             // Draw render system
             SystemManager.renderSystem.draw();
 

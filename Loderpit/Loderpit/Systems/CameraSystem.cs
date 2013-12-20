@@ -26,7 +26,7 @@ namespace Loderpit.Systems
         {
             List<int> entities = SystemManager.teamSystem.getTeamEntities();
             Vector2 averagePosition = Vector2.Zero;
-            Vector2 offset = new Vector2(0, -1f);
+            Vector2 offset = new Vector2(0, -3f);
 
             foreach (int entityId in entities)
             {

@@ -545,6 +545,9 @@ namespace Loderpit.Systems
             // Draw color primitives
             drawColorPrimitives(EntityManager.getEntitiesPossessing(ComponentType.ColorPrimitiveRender));
 
+            // Draw particle effects
+            SystemManager.particleRenderSystem.draw();
+
             // Draw animations
             drawAnimations(EntityManager.getEntitiesPossessing(ComponentType.Animation));
 
