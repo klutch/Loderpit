@@ -5,6 +5,7 @@ using SFML.Window;
 using FarseerPhysics.Dynamics;
 using FarseerPhysics.Collision.Shapes;
 using Microsoft.Xna.Framework;
+using Loderpit.Backgrounds;
 using Loderpit.Managers;
 using Loderpit.Components;
 using Loderpit.Skills;
@@ -33,6 +34,8 @@ namespace Loderpit.Systems
         private List<int> _activeBridgeSegmentShapes;
         private Texture _ropeKnotTexture;
         private Texture _bridgeSegmentTexture;
+        private Dictionary<BackgroundType, Background> _backgrounds;
+        private BackgroundType _currentBackground;
 
         public SystemType systemType { get { return SystemType.Render; } }
 
@@ -98,6 +101,9 @@ namespace Loderpit.Systems
 
             // Initialize animation textures
             initializeAnimations();
+
+            // Initialize backgrounds
+            initializeBackgrounds();
         }
 
         // Initialize animation textures
@@ -140,6 +146,27 @@ namespace Loderpit.Systems
                     _animations[AnimationCategory.Character].Add(AnimationType.WalkRight, characterResults);
                 }
             }
+        }
+
+        // Initialize backgrounds
+        private void initializeBackgrounds()
+        {
+            Background caveBackground = new Background(BackgroundType.Cave);
+
+            _backgrounds = new Dictionary<BackgroundType, Background>();
+
+            caveBackground.addLayer(ResourceManager.getResource<Texture>("background_cave_0"), new Vector2f(0.1f, 0.1f));
+            caveBackground.addLayer(ResourceManager.getResource<Texture>("background_cave_1"), new Vector2f(0.09f, 0.09f));
+            caveBackground.addLayer(ResourceManager.getResource<Texture>("background_cave_2"), new Vector2f(0.07f, 0.07f));
+            caveBackground.addLayer(ResourceManager.getResource<Texture>("background_cave_3"), new Vector2f(0.05f, 0.05f));
+            caveBackground.addLayer(ResourceManager.getResource<Texture>("background_cave_4"), new Vector2f(0.03f, 0.03f));
+            caveBackground.addLayer(ResourceManager.getResource<Texture>("background_cave_5"), new Vector2f(0.02f, 0.02f));
+            caveBackground.addLayer(ResourceManager.getResource<Texture>("background_cave_6"), new Vector2f(0.01f, 0.01f));
+            caveBackground.addLayer(ResourceManager.getResource<Texture>("background_cave_7"), new Vector2f(0f, 0f));
+            caveBackground.basePosition = new Vector2f(100f, 10f);
+            _currentBackground = caveBackground.type;
+
+            _backgrounds.Add(caveBackground.type, caveBackground);
         }
 
         // Prepare hp bars
@@ -309,6 +336,12 @@ namespace Loderpit.Systems
             }
         }
 
+        // Update background
+        private void updateBackground()
+        {
+            _backgrounds[_currentBackground].update();
+        }
+
         // Draw reticle (helper method)
         private void drawReticle(Vector2f worldPosition, Color color)
         {
@@ -463,10 +496,26 @@ namespace Loderpit.Systems
             }
         }
 
+        // Draw background
+        private void drawBackground()
+        {
+            Background background = _backgrounds[_currentBackground];
+
+            for (int i = background.numLayers - 1 ; i >= 0; i--)
+            {
+                RectangleShape shape = background.shapes[i];
+
+                Game.window.Draw(shape);
+            }
+        }
+
         // Update
         public void update()
         {
             List<int> renderHealthEntities = EntityManager.getEntitiesPossessing(ComponentType.RenderHealth);
+
+            // Update background
+            updateBackground();
 
             // Prepare to draw hp bars
             prepareHpBars(renderHealthEntities);
@@ -489,6 +538,9 @@ namespace Loderpit.Systems
         {
             // Draw physical world (debug view)
             //_debugView.draw();
+
+            // Draw background
+            drawBackground();
 
             // Draw color primitives
             drawColorPrimitives(EntityManager.getEntitiesPossessing(ComponentType.ColorPrimitiveRender));

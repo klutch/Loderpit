@@ -175,6 +175,14 @@ namespace Loderpit
             ResourceManager.addResource("rope_particle", new Texture("resources/particles/rope_1.png"));
             ResourceManager.addResource("bridge_normal_0", new Texture("resources/bridges/normal/bridge_0.png"));
             ResourceManager.addResource("reticle", new Texture("resources/ui/reticle.png"));
+            ResourceManager.addResource("background_cave_0", new Texture("resources/backgrounds/cave/cave_0.png"));
+            ResourceManager.addResource("background_cave_1", new Texture("resources/backgrounds/cave/cave_1.png"));
+            ResourceManager.addResource("background_cave_2", new Texture("resources/backgrounds/cave/cave_2.png"));
+            ResourceManager.addResource("background_cave_3", new Texture("resources/backgrounds/cave/cave_3.png"));
+            ResourceManager.addResource("background_cave_4", new Texture("resources/backgrounds/cave/cave_4.png"));
+            ResourceManager.addResource("background_cave_5", new Texture("resources/backgrounds/cave/cave_5.png"));
+            ResourceManager.addResource("background_cave_6", new Texture("resources/backgrounds/cave/cave_6.png"));
+            ResourceManager.addResource("background_cave_7", new Texture("resources/backgrounds/cave/cave_7.png"));
 
             // Debug
             _fpsText = new Text("FPS:", ResourceManager.getResource<Font>("font"), 14);
