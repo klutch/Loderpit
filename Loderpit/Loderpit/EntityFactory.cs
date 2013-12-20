@@ -675,6 +675,7 @@ namespace Loderpit
                 EntityManager.addComponent(entityId, new StatsComponent(entityId, 10, 10, 0, 0, 0, 100));
                 EntityManager.addComponent(entityId, new FactionComponent(entityId, Faction.Neutral, Faction.None));
                 EntityManager.addComponent(entityId, new AffectedBySpellEntitiesComponent(entityId));
+                EntityManager.addComponent(entityId, createColorPrimitiveRenderComponent(entityId, body, Color.Red));
             }
 
             // IgnoresRopeRaycast and IgnoresBridgeRaycast components
