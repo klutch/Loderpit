@@ -203,9 +203,20 @@ namespace Loderpit.Systems
                 addMessage(defenderPositionComponent.position, "-" + damage.ToString());
 
                 // Create shot trail
-                if (attackSkill.type == SkillType.RangedAttack || attackSkill.type == SkillType.Piercing)
+                if (attackSkill.type == SkillType.RangedAttack || attackSkill.type == SkillType.Piercing || attackSkill.type == SkillType.ArrowTime)
                 {
-                    SystemManager.particleRenderSystem.addShotTrail(Color.White, attackerPositionComponent.position, defenderPositionComponent.position);
+                    Color color = Color.White;
+
+                    if (attackSkill.type == SkillType.RangedAttack)
+                    {
+                        color = (attackSkill as RangedAttackSkill).damageType == DamageType.Fire ? Color.Red : color;
+                    }
+                    else if (attackSkill.type == SkillType.Piercing)
+                    {
+                        color = Color.Cyan;
+                    }
+
+                    SystemManager.particleRenderSystem.addShotTrail(color, attackerPositionComponent.position, defenderPositionComponent.position);
                 }
 
                 // Blood particle effects
