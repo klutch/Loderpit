@@ -29,6 +29,7 @@ namespace Loderpit.Components
             _animationCategory = animationCategory;
             _animationType = animationType;
             _ticksPerFrame = ticksPerFrame;
+            _ticksSinceFrameChange = _ticksPerFrame;
             _shape = new RectangleShape();
         }
     }
