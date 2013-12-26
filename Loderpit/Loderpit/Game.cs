@@ -26,6 +26,7 @@ namespace Loderpit
      */
     public enum GameState
     {
+        MainMenu,
         CreateTeam,
         Level,
         InterLevel
@@ -113,7 +114,8 @@ namespace Loderpit
         public void loadContent()
         {
             // Permanent/global
-            ResourceManager.addResource("font", new Font("resources/courbd.ttf"));
+            ResourceManager.addResource("courier_font", new Font("resources/courbd.ttf"));
+            ResourceManager.addResource("gooddog_font", new Font("resources/gooddog.otf"));
             ResourceManager.addResource("sword_icon", new Texture("resources/ui/action_icons/sword.png"));
             ResourceManager.addResource("bow_icon", new Texture("resources/ui/action_icons/bow.png"));
             ResourceManager.addResource("wand_icon", new Texture("resources/ui/action_icons/wand.png"));
@@ -183,9 +185,10 @@ namespace Loderpit
             ResourceManager.addResource("background_cave_5", new Texture("resources/backgrounds/cave/cave_5.png"));
             ResourceManager.addResource("background_cave_6", new Texture("resources/backgrounds/cave/cave_6.png"));
             ResourceManager.addResource("background_cave_7", new Texture("resources/backgrounds/cave/cave_7.png"));
+            ResourceManager.addResource("logo_1", new Texture("resources/logo_1.png"));
 
             // Debug
-            _fpsText = new Text("FPS:", ResourceManager.getResource<Font>("font"), 14);
+            _fpsText = new Text("FPS:", ResourceManager.getResource<Font>("gooddog_font"), 14);
             _fpsText.Color = Color.Red;
             _fpsText.Position = new Vector2f(16, 16);
         }
@@ -287,6 +290,18 @@ namespace Loderpit
         private void updateFPS()
         {
             _fpsText.DisplayedString = _fps.ToString();
+        }
+
+        // Update when in main menu state
+        private void updateMainMenuState()
+        {
+
+        }
+
+        // Draw when in main menu state
+        private void drawMainMenuState()
+        {
+
         }
 
         // Update when in create team state
@@ -441,17 +456,12 @@ namespace Loderpit
         {
             _window.DispatchEvents();
 
-            if (_state == GameState.CreateTeam)
+            switch (_state)
             {
-                updateCreateTeamState();
-            }
-            else if (_state == GameState.Level)
-            {
-                updateLevelState();
-            }
-            else if (_state == GameState.InterLevel)
-            {
-                updateInterLevelState();
+                case GameState.MainMenu: updateMainMenuState(); break;
+                case GameState.CreateTeam: updateCreateTeamState(); break;
+                case GameState.Level: updateLevelState(); break;
+                case GameState.InterLevel: updateInterLevelState(); break;
             }
         }
 
@@ -466,17 +476,12 @@ namespace Loderpit
 
             _window.Clear();
 
-            if (_state == GameState.CreateTeam)
+            switch (_state)
             {
-                drawCreateTeamState();
-            }
-            else if (_state == GameState.Level)
-            {
-                drawLevelState();
-            }
-            else if (_state == GameState.InterLevel)
-            {
-                drawInterLevelState();
+                case GameState.CreateTeam: drawCreateTeamState(); break;
+                case GameState.InterLevel: drawInterLevelState(); break;
+                case GameState.Level: drawLevelState(); break;
+                case GameState.MainMenu: drawMainMenuState(); break;
             }
 
             _window.Display();

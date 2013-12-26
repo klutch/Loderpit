@@ -177,6 +177,7 @@
     <Compile Include="Screens\CreateTeamScreen.cs" />
     <Compile Include="Screens\InterLevelScreen.cs" />
     <Compile Include="Screens\LevelScreen.cs" />
+    <Compile Include="Screens\MainMenuScreen.cs" />
     <Compile Include="Screens\Screen.cs" />
     <Compile Include="Screens\ScreenComponent.cs" />
     <Compile Include="Screens\SelectedCharacterComponent.cs" />
@@ -243,6 +244,12 @@
     <Compile Include="Systems\TeamSystem.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="resources\gooddog.otf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\logo_1.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="resources\backgrounds\cave\cave_0.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

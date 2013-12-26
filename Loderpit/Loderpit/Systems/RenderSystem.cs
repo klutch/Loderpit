@@ -43,7 +43,7 @@ namespace Loderpit.Systems
         {
             _debugView = new DebugView();
 
-            _font = ResourceManager.getResource<Font>("font");
+            _font = ResourceManager.getResource<Font>("gooddog_font");
 
             _actionLabel = new Text("", _font, 14);
             _actionLabel.Color = Color.White;

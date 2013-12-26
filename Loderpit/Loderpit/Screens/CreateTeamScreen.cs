@@ -27,7 +27,7 @@ namespace Loderpit.Screens
         // Load assets
         public override void loadContent()
         {
-            _font = ResourceManager.getResource<Font>("font");
+            _font = ResourceManager.getResource<Font>("gooddog_font");
 
             _upArrowTexture = new Texture("resources/ui/create_team_screen/up_arrow.png");
             _downArrowTexture = new Texture("resources/ui/create_team_screen/down_arrow.png");

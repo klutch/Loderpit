@@ -22,7 +22,7 @@ namespace Loderpit.Screens
         public override void loadContent()
         {
             _teammateSelectionIndicator = new Texture("resources/ui/teammate_selection_indicator.png");
-            _font = new Font("resources/courbd.ttf");
+            _font = ResourceManager.getResource<Font>("gooddog_font");
         }
 
         public override void initialize()
