@@ -87,8 +87,8 @@ namespace Loderpit
             SystemManager.proxySystem = new ProxySystem();
             SystemManager.battleDroneSystem = new BattleDroneSystem();
 
-            // Open create team screen
-            startCreateTeamState();
+            // Start the initial state
+            startMainMenuState();
         }
 
         // Window event handlers
@@ -193,6 +193,25 @@ namespace Loderpit
             _fpsText.Position = new Vector2f(16, 16);
         }
 
+        // Quit
+        public static void quit()
+        {
+            _window.Close();
+        }
+
+        // Start main menu state
+        public static void startMainMenuState()
+        {
+            _state = GameState.MainMenu;
+            ScreenManager.addScreen(new MainMenuScreen());
+        }
+
+        // End main menu state
+        public static void endMainMenuState()
+        {
+            ScreenManager.removeScreen(ScreenType.MainMenu);
+        }
+
         // Start create team state
         public static void startCreateTeamState()
         {
@@ -295,13 +314,14 @@ namespace Loderpit
         // Update when in main menu state
         private void updateMainMenuState()
         {
-
+            readInput();
+            ScreenManager.update();
         }
 
         // Draw when in main menu state
         private void drawMainMenuState()
         {
-
+            ScreenManager.draw();
         }
 
         // Update when in create team state
