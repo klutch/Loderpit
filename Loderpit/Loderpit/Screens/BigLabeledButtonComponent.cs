@@ -12,7 +12,9 @@ namespace Loderpit.Screens
         private RectangleShape _buttonShape;
         private Vector2f _position;
         private Text _firstLetter;
+        private Text _firstLetterShadow;
         private Text _word;
+        private Text _wordShadow;
         private Color _buttonColor;
         private Color _selectedColor;
         private Action _onClick;
@@ -47,9 +49,15 @@ namespace Loderpit.Screens
             _firstLetter = new Text(text.Substring(0, 1), _font, 72);
             _firstLetter.Position = position + new Vector2f(30, 0);
             _firstLetter.Color = Color.White;
+            _firstLetterShadow = new Text(_firstLetter.DisplayedString, _font, 72);
+            _firstLetterShadow.Position = _firstLetter.Position + new Vector2f(3, 3);
+            _firstLetterShadow.Color = Color.Black;
             _word = new Text(text.Substring(1, text.Length - 1), _font, 48);
             _word.Position = _firstLetter.Position + new Vector2f(_firstLetter.GetLocalBounds().Width + 4, 13);
             _word.Color = Color.White;
+            _wordShadow = new Text(_word.DisplayedString, _font, 48);
+            _wordShadow.Position = _word.Position + new Vector2f(3, 3);
+            _wordShadow.Color = Color.Black;
         }
 
         public bool testPoint(Vector2f point)
@@ -82,6 +90,8 @@ namespace Loderpit.Screens
         public override void draw()
         {
             Game.window.Draw(_buttonShape);
+            Game.window.Draw(_firstLetterShadow);
+            Game.window.Draw(_wordShadow);
             Game.window.Draw(_firstLetter);
             Game.window.Draw(_word);
         }
