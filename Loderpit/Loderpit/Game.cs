@@ -117,6 +117,7 @@ namespace Loderpit
             // Permanent/global
             ResourceManager.addResource("courier_font", new Font("resources/courbd.ttf"));
             ResourceManager.addResource("gooddog_font", new Font("resources/gooddog.otf"));
+            ResourceManager.addResource("immortal_font", new Font("resources/immortal.ttf"));
             ResourceManager.addResource("sword_icon", new Texture("resources/ui/action_icons/sword.png"));
             ResourceManager.addResource("bow_icon", new Texture("resources/ui/action_icons/bow.png"));
             ResourceManager.addResource("wand_icon", new Texture("resources/ui/action_icons/wand.png"));

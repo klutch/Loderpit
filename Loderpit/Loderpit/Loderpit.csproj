@@ -172,6 +172,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Roller.cs" />
+    <Compile Include="Screens\BigLabeledButtonComponent.cs" />
     <Compile Include="Screens\CharacterPaneComponent.cs" />
     <Compile Include="Screens\CharacterStatusComponent.cs" />
     <Compile Include="Screens\ClassSelectorComponent.cs" />
@@ -246,6 +247,9 @@
     <Compile Include="Systems\TeamSystem.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="resources\ui\inter_level_screen\button.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="resources\backgrounds\cave\cave_0.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -271,6 +275,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="resources\gooddog.otf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\immortal.ttf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="resources\logo_1.png">

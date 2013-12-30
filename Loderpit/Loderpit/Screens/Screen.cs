@@ -17,7 +17,7 @@ namespace Loderpit.Screens
     abstract public class Screen
     {
         protected ScreenType _type;
-        private List<ScreenComponent> _screenComponents;
+        protected List<ScreenComponent> _screenComponents;
         private List<ScreenComponent> _componentsToRemove;
 
         public ScreenType type { get { return _type; } }
