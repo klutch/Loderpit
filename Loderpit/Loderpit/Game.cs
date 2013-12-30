@@ -226,14 +226,13 @@ namespace Loderpit
             ScreenManager.removeScreen(ScreenType.CreateTeam);
         }
 
-        // Start level state -- TODO: Load data instead of having it supplied
-        public static void startLevelState(List<CharacterClass> characterClasses)
+        // Start level state
+        public static void startLevelState(int playerUid)
         {
-            int playerGroupId;
+            int playerGroupId = PlayerDataManager.loadPlayerData(playerUid);
 
-            SystemManager.levelSystem.generateLevel(2);
-            playerGroupId = EntityFactory.createPlayerGroup(characterClasses);
             SystemManager.teamSystem.playerGroup = EntityManager.getGroupComponent(playerGroupId);
+            SystemManager.levelSystem.generateLevel(2);
             SystemManager.skillSystem.initializeSkills();
             ScreenManager.addScreen(new LevelScreen());
             _state = GameState.Level;
@@ -243,18 +242,18 @@ namespace Loderpit
         // End level state
         public static void endLevelState()
         {
+            PlayerDataManager.savePlayerData(PlayerDataManager.lastLoadedLevelUid);
             SystemManager.levelSystem.unload();
             SystemManager.teamSystem.playerGroup = null;
             ScreenManager.removeScreen(ScreenType.Level);
         }
 
-        // Start inter-level state -- TODO: Load data instead of having it supplied
-        public static void startInterLevelState(List<CharacterClass> characterClasses)
+        // Start inter-level state
+        public static void startInterLevelState(int playerUid)
         {
-            int playerGroupId;
+            int playerGroupId = PlayerDataManager.loadPlayerData(playerUid);
 
             SystemManager.interLevelSystem.load();
-            playerGroupId = EntityFactory.createPlayerGroup(characterClasses);
             SystemManager.teamSystem.playerGroup = EntityManager.getGroupComponent(playerGroupId);
             ScreenManager.addScreen(new InterLevelScreen());
             _state = GameState.InterLevel;
@@ -264,6 +263,7 @@ namespace Loderpit
         // End inter-level state
         public static void endInterLevelState()
         {
+            PlayerDataManager.savePlayerData(PlayerDataManager.lastLoadedLevelUid);
             SystemManager.interLevelSystem.unload();
             SystemManager.teamSystem.playerGroup = null;
             ScreenManager.removeScreen(ScreenType.InterLevel);

@@ -162,6 +162,7 @@
     <Compile Include="Loaders\ObstacleModuleLoader.cs" />
     <Compile Include="Loaders\TerrainModuleLoader.cs" />
     <Compile Include="Managers\EntityManager.cs" />
+    <Compile Include="Managers\PlayerDataManager.cs" />
     <Compile Include="Managers\ResourceManager.cs" />
     <Compile Include="Managers\ScreenManager.cs" />
     <Compile Include="Managers\SystemManager.cs" />

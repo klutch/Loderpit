@@ -89,17 +89,8 @@ namespace Loderpit.Systems
 
             if (playerEntities.Count == playersTouchingEndLevel.Count)
             {
-                List<CharacterClass> characterClasses = new List<CharacterClass>();
-
-                // TODO: This should be removed in favor of loading saved data in Game.startInterLevelState()
-                foreach (int entityId in playerEntities)
-                {
-                    characterClasses.Add(EntityManager.getCharacterComponent(entityId).characterClass);
-                }
-
-                // TODO: Saving should happen on this line
                 Game.endLevelState();
-                Game.startInterLevelState(characterClasses);
+                Game.startInterLevelState(PlayerDataManager.lastLoadedLevelUid);
             }
         }
 

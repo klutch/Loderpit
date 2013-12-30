@@ -62,6 +62,32 @@ namespace Loderpit.Screens
             }
         }
 
+        // Create team
+        private void createTeam()
+        {
+            int playerGroupId;
+            List<CharacterClass> chosenClasses = new List<CharacterClass>();
+            int playerUid = PlayerDataManager.getUnusedPlayerUid();
+
+            // Construct temporary game data
+            foreach (ClassSelectorComponent component in _classSelectorComponents)
+            {
+                chosenClasses.Add(component.selectedClass);
+            }
+
+            playerGroupId = EntityFactory.createPlayerGroup(chosenClasses);
+            SystemManager.teamSystem.playerGroup = EntityManager.getGroupComponent(playerGroupId);
+
+            // Save temporary player structures
+            PlayerDataManager.savePlayerData(playerUid);
+
+            // Clear temporary game data
+            EntityManager.destroyAllEntities();
+
+            Game.endCreateTeamState();
+            Game.startInterLevelState(playerUid);
+        }
+
         // Select previous slot
         private void selectPreviousSlot()
         {
@@ -116,15 +142,7 @@ namespace Loderpit.Screens
             }
             if (Game.newKeyState.isPressed(Key.Return) && Game.oldKeyState.isReleased(Key.Return))
             {
-                List<CharacterClass> chosenClasses = new List<CharacterClass>();
-
-                foreach (ClassSelectorComponent component in _classSelectorComponents)
-                {
-                    chosenClasses.Add(component.selectedClass);
-                }
-
-                Game.endCreateTeamState();
-                Game.startLevelState(chosenClasses);
+                createTeam();
             }
 
             // Update selected component

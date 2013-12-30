@@ -10,6 +10,10 @@ namespace Loderpit.Screens
 
     public class InterLevelScreen : Screen
     {
+        private int _playerUid;
+
+        public int playerUid { get { return _playerUid; } set { _playerUid = value; } }
+
         public InterLevelScreen()
             : base(ScreenType.InterLevel)
         {
@@ -38,7 +42,7 @@ namespace Loderpit.Screens
                     }
 
                     Game.endInterLevelState();
-                    Game.startLevelState(characterClasses);
+                    Game.startLevelState(PlayerDataManager.lastLoadedLevelUid);
                 }
             }
 

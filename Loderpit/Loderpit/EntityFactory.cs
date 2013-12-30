@@ -121,6 +121,181 @@ namespace Loderpit
             return skills;
         }
 
+        private static List<Skill> getSkillsFromData(List<XElement> skillDatas, CharacterClass characterClass, int entityId)
+        {
+            List<Skill> skills = new List<Skill>();
+
+            foreach (XElement skillData in skillDatas)
+            {
+                SkillType skillType = (SkillType)Enum.Parse(typeof(SkillType), skillData.Attribute("type").Value);
+                int level = int.Parse(skillData.Attribute("level").Value);
+
+                switch (skillType)
+                {
+                    case SkillType.ArrowTime:
+                        skills.Add(new ArrowTimeSkill(entityId, level));
+                        break;
+
+                    case SkillType.BattleCry:
+                        skills.Add(new BattleCrySkill(entityId, level));
+                        break;
+
+                    case SkillType.BattleDrone:
+                        skills.Add(new BattleDroneSkill(entityId, level));
+                        break;
+
+                    case SkillType.Block:
+                        skills.Add(new BlockSkill(entityId, level));
+                        break;
+
+                    case SkillType.Bloodletter:
+                        skills.Add(new BloodletterSkill(entityId, level));
+                        break;
+
+                    case SkillType.BuildBridge:
+                        skills.Add(new BuildBridgeSkill(entityId, level));
+                        break;
+
+                    case SkillType.Deadeye:
+                        skills.Add(new DeadeyeSkill(entityId, level));
+                        break;
+
+                    case SkillType.Dispel:
+                        skills.Add(new DispelSkill(entityId, level));
+                        break;
+
+                    case SkillType.Explosivity:
+                        skills.Add(new ExplosivitySkill(entityId, level));
+                        break;
+                        
+                    case SkillType.Fatality:
+                        skills.Add(new FatalitySkill(entityId, level));
+                        break;
+
+                    case SkillType.Fireball:
+                        skills.Add(new FireballSkill(entityId, level));
+                        break;
+
+                    case SkillType.FlameAura:
+                        skills.Add(new FlameAuraSkill(entityId, level));
+                        break;
+
+                    case SkillType.Fortification:
+                        skills.Add(new FortificationSkill(entityId, level));
+                        break;
+
+                    case SkillType.Frenzy:
+                        skills.Add(new FrenzySkill(entityId, level));
+                        break;
+
+                    case SkillType.GaleForce:
+                        skills.Add(new GaleForceSkill(entityId, level, new Vector2(1.5f, -1f)));
+                        break;
+
+                    case SkillType.GolemStance:
+                        skills.Add(new GolemStanceSkill(entityId, level));
+                        break;
+
+                    case SkillType.Guardian:
+                        skills.Add(new GuardianSkill(entityId, level));
+                        break;
+
+                    case SkillType.Heal:
+                        skills.Add(new HealSkill(entityId, level));
+                        break;
+
+                    case SkillType.HealingBlast:
+                        skills.Add(new HealingBlastSkill(entityId, level));
+                        break;
+
+                    case SkillType.Ignite:
+                        skills.Add(new IgniteSkill(entityId, level));
+                        break;
+
+                    case SkillType.Infusion:
+                        skills.Add(new InfusionSkill(entityId, level));
+                        break;
+
+                    case SkillType.Kick:
+                        skills.Add(new KickSkill(entityId, level));
+                        break;
+
+                    case SkillType.MeleeAttack:
+                        skills.Add(new MeleeAttackSkill(entityId, level));
+                        break;
+
+                    case SkillType.Piercing:
+                        skills.Add(new PiercingSkill(entityId, level));
+                        break;
+
+                    case SkillType.PowerShot:
+                        skills.Add(new PowerShotSkill(entityId, level));
+                        break;
+
+                    case SkillType.PowerSwing:
+                        skills.Add(new PowerShotSkill(entityId, level));
+                        break;
+
+                    case SkillType.ProximityMine:
+                        skills.Add(new ProximityMineSkill(entityId, level));
+                        break;
+
+                    case SkillType.RainOfFire:
+                        skills.Add(new RainOfFireSkill(entityId, level));
+                        break;
+
+                    case SkillType.RangedAttack:
+                        string textureResourceId = "bow_icon";
+                        DamageType damageType = DamageType.Physical;
+
+                        if (characterClass == CharacterClass.Mage)
+                        {
+                            textureResourceId = "wand_icon";
+                            damageType = DamageType.Fire;
+                        }
+                        skills.Add(new RangedAttackSkill(entityId, level, damageType, textureResourceId));
+                        break;
+
+                    case SkillType.Regeneration:
+                        skills.Add(new RegenerationSkill(entityId, level));
+                        break;
+
+                    case SkillType.Riposte:
+                        skills.Add(new RiposteSkill(entityId, level));
+                        break;
+
+                    case SkillType.ServoBot:
+                        skills.Add(new ServoBotSkill(entityId, level));
+                        break;
+
+                    case SkillType.ShieldBash:
+                        skills.Add(new ShieldBashSkill(entityId, level, new Vector2(1f, -0.5f)));
+                        break;
+
+                    case SkillType.ShieldOfThorns:
+                        skills.Add(new ShieldOfThornsSkill(entityId, level));
+                        break;
+
+                    case SkillType.SpikedShield:
+                        skills.Add(new SpikedShieldSkill(entityId, level));
+                        break;
+
+                    case SkillType.ThrowRope:
+                        skills.Add(new ThrowRopeSkill(entityId, level));
+                        break;
+
+                    case SkillType.Volley:
+                        skills.Add(new VolleySkill(entityId, level));
+                        break;
+
+                    default:
+                        throw new NotImplementedException();
+                }
+            }
+
+            return skills;
+        }
+
         public static int createPlayerGroup(List<CharacterClass> characterClasses)
         {
             List<int> groupEntities = new List<int>();
@@ -129,6 +304,26 @@ namespace Loderpit
             foreach (CharacterClass characterClass in characterClasses)
             {
                 groupEntities.Add(createTeammate(characterClass, Vector2.Zero));
+            }
+
+            return groupEntityId;
+        }
+
+        public static int createPlayerGroup(XDocument document)
+        {
+            XElement playerData = document.Element("Player");
+            List<int> groupEntities = new List<int>();
+            int groupEntityId = createGroup(groupEntities, new List<Formation>(new[] { new DefaultFormation(groupEntities, 0, 0) }));
+            List<XElement> characterDatas = new List<XElement>(
+                from c in playerData.Elements("Character") 
+                orderby int.Parse(c.Attribute("group_slot").Value)
+                select c);
+
+            foreach (XElement characterData in characterDatas)
+            {
+                CharacterClass characterClass = (CharacterClass)Enum.Parse(typeof(CharacterClass), characterData.Attribute("class").Value);
+
+                groupEntities.Add(createTeammate(characterClass, Vector2.Zero, new List<XElement>(characterData.Elements("Skill"))));
             }
 
             return groupEntityId;
@@ -143,7 +338,7 @@ namespace Loderpit
             return groupEntityId;
         }
 
-        private static int createTeammate(CharacterClass characterClass, Vector2 position)
+        private static int createTeammate(CharacterClass characterClass, Vector2 position, List<XElement> skillData = null)
         {
             int entityId = EntityManager.createEntity();
             CharacterComponent characterComponent;
@@ -152,6 +347,7 @@ namespace Loderpit
             Body feet;
             RevoluteJoint feetJoint;
             World world = SystemManager.physicsSystem.world;
+            List<Skill> skills = skillData == null ? getStartingSkills(entityId, characterClass) : getSkillsFromData(skillData, characterClass, entityId);
 
             body = BodyFactory.CreateRectangle(world, 0.5f, 0.5f, 0.5f, position);
             body.BodyType = BodyType.Dynamic;
@@ -182,7 +378,7 @@ namespace Loderpit
             EntityManager.addComponent(entityId, new PositionComponent(entityId, body));
             EntityManager.addComponent(entityId, new IgnoreRopeRaycastComponent(entityId));
             EntityManager.addComponent(entityId, new IgnoreBridgeRaycastComponent(entityId));
-            EntityManager.addComponent(entityId, new SkillsComponent(entityId, getStartingSkills(entityId, characterClass)));
+            EntityManager.addComponent(entityId, new SkillsComponent(entityId, skills));
             EntityManager.addComponent(entityId, new FactionComponent(entityId, Faction.Player, Faction.Enemy));
             EntityManager.addComponent(entityId, new RenderHealthComponent(entityId));
             EntityManager.addComponent(entityId, new PerformingSkillsComponent(entityId));
