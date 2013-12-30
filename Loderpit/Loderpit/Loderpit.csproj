@@ -178,6 +178,7 @@
     <Compile Include="Screens\CreateTeamScreen.cs" />
     <Compile Include="Screens\InterLevelScreen.cs" />
     <Compile Include="Screens\LevelScreen.cs" />
+    <Compile Include="Screens\LoadGameScreen.cs" />
     <Compile Include="Screens\MainMenuScreen.cs" />
     <Compile Include="Screens\Screen.cs" />
     <Compile Include="Screens\ScreenComponent.cs" />

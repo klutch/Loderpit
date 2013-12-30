@@ -10,7 +10,8 @@ namespace Loderpit.Screens
         CreateTeam,
         Level,
         InterLevel,
-        MainMenu
+        MainMenu,
+        LoadGame
     };
 
     abstract public class Screen

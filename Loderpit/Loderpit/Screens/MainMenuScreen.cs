@@ -101,6 +101,8 @@ namespace Loderpit.Screens
 
                         // Continue
                         case 1:
+                            Game.endMainMenuState();
+                            Game.startContinueGameState();
                             break;
 
                         // Options

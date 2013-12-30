@@ -29,7 +29,8 @@ namespace Loderpit
         MainMenu,
         CreateTeam,
         Level,
-        InterLevel
+        InterLevel,
+        ContinueGame
     }
 
     public class Game : IDisposable
@@ -269,6 +270,20 @@ namespace Loderpit
             ScreenManager.removeScreen(ScreenType.InterLevel);
         }
 
+        // Start continue game state
+        public static void startContinueGameState()
+        {
+            ScreenManager.addScreen(new LoadGameScreen());
+            _state = GameState.ContinueGame;
+            _skipDraw = true;
+        }
+
+        // End continue game state
+        public static void endContinueGameState()
+        {
+            ScreenManager.removeScreen(ScreenType.LoadGame);
+        }
+
         // Game loop
         public void run()
         {
@@ -333,6 +348,19 @@ namespace Loderpit
 
         // Draw when in create team state
         private void drawCreateTeamState()
+        {
+            ScreenManager.draw();
+        }
+
+        // Update continue game state
+        private void updateContinueGameState()
+        {
+            readInput();
+            ScreenManager.update();
+        }
+
+        // Draw continue game state
+        private void drawContinueGameState()
         {
             ScreenManager.draw();
         }
@@ -482,6 +510,7 @@ namespace Loderpit
                 case GameState.CreateTeam: updateCreateTeamState(); break;
                 case GameState.Level: updateLevelState(); break;
                 case GameState.InterLevel: updateInterLevelState(); break;
+                case GameState.ContinueGame: updateContinueGameState(); break;
             }
         }
 
@@ -502,6 +531,7 @@ namespace Loderpit
                 case GameState.InterLevel: drawInterLevelState(); break;
                 case GameState.Level: drawLevelState(); break;
                 case GameState.MainMenu: drawMainMenuState(); break;
+                case GameState.ContinueGame: drawContinueGameState(); break;
             }
 
             _window.Display();

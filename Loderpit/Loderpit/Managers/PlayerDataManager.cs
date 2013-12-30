@@ -103,5 +103,21 @@ namespace Loderpit.Managers
 
             return EntityFactory.createPlayerGroup(document);
         }
+
+        // Get a list of all saved player data
+        public static List<XElement> getAllPlayerData()
+        {
+            string[] files = Directory.GetFiles(_storageDirectory, "*.xml");
+            List<XElement> results = new List<XElement>();
+
+            foreach (string filePath in files)
+            {
+                XDocument document = XDocument.Load(filePath);
+
+                results.Add(document.Element("Player"));
+            }
+
+            return results;
+        }
     }
 }
