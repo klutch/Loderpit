@@ -853,7 +853,7 @@ namespace Loderpit
             {
                 body.CollisionCategories = (ushort)CollisionCategory.Terrain;
                 EntityManager.addComponent(entityId, new GroundBodyComponent(entityId, body));
-                EntityManager.addComponent(entityId, createColorPrimitiveRenderComponent(entityId, body, new Color(64, 37, 10, 255)));
+                EntityManager.addComponent(entityId, createColorPrimitiveRenderComponent(entityId, body, new Color(180, 180, 180, 255)));
             }
 
             // Ceiling component
@@ -861,7 +861,7 @@ namespace Loderpit
             {
                 body.CollisionCategories = (ushort)CollisionCategory.Terrain;
                 EntityManager.addComponent(entityId, new CeilingComponent(entityId, body));
-                EntityManager.addComponent(entityId, createColorPrimitiveRenderComponent(entityId, body, new Color(64, 37, 10, 255)));
+                EntityManager.addComponent(entityId, createColorPrimitiveRenderComponent(entityId, body, new Color(180, 180, 180, 255)));
             }
 
             // DestructibleObstacle (with Vitals) components
