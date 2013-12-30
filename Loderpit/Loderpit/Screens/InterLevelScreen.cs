@@ -46,8 +46,25 @@ namespace Loderpit.Screens
                     "Group",
                     new Color(10, 10, 180, 255),
                     () => { Console.WriteLine("open group menu"); }));
+
+            addScreenComponent(
+                new BigLabeledButtonComponent(
+                    this,
+                    _bigButtonTexture,
+                    new Vector2f(32, 296),
+                    "Continue",
+                    new Color(180, 10, 10, 255),
+                    () => { continueGame(); }));
         }
 
+        // Continue game
+        private void continueGame()
+        {
+            Game.endInterLevelState();
+            Game.startLevelState(PlayerDataManager.lastLoadedLevelUid);
+        }
+
+        // Update
         public override void update()
         {
             if (Game.inFocus)
@@ -55,16 +72,7 @@ namespace Loderpit.Screens
                 // TEMPORARY: Check for enter key to start a new level
                 if (Game.newKeyState.isPressed(Key.Return) && Game.oldKeyState.isReleased(Key.Return))
                 {
-                    List<CharacterClass> characterClasses = new List<CharacterClass>();
-                    GroupComponent groupComponent = SystemManager.teamSystem.playerGroup;
-
-                    foreach (int entityId in groupComponent.entities)
-                    {
-                        characterClasses.Add(EntityManager.getCharacterComponent(entityId).characterClass);
-                    }
-
-                    Game.endInterLevelState();
-                    Game.startLevelState(PlayerDataManager.lastLoadedLevelUid);
+                    continueGame();
                 }
 
                 // Test mouse input
