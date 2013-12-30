@@ -11,7 +11,8 @@ namespace Loderpit.Screens
         Level,
         InterLevel,
         MainMenu,
-        LoadGame
+        LoadGame,
+        Skills
     };
 
     abstract public class Screen

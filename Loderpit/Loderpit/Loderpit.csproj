@@ -184,6 +184,7 @@
     <Compile Include="Screens\Screen.cs" />
     <Compile Include="Screens\ScreenComponent.cs" />
     <Compile Include="Screens\SelectedCharacterComponent.cs" />
+    <Compile Include="Screens\SkillsScreen.cs" />
     <Compile Include="Screens\TemporaryWorldTextComponent.cs" />
     <Compile Include="Skills\ArrowTimeSkill.cs" />
     <Compile Include="Skills\BattleCrySkill.cs" />

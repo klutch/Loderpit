@@ -13,6 +13,7 @@ namespace Loderpit.Screens
     {
         private int _playerUid;
         private Texture _bigButtonTexture;
+        private bool _isInSkillsMenu;
 
         public int playerUid { get { return _playerUid; } set { _playerUid = value; } }
 
@@ -36,7 +37,7 @@ namespace Loderpit.Screens
                     new Vector2f(32, 32),
                     "Skills",
                     new Color(10, 180, 10, 255),
-                    () => { Console.WriteLine("open skills menu"); }));
+                    () => { openSkillsMenu(); }));
 
             addScreenComponent(
                 new BigLabeledButtonComponent(
@@ -57,6 +58,20 @@ namespace Loderpit.Screens
                     () => { continueGame(); }));
         }
 
+        // Open skills menu
+        public void openSkillsMenu()
+        {
+            _isInSkillsMenu = true;
+            ScreenManager.addScreen(new SkillsScreen(this));
+        }
+
+        // Close skills menu
+        public void closeSkillsMenu()
+        {
+            _isInSkillsMenu = false;
+            ScreenManager.removeScreen(ScreenType.Skills);
+        }
+
         // Continue game
         private void continueGame()
         {
@@ -67,7 +82,7 @@ namespace Loderpit.Screens
         // Update
         public override void update()
         {
-            if (Game.inFocus)
+            if (Game.inFocus && !_isInSkillsMenu)
             {
                 // TEMPORARY: Check for enter key to start a new level
                 if (Game.newKeyState.isPressed(Key.Return) && Game.oldKeyState.isReleased(Key.Return))
