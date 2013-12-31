@@ -75,7 +75,7 @@ namespace Loderpit.Screens
             for (int i = 0; i < 6; i++)
             {
                 _filledLevelOrbs.Add(new Texture(String.Format("resources/ui/skills_screen/filled_level_orb_{0}.png", i + 1)));
-                _filledLevelOrbs.Add(new Texture(String.Format("resources/ui/skills_screen/level_orb_{0}.png", i + 1)));
+                _unfilledLevelOrbs.Add(new Texture(String.Format("resources/ui/skills_screen/level_orb_{0}.png", i + 1)));
             }
 
             _okayButton = new RectangleShape();
@@ -161,8 +161,8 @@ namespace Loderpit.Screens
                 Skill skill = skillsComponent.upgradableSkills[i];
                 int gridX = (i % 3);
                 int gridY = i / 3;
-                Vector2f innerPosition = new Vector2f(gridX * (_skillIcon.Size.X + 32), gridY * 172) + new Vector2f(32, 32);
-                SkillPaneComponent skillPaneComponent = new SkillPaneComponent(this, _skillIcon, entityId, skill, panePosition + innerPosition);
+                Vector2f innerPosition = new Vector2f(gridX * (_skillIcon.Size.X + 32), gridY * 190) + new Vector2f(32, 32);
+                SkillPaneComponent skillPaneComponent = new SkillPaneComponent(this, _skillIcon, _unfilledLevelOrbs, _filledLevelOrbs, entityId, skill, panePosition + innerPosition);
 
                 addScreenComponent(skillPaneComponent);
                 _skillPaneComponents.Add(skillPaneComponent);
