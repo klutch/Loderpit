@@ -7,11 +7,11 @@ namespace Loderpit
 {
     public enum CharacterClass
     {
-        Fighter,
-        Defender,
-        Archer,
-        Engineer,
-        Healer,
-        Mage
+        Fighter = 0,
+        Defender = 1,
+        Archer = 2,
+        Engineer = 3,
+        Healer = 4,
+        Mage = 5
     }
 }
