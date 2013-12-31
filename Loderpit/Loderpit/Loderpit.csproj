@@ -184,6 +184,7 @@
     <Compile Include="Screens\Screen.cs" />
     <Compile Include="Screens\ScreenComponent.cs" />
     <Compile Include="Screens\SelectedCharacterComponent.cs" />
+    <Compile Include="Screens\SkillPaneComponent.cs" />
     <Compile Include="Screens\SkillsScreen.cs" />
     <Compile Include="Screens\TemporaryWorldTextComponent.cs" />
     <Compile Include="Skills\ArrowTimeSkill.cs" />
@@ -248,6 +249,48 @@
     <Compile Include="Systems\TeamSystem.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="resources\ui\skills_screen\skill_icon.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\ui\skills_screen\filled_level_orb_1.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\ui\skills_screen\filled_level_orb_2.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\ui\skills_screen\filled_level_orb_3.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\ui\skills_screen\filled_level_orb_4.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\ui\skills_screen\filled_level_orb_5.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\ui\skills_screen\filled_level_orb_6.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\ui\skills_screen\level_orb_1.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\ui\skills_screen\level_orb_2.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\ui\skills_screen\level_orb_3.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\ui\skills_screen\level_orb_4.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\ui\skills_screen\level_orb_5.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\ui\skills_screen\level_orb_6.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\ui\skills_screen\pane.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="resources\ui\skills_screen\cancel_button.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -255,9 +298,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="resources\ui\skills_screen\okay_button.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="resources\ui\skills_screen\pane.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="resources\ui\skills_screen\right_arrow.png">

@@ -21,6 +21,13 @@ namespace Loderpit.Components
                 return new List<Skill>(from s in _skills where (s.type == SkillType.MeleeAttack || s.type == SkillType.RangedAttack || s.type == SkillType.Piercing || s.type == SkillType.Kick) select s);
             }
         }
+        public List<Skill> upgradableSkills
+        {
+            get
+            {
+                return new List<Skill>(from s in _skills where (s.isUpgradable) select s);
+            }
+        }
 
         public SkillsComponent(int entityId, List<Skill> skills = null)
         {

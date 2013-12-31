@@ -4,6 +4,7 @@ using SFML.Graphics;
 using SFML.Window;
 using Loderpit.Components;
 using Loderpit.Managers;
+using Loderpit.Skills;
 
 namespace Loderpit.Screens
 {
@@ -29,6 +30,10 @@ namespace Loderpit.Screens
         private Color _characterClassDeselectedColor = new Color(255, 255, 255, 128);
         private Color _characterLabelSelectedColor = Color.White;
         private Color _characterLabelDeselectedColor = new Color(180, 180, 180, 255);
+        private List<Texture> _unfilledLevelOrbs;
+        private List<Texture> _filledLevelOrbs;
+        private Texture _skillIcon;
+        private List<SkillPaneComponent> _skillPaneComponents;
 
         public SkillsScreen(InterLevelScreen interLevelScreen)
             : base(ScreenType.Skills)
@@ -38,6 +43,7 @@ namespace Loderpit.Screens
 
         public override void initialize()
         {
+            _skillPaneComponents = new List<SkillPaneComponent>();
         }
 
         public override void loadContent()
@@ -60,30 +66,29 @@ namespace Loderpit.Screens
             _pane = new RectangleShape();
             _pane.Texture = new Texture("resources/ui/skills_screen/pane.png");
             _pane.Size = new Vector2f(_pane.Texture.Size.X, _pane.Texture.Size.Y);
-            _pane.Origin = new Vector2f(_pane.Size.X, 0);
-            _pane.Position = new Vector2f(screenWidth - 32f, 90f);
+            _pane.Position = new Vector2f(screenWidth - (32f + _pane.Texture.Size.X), 90f);
 
-            /*
-            _leftArrow = new RectangleShape();
-            _leftArrow.Texture = new Texture("resources/ui/skills_screen/left_arrow.png");
-            _leftArrow.Size = new Vector2f(_leftArrow.Texture.Size.X, _leftArrow.Texture.Size.Y);
-            _leftArrow.Position = new Vector2f(screenWidth - (32f + _pane.Size.X), _pane.Position.Y + _pane.Size.Y + 32f);
+            _skillIcon = new Texture("resources/ui/skills_screen/skill_icon.png");
 
-            _rightArrow = new RectangleShape();
-            _rightArrow.Texture = new Texture("resources/ui/skills_screen/right_arrow.png");
-            _rightArrow.Size = new Vector2f(_rightArrow.Texture.Size.X, _rightArrow.Texture.Size.Y);
-            _rightArrow.Position = _leftArrow.Position + new Vector2f(_leftArrow.Size.X + 32f, 0f);
-            */
-
-            _cancelButton = new RectangleShape();
-            _cancelButton.Texture = new Texture("resources/ui/skills_screen/cancel_button.png");
-            _cancelButton.Size = new Vector2f(_cancelButton.Texture.Size.X, _cancelButton.Texture.Size.Y);
-            _cancelButton.Position = new Vector2f(screenWidth - (32f + _cancelButton.Size.X), _pane.Position.Y + _pane.Size.Y + 32f);
+            _unfilledLevelOrbs = new List<Texture>();
+            _filledLevelOrbs = new List<Texture>();
+            for (int i = 0; i < 6; i++)
+            {
+                _filledLevelOrbs.Add(new Texture(String.Format("resources/ui/skills_screen/filled_level_orb_{0}.png", i + 1)));
+                _filledLevelOrbs.Add(new Texture(String.Format("resources/ui/skills_screen/level_orb_{0}.png", i + 1)));
+            }
 
             _okayButton = new RectangleShape();
             _okayButton.Texture = new Texture("resources/ui/skills_screen/okay_button.png");
             _okayButton.Size = new Vector2f(_okayButton.Texture.Size.X, _okayButton.Texture.Size.Y);
-            _okayButton.Position = new Vector2f(_cancelButton.Position.X - (_okayButton.Size.X + 32f), _cancelButton.Position.Y);
+            _okayButton.Position = new Vector2f(screenWidth - (32f + _okayButton.Size.X), _pane.Position.Y + _pane.Size.Y + 32f);
+            _okayButton.FillColor = Color.Green;
+
+            _cancelButton = new RectangleShape();
+            _cancelButton.Texture = new Texture("resources/ui/skills_screen/cancel_button.png");
+            _cancelButton.Size = new Vector2f(_cancelButton.Texture.Size.X, _cancelButton.Texture.Size.Y);
+            _cancelButton.Position = new Vector2f(_okayButton.Position.X - (_cancelButton.Size.X + 32f), _okayButton.Position.Y);
+            _cancelButton.FillColor = Color.Red;
 
             _classTextures = new List<Texture>();
             for (int i = 0; i < characterClasses.Length; i++)
@@ -131,6 +136,39 @@ namespace Loderpit.Screens
             return pointRect.Intersects(slotRect);
         }
 
+        private void onSelectedTeammateChange()
+        {
+            int entityId = SystemManager.teamSystem.playerGroup.entities[_selectedTeammate];
+            CharacterComponent characterComponent = EntityManager.getCharacterComponent(entityId);
+            SkillsComponent skillsComponent = EntityManager.getSkillsComponent(entityId);
+            Vector2f panePosition = _pane.Position;
+
+            _title.DisplayedString = characterComponent.characterClass.ToString();
+            _title.Origin = new Vector2f(_title.GetLocalBounds().Width, 0f);
+            _characterButtons[_selectedTeammate].FillColor = _characterClassSelectedColor;
+            _characterButtonLabels[_selectedTeammate].Color = _characterLabelSelectedColor;
+
+            // Remove previous skill components
+            foreach (SkillPaneComponent skillPaneComponent in _skillPaneComponents)
+            {
+                removeScreenComponent(skillPaneComponent);
+            }
+            _skillPaneComponents.Clear();
+
+            // Add current skills
+            for (int i = 0; i < skillsComponent.upgradableSkills.Count; i++)
+            {
+                Skill skill = skillsComponent.upgradableSkills[i];
+                int gridX = (i % 3);
+                int gridY = i / 3;
+                Vector2f innerPosition = new Vector2f(gridX * (_skillIcon.Size.X + 32), gridY * 172) + new Vector2f(32, 32);
+                SkillPaneComponent skillPaneComponent = new SkillPaneComponent(this, _skillIcon, entityId, skill, panePosition + innerPosition);
+
+                addScreenComponent(skillPaneComponent);
+                _skillPaneComponents.Add(skillPaneComponent);
+            }
+        }
+
         public override void update()
         {
             Vector2f mouse = new Vector2f(Game.newMouseState.position.X, Game.newMouseState.position.Y);
@@ -152,7 +190,7 @@ namespace Loderpit.Screens
                 }
             }
 
-            // Handle mouse input
+            // Handle mouse input for character buttons
             for (int i = 0; i < _characterButtons.Count; i++)
             {
                 if (characterPaneTestPoint(mouse, i))
@@ -167,13 +205,19 @@ namespace Loderpit.Screens
                 }
             }
 
+            // Handle mouse input for okay/cancel buttons
+            if (Game.newMouseState.isLeftButtonPressed && !Game.oldMouseState.isLeftButtonPressed)
+            {
+                if (_cancelButton.GetGlobalBounds().Intersects(Game.newMouseState.rectangle))
+                {
+                    _interLevelScreen.closeSkillsMenu();
+                }
+            }
+
             // Determine whether selected character has changed
             if (_selectedTeammate != _previousSelectedTeammate)
             {
-                _title.DisplayedString = EntityManager.getCharacterComponent(SystemManager.teamSystem.playerGroup.entities[_selectedTeammate]).characterClass.ToString();
-                _title.Origin = new Vector2f(_title.GetLocalBounds().Width, 0f);
-                _characterButtons[_selectedTeammate].FillColor = _characterClassSelectedColor;
-                _characterButtonLabels[_selectedTeammate].Color = _characterLabelSelectedColor;
+                onSelectedTeammateChange();
             }
 
             _previousSelectedTeammate = _selectedTeammate;

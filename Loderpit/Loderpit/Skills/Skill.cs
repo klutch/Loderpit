@@ -67,6 +67,7 @@ namespace Loderpit.Skills
         protected int _baseCooldown;    // not used by all skills (i.e.,  melee/ranged attacks)
         protected bool _activatable;
         protected float _range;
+        protected bool _isUpgradable;
 
         public SkillType type { get { return _type; } }
         public int level { get { return _level; } set { _level = value; } }
@@ -74,13 +75,15 @@ namespace Loderpit.Skills
         public bool activatable { get { return _activatable; } }
         public float range { get { return _range; } }
         public float cooldownPercentage { get { return (float)_cooldown / (float)_lastMaxCooldown; } }
+        public bool isUpgradable { get { return _isUpgradable; } }
 
-        public Skill(SkillType type, int entityId, int level, bool activatable)
+        public Skill(SkillType type, int entityId, int level, bool activatable, bool isUpgradable = true)
         {
             _type = type;
             _entityId = entityId;
             _level = level;
             _activatable = activatable;
+            _isUpgradable = isUpgradable;
         }
 
         public void setCooldown(int value)

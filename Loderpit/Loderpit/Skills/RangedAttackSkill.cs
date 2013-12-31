@@ -12,7 +12,7 @@ namespace Loderpit.Skills
         public DamageType damageType { get { return _damageType; } }
 
         public RangedAttackSkill(int entityId, int level, DamageType damageType, string textureResourceId = "ranged_attack_skill_icon")
-            : base(SkillType.RangedAttack, entityId, level, true)
+            : base(SkillType.RangedAttack, entityId, level, true, false)
         {
             _range = 8f;
             _damageType = damageType;

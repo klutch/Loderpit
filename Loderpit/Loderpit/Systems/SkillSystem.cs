@@ -36,6 +36,15 @@ namespace Loderpit.Systems
             _skillsToRemove = new Dictionary<int, List<ExecuteSkill>>();
         }
 
+        // Helper method to get skill names
+        public string getSkillName(SkillType skillType)
+        {
+            switch (skillType)
+            {
+                default: return skillType.ToString();
+            }
+        }
+
         #region Initialize skill methods
 
         // Initialize skills -- Perform any logic needed to set up a skill at the beginning of a level
