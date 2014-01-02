@@ -39,6 +39,7 @@ namespace Loderpit.Screens
         private List<RectangleShape> _playerSkillOrbs;
         private List<RectangleShape> _playerSpentSkillOrbs;
         private int _numSkillOrbs;
+        private Text _skillOrbLabel;
 
         public SkillsScreen(InterLevelScreen interLevelScreen)
             : base(ScreenType.Skills)
@@ -140,7 +141,7 @@ namespace Loderpit.Screens
 
                 orb.Texture = _filledLevelOrbs[rng.Next(_filledLevelOrbs.Count)];
                 orb.Size = new Vector2f(orb.Texture.Size.X, orb.Texture.Size.Y);
-                orb.Position = new Vector2f(38f, Game.window.GetView().Size.Y - 58f) + new Vector2f(32f * i, 0f);
+                orb.Position = new Vector2f(32f, Game.window.GetView().Size.Y - 48f) + new Vector2f(32f * i, 0f);
 
                 spentOrb = new RectangleShape(orb);
                 spentOrb.FillColor = new Color(150, 150, 150, 255);
@@ -148,6 +149,10 @@ namespace Loderpit.Screens
                 _playerSkillOrbs.Add(orb);
                 _playerSpentSkillOrbs.Add(orb);
             }
+
+            _skillOrbLabel = new Text("Skill Orbs", _font, 32);
+            _skillOrbLabel.Position = new Vector2f(32f, Game.window.GetView().Size.Y - 104f);
+            _skillOrbLabel.Color = Color.White;
         }
 
         public override void initialize()
@@ -320,6 +325,7 @@ namespace Loderpit.Screens
             }
 
             // Player skill orbs
+            Game.window.Draw(_skillOrbLabel);
             for (int i = 0; i < _numSkillOrbs; i++)
             {
                 int spentCutoff = _numSkillOrbs - _numSkillsBought;
