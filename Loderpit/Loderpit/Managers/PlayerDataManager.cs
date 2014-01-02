@@ -47,7 +47,10 @@ namespace Loderpit.Managers
         public static void savePlayerData(int uid)
         {
             XDocument document = new XDocument();
-            XElement playerData = new XElement("Player", new XAttribute("uid", uid));
+            XElement playerData = new XElement("Player",
+                new XAttribute("uid", uid),
+                new XAttribute("xp", SystemManager.teamSystem.currentXp),
+                new XAttribute("skill_orbs", SystemManager.teamSystem.skillOrbs));
             GroupComponent groupComponent = SystemManager.teamSystem.playerGroup;
 
             // Characters
@@ -95,13 +98,17 @@ namespace Loderpit.Managers
             document.Save(fullPath);
         }
 
-        // Load and create entities from saved data. Returns the entity id of the player's group
-        public static int loadPlayerData(int playerUid)
+        // Load and create entities from saved data.
+        public static void loadPlayerData(int playerUid)
         {
             string fullPath = Path.Combine(_storageDirectory, string.Format("player_{0}.xml", playerUid));
             XDocument document = XDocument.Load(fullPath);
+            XElement playerData = document.Element("Player");
+            int playerGroupId = EntityFactory.createPlayerGroup(document);
 
-            return EntityFactory.createPlayerGroup(document);
+            SystemManager.teamSystem.playerGroup = EntityManager.getGroupComponent(playerGroupId);
+            SystemManager.teamSystem.currentXp = int.Parse(playerData.Attribute("xp").Value);
+            SystemManager.teamSystem.skillOrbs = int.Parse(playerData.Attribute("skill_orbs").Value);
         }
 
         // Get a list of all saved player data

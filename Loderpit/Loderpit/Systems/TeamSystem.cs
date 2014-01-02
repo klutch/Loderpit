@@ -21,6 +21,8 @@ namespace Loderpit.Systems
     {
         private int _selectedTeammate;
         private GroupComponent _playerGroup;
+        private int _currentXp;
+        private int _skillOrbs;
 
         // General skill variables
         private Skill _initializingSkill;
@@ -45,6 +47,8 @@ namespace Loderpit.Systems
         public Vector2 createBridgeAnchorB { get { return _createBridgeAnchorB; } }
         public GroupComponent playerGroup { get { return _playerGroup; } set { _playerGroup = value; } }
         public Skill initializingSkill { get { return _initializingSkill; } }
+        public int currentXp { get { return _currentXp; } set { _currentXp = value; } }
+        public int skillOrbs { get { return _skillOrbs; } set { _skillOrbs = value; } }
 
         public TeamSystem()
         {

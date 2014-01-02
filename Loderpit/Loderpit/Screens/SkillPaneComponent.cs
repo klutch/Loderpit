@@ -19,14 +19,16 @@ namespace Loderpit.Screens
         private int _numOrbs;
         private List<RectangleShape> _unfilledOrbs;
         private List<RectangleShape> _filledOrbs;
+        private int _additionalLevelValue;
 
-        public SkillPaneComponent(SkillsScreen screen, Texture skillIcon, List<Texture> unfilledOrbTextures, List<Texture> filledOrbTextures, int entityId, Skill skill, Vector2f position)
+        public SkillPaneComponent(SkillsScreen screen, Texture skillIcon, List<Texture> unfilledOrbTextures, List<Texture> filledOrbTextures, int entityId, Skill skill, Vector2f position, int additionalLevelValue)
             : base(screen)
         {
             _skillsScreen = screen;
             _position = position;
             _skillIcon = skillIcon;
             _skill = skill;
+            _additionalLevelValue = additionalLevelValue;
 
             _unfilledOrbs = new List<RectangleShape>();
             _filledOrbs = new List<RectangleShape>();
@@ -61,6 +63,16 @@ namespace Loderpit.Screens
 
         public override void update()
         {
+            FloatRect mouseRect = Game.newMouseState.rectangle;
+
+            // Handle mouse input
+            if (Game.newMouseState.isLeftButtonPressed && !Game.oldMouseState.isLeftButtonPressed)
+            {
+                if (mouseRect.Intersects(_shape.GetGlobalBounds()))
+                {
+                    Console.WriteLine("Clicked: {0}", _skill.type);
+                }
+            }
         }
 
         public override void draw()
@@ -71,7 +83,7 @@ namespace Loderpit.Screens
             // Orbs
             for (int i = 0; i < _numOrbs; i++)
             {
-                if (_skill.level >= i + 1)
+                if (_skill.level + _additionalLevelValue >= i + 1)
                 {
                     Game.window.Draw(_filledOrbs[i]);
                 }

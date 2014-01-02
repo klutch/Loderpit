@@ -231,9 +231,7 @@ namespace Loderpit
         // Start level state
         public static void startLevelState(int playerUid)
         {
-            int playerGroupId = PlayerDataManager.loadPlayerData(playerUid);
-
-            SystemManager.teamSystem.playerGroup = EntityManager.getGroupComponent(playerGroupId);
+            PlayerDataManager.loadPlayerData(playerUid);
             SystemManager.levelSystem.generateLevel(2);
             SystemManager.skillSystem.initializeSkills();
             ScreenManager.addScreen(new LevelScreen());
@@ -253,10 +251,8 @@ namespace Loderpit
         // Start inter-level state
         public static void startInterLevelState(int playerUid)
         {
-            int playerGroupId = PlayerDataManager.loadPlayerData(playerUid);
-
+            PlayerDataManager.loadPlayerData(playerUid);
             SystemManager.interLevelSystem.load();
-            SystemManager.teamSystem.playerGroup = EntityManager.getGroupComponent(playerGroupId);
             ScreenManager.addScreen(new InterLevelScreen());
             _state = GameState.InterLevel;
             _skipDraw = true;

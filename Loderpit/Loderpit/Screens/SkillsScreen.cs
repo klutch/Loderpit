@@ -34,6 +34,8 @@ namespace Loderpit.Screens
         private List<Texture> _filledLevelOrbs;
         private Texture _skillIcon;
         private List<SkillPaneComponent> _skillPaneComponents;
+        private Dictionary<int, Dictionary<SkillType, int>> _skillsBought;
+        private int _numSkillsBought;
 
         public SkillsScreen(InterLevelScreen interLevelScreen)
             : base(ScreenType.Skills)
@@ -44,6 +46,7 @@ namespace Loderpit.Screens
         public override void initialize()
         {
             _skillPaneComponents = new List<SkillPaneComponent>();
+            _skillsBought = new Dictionary<int, Dictionary<SkillType, int>>();
         }
 
         public override void loadContent()
@@ -197,7 +200,18 @@ namespace Loderpit.Screens
                 int gridX = (i % 3);
                 int gridY = i / 3;
                 Vector2f innerPosition = new Vector2f(gridX * (_skillIcon.Size.X + 32), gridY * 190) + new Vector2f(32, 32);
-                SkillPaneComponent skillPaneComponent = new SkillPaneComponent(this, _skillIcon, _unfilledLevelOrbs, _filledLevelOrbs, entityId, skill, panePosition + innerPosition);
+                SkillPaneComponent skillPaneComponent;
+                int additionalLevelValue = 0;
+
+                if (_skillsBought.ContainsKey(entityId))
+                {
+                    if (_skillsBought[entityId].ContainsKey(skill.type))
+                    {
+                        additionalLevelValue += _skillsBought[entityId][skill.type];
+                    }
+                }
+
+                skillPaneComponent = new SkillPaneComponent(this, _skillIcon, _unfilledLevelOrbs, _filledLevelOrbs, entityId, skill, panePosition + innerPosition, additionalLevelValue);
 
                 addScreenComponent(skillPaneComponent);
                 _skillPaneComponents.Add(skillPaneComponent);
