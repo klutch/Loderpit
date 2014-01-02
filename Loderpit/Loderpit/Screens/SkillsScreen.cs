@@ -36,6 +36,9 @@ namespace Loderpit.Screens
         private List<SkillPaneComponent> _skillPaneComponents;
         private Dictionary<int, Dictionary<SkillType, int>> _skillsBought;
         private int _numSkillsBought;
+        private List<RectangleShape> _playerSkillOrbs;
+        private List<RectangleShape> _playerSpentSkillOrbs;
+        private int _numSkillOrbs;
 
         public SkillsScreen(InterLevelScreen interLevelScreen)
             : base(ScreenType.Skills)
@@ -43,17 +46,18 @@ namespace Loderpit.Screens
             _interLevelScreen = interLevelScreen;
         }
 
-        public override void initialize()
-        {
-            _skillPaneComponents = new List<SkillPaneComponent>();
-            _skillsBought = new Dictionary<int, Dictionary<SkillType, int>>();
-        }
-
         public override void loadContent()
         {
             float screenWidth = Game.window.GetView().Size.X;
             float screenHeight = Game.window.GetView().Size.Y;
             CharacterClass[] characterClasses = (CharacterClass[])Enum.GetValues(typeof(CharacterClass));
+            Random rng = new Random();
+
+            _numSkillOrbs = SystemManager.teamSystem.skillOrbs;
+            _skillPaneComponents = new List<SkillPaneComponent>();
+            _skillsBought = new Dictionary<int, Dictionary<SkillType, int>>();
+            _playerSkillOrbs = new List<RectangleShape>(_numSkillOrbs);
+            _playerSpentSkillOrbs = new List<RectangleShape>(_numSkillOrbs);
 
             _font = ResourceManager.getResource<Font>("immortal_font");
 
@@ -128,6 +132,26 @@ namespace Loderpit.Screens
                 _characterButtonLabels.Add(label);
                 _characterButtonHighlights.Add(highlightShape);
             }
+
+            for (int i = 0; i < _numSkillOrbs; i++)
+            {
+                RectangleShape orb = new RectangleShape();
+                RectangleShape spentOrb;
+
+                orb.Texture = _filledLevelOrbs[rng.Next(_filledLevelOrbs.Count)];
+                orb.Size = new Vector2f(orb.Texture.Size.X, orb.Texture.Size.Y);
+                orb.Position = new Vector2f(38f, Game.window.GetView().Size.Y - 58f) + new Vector2f(32f * i, 0f);
+
+                spentOrb = new RectangleShape(orb);
+                spentOrb.FillColor = new Color(150, 150, 150, 255);
+
+                _playerSkillOrbs.Add(orb);
+                _playerSpentSkillOrbs.Add(orb);
+            }
+        }
+
+        public override void initialize()
+        {
         }
 
         private bool characterPaneTestPoint(Vector2f point, int slot)
@@ -293,6 +317,21 @@ namespace Loderpit.Screens
             foreach (Text label in _characterButtonLabels)
             {
                 Game.window.Draw(label);
+            }
+
+            // Player skill orbs
+            for (int i = 0; i < _numSkillOrbs; i++)
+            {
+                int spentCutoff = _numSkillOrbs - _numSkillsBought;
+
+                if (i <= spentCutoff)
+                {
+                    Game.window.Draw(_playerSkillOrbs[i]);
+                }
+                else
+                {
+                    Game.window.Draw(_playerSpentSkillOrbs[i]);
+                }
             }
 
             base.draw();
