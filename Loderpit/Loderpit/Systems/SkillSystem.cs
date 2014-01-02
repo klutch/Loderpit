@@ -27,6 +27,7 @@ namespace Loderpit.Systems
     public class SkillSystem : ISystem
     {
         public const float SKILL_RANGE_TOLERANCE = 0.2f;
+        public const int MAX_SKILL_LEVEL = 6;
         private Dictionary<int, List<ExecuteSkill>> _skillsToRemove;
 
         public SystemType systemType { get { return SystemType.Skill; } }

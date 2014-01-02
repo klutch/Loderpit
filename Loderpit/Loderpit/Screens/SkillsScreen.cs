@@ -5,6 +5,7 @@ using SFML.Window;
 using Loderpit.Components;
 using Loderpit.Managers;
 using Loderpit.Skills;
+using Loderpit.Systems;
 
 namespace Loderpit.Screens
 {
@@ -144,10 +145,11 @@ namespace Loderpit.Screens
                 orb.Position = new Vector2f(32f, Game.window.GetView().Size.Y - 48f) + new Vector2f(32f * i, 0f);
 
                 spentOrb = new RectangleShape(orb);
-                spentOrb.FillColor = new Color(150, 150, 150, 255);
+                spentOrb.Texture = _unfilledLevelOrbs[rng.Next(_unfilledLevelOrbs.Count)];
+                spentOrb.FillColor = new Color(120, 120, 120, 255);
 
                 _playerSkillOrbs.Add(orb);
-                _playerSpentSkillOrbs.Add(orb);
+                _playerSpentSkillOrbs.Add(spentOrb);
             }
 
             _skillOrbLabel = new Text("Skill Orbs", _font, 32);
@@ -247,6 +249,37 @@ namespace Loderpit.Screens
             }
         }
 
+        public bool trySpendSkillOrb(Skill skill)
+        {
+            int entityId = skill.entityId;
+            int newNumSkillsBought = _numSkillsBought + 1;
+
+            // Stop if no orbs left
+            if (newNumSkillsBought > _numSkillOrbs)
+            {
+                return false;
+            }
+
+            // Stop if at max skill level
+            if (newNumSkillsBought > SkillSystem.MAX_SKILL_LEVEL)
+            {
+                return false;
+            }
+
+            // Remember skill to buy
+            if (!_skillsBought.ContainsKey(entityId))
+            {
+                _skillsBought.Add(entityId, new Dictionary<SkillType, int>());
+            }
+            if (!_skillsBought[entityId].ContainsKey(skill.type))
+            {
+                _skillsBought[entityId].Add(skill.type, 0);
+            }
+            _skillsBought[entityId][skill.type]++;
+            _numSkillsBought++;
+            return true;
+        }
+
         public override void update()
         {
             Vector2f mouse = new Vector2f(Game.newMouseState.position.X, Game.newMouseState.position.Y);
@@ -330,7 +363,7 @@ namespace Loderpit.Screens
             {
                 int spentCutoff = _numSkillOrbs - _numSkillsBought;
 
-                if (i <= spentCutoff)
+                if (i < spentCutoff)
                 {
                     Game.window.Draw(_playerSkillOrbs[i]);
                 }

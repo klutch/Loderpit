@@ -70,7 +70,10 @@ namespace Loderpit.Screens
             {
                 if (mouseRect.Intersects(_shape.GetGlobalBounds()))
                 {
-                    Console.WriteLine("Clicked: {0}", _skill.type);
+                    if (_skillsScreen.trySpendSkillOrb(_skill))
+                    {
+                        _additionalLevelValue++;
+                    }
                 }
             }
         }

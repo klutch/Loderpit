@@ -70,6 +70,7 @@ namespace Loderpit.Skills
         protected bool _isUpgradable;
 
         public SkillType type { get { return _type; } }
+        public int entityId { get { return _entityId; } }
         public int level { get { return _level; } set { _level = value; } }
         public int cooldown { get { return _cooldown; } }
         public bool activatable { get { return _activatable; } }
