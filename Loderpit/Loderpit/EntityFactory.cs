@@ -63,58 +63,131 @@ namespace Loderpit
             {
                 case CharacterClass.Fighter:
                     skills.Add(new MeleeAttackSkill(entityId, 1));
+                    /*
                     skills.Add(new KickSkill(entityId, 1));
                     skills.Add(new PowerSwingSkill(entityId, 1));
                     skills.Add(new BloodletterSkill(entityId, 1));
                     skills.Add(new FatalitySkill(entityId, 1));
                     skills.Add(new BattleCrySkill(entityId, 1));
-                    skills.Add(new FrenzySkill(entityId, 1));
+                    skills.Add(new FrenzySkill(entityId, 1));*/
                     break;
 
                 case CharacterClass.Defender:
+                    /*
                     skills.Add(new BlockSkill(entityId, 1));
                     skills.Add(new ShieldBashSkill(entityId, 1, new Vector2(1, -0.5f)));    // TODO: find a better way of determining the normal
                     skills.Add(new SpikedShieldSkill(entityId, 1));
                     skills.Add(new GuardianSkill(entityId, 1));
                     skills.Add(new RiposteSkill(entityId, 1));
-                    skills.Add(new GolemStanceSkill(entityId, 1));
+                    skills.Add(new GolemStanceSkill(entityId, 1));*/
                     break;
 
                 case CharacterClass.Archer:
                     skills.Add(new RangedAttackSkill(entityId, 1, DamageType.Physical, "bow_icon"));
+                    /*
                     skills.Add(new ShieldOfThornsSkill(entityId, 1));
                     skills.Add(new PowerShotSkill(entityId, 1));
                     skills.Add(new DeadeyeSkill(entityId, 1));
                     skills.Add(new ArrowTimeSkill(entityId, 1));
                     skills.Add(new VolleySkill(entityId, 1));
-                    skills.Add(new PiercingSkill(entityId, 1));
+                    skills.Add(new PiercingSkill(entityId, 1));*/
                     break;
 
                 case CharacterClass.Mage:
                     skills.Add(new RangedAttackSkill(entityId, 1, DamageType.Fire, "wand_icon"));
+                    /*
                     skills.Add(new IgniteSkill(entityId, 1));
                     skills.Add(new FireballSkill(entityId, 1));
                     skills.Add(new FlameAuraSkill(entityId, 1));
                     skills.Add(new RainOfFireSkill(entityId, 1));
                     skills.Add(new GaleForceSkill(entityId, 1, new Vector2(1.5f, -1f)));
-                    skills.Add(new ExplosivitySkill(entityId, 1));
+                    skills.Add(new ExplosivitySkill(entityId, 1));*/
                     break;
 
                 case CharacterClass.Engineer:
+                    /*
                     skills.Add(new ThrowRopeSkill(entityId, 1));
                     skills.Add(new BuildBridgeSkill(entityId, 1));
                     skills.Add(new ProximityMineSkill(entityId, 1));
                     skills.Add(new FortificationSkill(entityId, 1));
                     skills.Add(new ServoBotSkill(entityId, 1));
-                    skills.Add(new BattleDroneSkill(entityId, 1));
+                    skills.Add(new BattleDroneSkill(entityId, 1));*/
                     break;
 
                 case CharacterClass.Healer:
+                    /*
                     skills.Add(new HealSkill(entityId, 1));
                     skills.Add(new HealingBlastSkill(entityId, 1));
                     skills.Add(new InfusionSkill(entityId, 1));
                     skills.Add(new DispelSkill(entityId, 1));
-                    skills.Add(new RegenerationSkill(entityId, 1));
+                    skills.Add(new RegenerationSkill(entityId, 1));*/
+                    break;
+            }
+
+            return skills;
+        }
+
+        public static List<Skill> getAllSkills(int entityId, CharacterClass characterClass)
+        {
+            List<Skill> skills = new List<Skill>();
+            int level = 0;
+
+            switch (characterClass)
+            {
+                case CharacterClass.Fighter:
+                    skills.Add(new MeleeAttackSkill(entityId, level));
+                    skills.Add(new KickSkill(entityId, level));
+                    skills.Add(new PowerSwingSkill(entityId, level));
+                    skills.Add(new BloodletterSkill(entityId, level));
+                    skills.Add(new FatalitySkill(entityId, level));
+                    skills.Add(new BattleCrySkill(entityId, level));
+                    skills.Add(new FrenzySkill(entityId, level));
+                    break;
+
+                case CharacterClass.Defender:
+                    skills.Add(new BlockSkill(entityId, level));
+                    skills.Add(new ShieldBashSkill(entityId, level, new Vector2(1, -0.5f)));    // TODO: find a better way of determining the normal
+                    skills.Add(new SpikedShieldSkill(entityId, level));
+                    skills.Add(new GuardianSkill(entityId, level));
+                    skills.Add(new RiposteSkill(entityId, level));
+                    skills.Add(new GolemStanceSkill(entityId, level));
+                    break;
+
+                case CharacterClass.Archer:
+                    skills.Add(new RangedAttackSkill(entityId, level, DamageType.Physical, "bow_icon"));
+                    skills.Add(new ShieldOfThornsSkill(entityId, level));
+                    skills.Add(new PowerShotSkill(entityId, level));
+                    skills.Add(new DeadeyeSkill(entityId, level));
+                    skills.Add(new ArrowTimeSkill(entityId, level));
+                    skills.Add(new VolleySkill(entityId, level));
+                    skills.Add(new PiercingSkill(entityId, level));
+                    break;
+
+                case CharacterClass.Mage:
+                    skills.Add(new RangedAttackSkill(entityId, level, DamageType.Fire, "wand_icon"));
+                    skills.Add(new IgniteSkill(entityId, level));
+                    skills.Add(new FireballSkill(entityId, level));
+                    skills.Add(new FlameAuraSkill(entityId, level));
+                    skills.Add(new RainOfFireSkill(entityId, level));
+                    skills.Add(new GaleForceSkill(entityId, level, new Vector2(1.5f, -1f)));
+                    skills.Add(new ExplosivitySkill(entityId, level));
+                    break;
+
+                case CharacterClass.Engineer:
+                    skills.Add(new ThrowRopeSkill(entityId, level));
+                    skills.Add(new BuildBridgeSkill(entityId, level));
+                    skills.Add(new ProximityMineSkill(entityId, level));
+                    skills.Add(new FortificationSkill(entityId, level));
+                    skills.Add(new ServoBotSkill(entityId, level));
+                    skills.Add(new BattleDroneSkill(entityId, level));
+                    break;
+
+                case CharacterClass.Healer:
+                    skills.Add(new HealSkill(entityId, level));
+                    skills.Add(new HealingBlastSkill(entityId, level));
+                    skills.Add(new InfusionSkill(entityId, level));
+                    skills.Add(new DispelSkill(entityId, level));
+                    skills.Add(new RegenerationSkill(entityId, level));
                     break;
             }
 

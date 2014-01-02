@@ -29,7 +29,7 @@ namespace Loderpit.Screens
         private Color _characterClassSelectedColor = Color.White;
         private Color _characterClassDeselectedColor = new Color(255, 255, 255, 128);
         private Color _characterLabelSelectedColor = Color.White;
-        private Color _characterLabelDeselectedColor = new Color(180, 180, 180, 255);
+        private Color _characterLabelDeselectedColor = new Color(120, 120, 120, 255);
         private List<Texture> _unfilledLevelOrbs;
         private List<Texture> _filledLevelOrbs;
         private Texture _skillIcon;
@@ -136,11 +136,46 @@ namespace Loderpit.Screens
             return pointRect.Intersects(slotRect);
         }
 
+        private List<Skill> getAllUpgradableSkills(int entityId)
+        {
+            CharacterComponent characterComponent = EntityManager.getCharacterComponent(entityId);
+            SkillsComponent skillsComponent = EntityManager.getSkillsComponent(entityId);
+            List<Skill> allSkills = EntityFactory.getAllSkills(entityId, characterComponent.characterClass);
+            List<Skill> results = new List<Skill>(skillsComponent.upgradableSkills);
+
+            foreach (Skill skill in allSkills)
+            {
+                bool alreadyHasSkill = false;
+
+                if (!skill.isUpgradable)
+                {
+                    continue;
+                }
+
+                foreach (Skill existingSkill in results)
+                {
+                    if (existingSkill.type == skill.type)
+                    {
+                        alreadyHasSkill = true;
+                        break;
+                    }
+                }
+
+                if (!alreadyHasSkill)
+                {
+                    results.Add(skill);
+                }
+            }
+
+            return results;
+        }
+
         private void onSelectedTeammateChange()
         {
             int entityId = SystemManager.teamSystem.playerGroup.entities[_selectedTeammate];
             CharacterComponent characterComponent = EntityManager.getCharacterComponent(entityId);
-            SkillsComponent skillsComponent = EntityManager.getSkillsComponent(entityId);
+            //SkillsComponent skillsComponent = EntityManager.getSkillsComponent(entityId);
+            List<Skill> allUpgradableSkills = getAllUpgradableSkills(entityId);
             Vector2f panePosition = _pane.Position;
 
             _title.DisplayedString = characterComponent.characterClass.ToString();
@@ -156,9 +191,9 @@ namespace Loderpit.Screens
             _skillPaneComponents.Clear();
 
             // Add current skills
-            for (int i = 0; i < skillsComponent.upgradableSkills.Count; i++)
+            for (int i = 0; i < allUpgradableSkills.Count; i++)
             {
-                Skill skill = skillsComponent.upgradableSkills[i];
+                Skill skill = allUpgradableSkills[i];
                 int gridX = (i % 3);
                 int gridY = i / 3;
                 Vector2f innerPosition = new Vector2f(gridX * (_skillIcon.Size.X + 32), gridY * 190) + new Vector2f(32, 32);
