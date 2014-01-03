@@ -298,6 +298,36 @@ namespace Loderpit.Screens
             return true;
         }
 
+        private void saveChanges()
+        {
+            // Modify skill components
+            foreach (KeyValuePair<int, Dictionary<SkillType, int>> entitySkillsRow in _skillsBought)
+            {
+                int entityId = entitySkillsRow.Key;
+                SkillsComponent skillsComponent = EntityManager.getSkillsComponent(entityId);
+
+                foreach (KeyValuePair<SkillType, int> skillLevelRow in entitySkillsRow.Value)
+                {
+                    SkillType skillType = skillLevelRow.Key;
+                    int skillLevelModifier = skillLevelRow.Value;
+                    Skill skill = skillsComponent.getSkill(skillType);
+
+                    if (skill == null)
+                    {
+                        skill = Skill.create(skillType, entityId, 0);
+                        skillsComponent.skills.Add(skill);
+                    }
+
+                    skill.level += skillLevelModifier;
+                }
+            }
+
+            // Modify skill orbs
+            SystemManager.teamSystem.skillOrbs -= _numSkillsBought;
+
+            PlayerDataManager.savePlayerData(PlayerDataManager.lastLoadedLevelUid);
+        }
+
         public override void update()
         {
             Vector2f mouse = new Vector2f(Game.newMouseState.position.X, Game.newMouseState.position.Y);
@@ -339,6 +369,12 @@ namespace Loderpit.Screens
             {
                 if (_cancelButton.GetGlobalBounds().Intersects(Game.newMouseState.rectangle))
                 {
+                    _interLevelScreen.closeSkillsMenu();
+                }
+
+                if (_okayButton.GetGlobalBounds().Intersects(Game.newMouseState.rectangle))
+                {
+                    saveChanges();
                     _interLevelScreen.closeSkillsMenu();
                 }
             }

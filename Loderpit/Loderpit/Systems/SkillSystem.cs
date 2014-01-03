@@ -1296,7 +1296,7 @@ namespace Loderpit.Systems
             }
             else
             {
-                groupComponent = SystemManager.groupSystem.getGroupComponentContaining(isProxyComponent.proxyForId);
+                groupComponent = SystemManager.groupSystem.getGroupComponentContaining(entityId);
             }
 
             EntityFactory.createBridge(executeBuildBridgeSkill.anchorA, executeBuildBridgeSkill.anchorB);
@@ -1328,7 +1328,7 @@ namespace Loderpit.Systems
             }
             else
             {
-                groupComponent = SystemManager.groupSystem.getGroupComponentContaining(isProxyComponent.proxyForId);
+                groupComponent = SystemManager.groupSystem.getGroupComponentContaining(entityId);
             }
 
             EntityFactory.createRope(executeThrowRopeSkill.anchor);
