@@ -64,15 +64,29 @@ namespace Loderpit.Screens
         public override void update()
         {
             FloatRect mouseRect = Game.newMouseState.rectangle;
+            bool intersects = mouseRect.Intersects(_shape.GetGlobalBounds());
 
             // Handle mouse input
             if (Game.newMouseState.isLeftButtonPressed && !Game.oldMouseState.isLeftButtonPressed)
             {
-                if (mouseRect.Intersects(_shape.GetGlobalBounds()))
+                if (intersects)
                 {
                     if (_skillsScreen.trySpendSkillOrb(_skill))
                     {
                         _additionalLevelValue++;
+                    }
+                }
+            }
+            else if (Game.newMouseState.isRightButtonPressed && !Game.oldMouseState.isRightButtonPressed)
+            {
+                if (intersects)
+                {
+                    if (_additionalLevelValue > 0)
+                    {
+                        if (_skillsScreen.tryRefundSkillOrb(_skill))
+                        {
+                            _additionalLevelValue--;
+                        }
                     }
                 }
             }

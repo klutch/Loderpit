@@ -280,6 +280,24 @@ namespace Loderpit.Screens
             return true;
         }
 
+        public bool tryRefundSkillOrb(Skill skill)
+        {
+            _skillsBought[skill.entityId][skill.type]--;
+
+            if (_skillsBought[skill.entityId][skill.type] <= 0)
+            {
+                _skillsBought[skill.entityId].Remove(skill.type);
+            }
+            if (_skillsBought[skill.entityId].Count == 0)
+            {
+                _skillsBought.Remove(skill.entityId);
+            }
+
+            _numSkillsBought--;
+
+            return true;
+        }
+
         public override void update()
         {
             Vector2f mouse = new Vector2f(Game.newMouseState.position.X, Game.newMouseState.position.Y);
