@@ -38,7 +38,7 @@ namespace Loderpit.Screens
             logoScale = Game.window.GetView().Size.X / (float)_logoTexture.Size.X;
             _logoShape.Scale = new Vector2f(logoScale, logoScale);
 
-            _font = ResourceManager.getResource<Font>("gooddog_font");
+            _font = ResourceManager.getResource<Font>("immortal_font");
             _options = new List<Text>();
             _options.Add(new Text("New Game", _font, 48));
             _options.Add(new Text("Continue", _font, 48));

@@ -27,7 +27,7 @@ namespace Loderpit.Screens
         // Load assets
         public override void loadContent()
         {
-            _font = ResourceManager.getResource<Font>("gooddog_font");
+            _font = ResourceManager.getResource<Font>("immortal_font");
 
             _upArrowTexture = new Texture("resources/ui/create_team_screen/up_arrow.png");
             _downArrowTexture = new Texture("resources/ui/create_team_screen/down_arrow.png");
@@ -39,14 +39,14 @@ namespace Loderpit.Screens
                 _classTextures.Add(new Texture("resources/ui/class_icons/" + ((CharacterClass)i).ToString().ToLower() + ".png"));
             }
 
-            _instructions = new Text("Use WASD and Enter to create your team.", _font, 14);
+            _instructions = new Text("Use the [WASD] and [ENTER] keys to create your team.", _font, 24);
             _instructions.Position = new Vector2f(16, 16);
         }
 
         // Initialize assets and components
         public override void initialize()
         {
-            int count = 4;
+            int count = 3;
             float offsetWidth = 72f;
             float totalWidth = (count - 1) * offsetWidth;
             Vector2f position = new Vector2f(Game.window.Size.X, Game.window.Size.Y) * 0.5f - new Vector2f(totalWidth * 0.5f, 0f);
@@ -77,6 +77,7 @@ namespace Loderpit.Screens
 
             playerGroupId = EntityFactory.createPlayerGroup(chosenClasses);
             SystemManager.teamSystem.playerGroup = EntityManager.getGroupComponent(playerGroupId);
+            SystemManager.teamSystem.skillOrbs = chosenClasses.Count;
 
             // Save temporary player structures
             PlayerDataManager.savePlayerData(playerUid);
